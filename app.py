@@ -9,7 +9,6 @@ from twilio.rest import Client
 from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
-import time
 
 # =====================================================
 # INIT
@@ -18,7 +17,7 @@ import time
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "change_this_secret_key_please")
+app.secret_key = os.getenv("SECRET_KEY", "super-secret-key-change-this-in-production")
 
 DB_NAME = "users.db"
 
@@ -81,10 +80,10 @@ def init_db():
         )
         """)
 
-        # default admin
+        # Create default admin if not exists
         if not c.execute("SELECT id FROM admins WHERE username='admin'").fetchone():
             c.execute(
-                "INSERT INTO admins(username, password) VALUES(?,?)",
+                "INSERT INTO admins (username, password) VALUES (?, ?)",
                 ("admin", generate_password_hash("admin123"))
             )
 
@@ -94,7 +93,7 @@ def init_db():
 init_db()
 
 # =====================================================
-# EMAIL (Gmail version - consider switching to SendGrid/Resend)
+# EMAIL
 # =====================================================
 
 EMAIL_USER = os.getenv("EMAIL_USER")
@@ -103,33 +102,47 @@ EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 def send_alert_email(to_email, location, msg_text):
     if not EMAIL_USER or not EMAIL_PASS:
-        print("❌ EMAIL credentials not set in environment")
+        print("❌ EMAIL_USER or EMAIL_PASS not set in environment variables")
         return
+
+    print(f"[EMAIL] Starting send to: {to_email}")
+    print(f"[EMAIL] Sender: {EMAIL_USER}")
 
     try:
         msg = MIMEText(f"""
-🚨 Emergency Alert
+🚨 EMERGENCY ALERT
 
 Location: {location}
 
 {msg_text}
-""")
-        msg["Subject"] = "🚨 Emergency Alert"
+        """.strip())
+
+        msg["Subject"] = "🚨 EMERGENCY ALERT"
         msg["From"] = EMAIL_USER
         msg["To"] = to_email
 
-        print(f"📧 Attempting to send email to: {to_email}")
+        print(f"[EMAIL] Connecting to smtp.gmail.com:465 ...")
 
-        # Adding timeout to prevent hanging forever
-        server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15)
+        # timeout added to prevent hanging forever
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=12)
+        print("[EMAIL] Connected")
+
+        print("[EMAIL] Logging in ...")
         server.login(EMAIL_USER, EMAIL_PASS)
-        server.send_message(msg)
-        server.quit()
+        print("[EMAIL] Login successful")
 
-        print(f"✅ Email sent to {to_email}")
+        print("[EMAIL] Sending message ...")
+        server.send_message(msg)
+        print("[EMAIL] Message sent")
+
+        server.quit()
+        print(f"[EMAIL SUCCESS] Sent to {to_email}")
 
     except Exception as e:
-        print(f"❌ Email failed to {to_email}: {str(e)}")
+        error_type = type(e).__name__
+        error_msg = str(e)
+        print(f"[EMAIL FAILED] {error_type}: {error_msg}")
+        print(f"[EMAIL FAILED] Full error for {to_email}: {repr(e)}")
 
 
 # =====================================================
@@ -144,18 +157,18 @@ twilio_client = Client(
 
 def send_alert_sms(to_phone, location, msg_text):
     try:
-        if not to_phone or len(to_phone) < 8:
-            print(f"Invalid phone number: {to_phone}")
+        if not to_phone or len(str(to_phone).strip()) < 8:
+            print(f"[SMS] Skipping invalid phone: {to_phone}")
             return
 
         twilio_client.messages.create(
             body=f"🚨 ALERT at {location}\n{msg_text}",
             from_=os.getenv("TWILIO_PHONE"),
-            to=to_phone
+            to=to_phone.strip()
         )
-        print(f"✅ SMS sent to {to_phone}")
+        print(f"[SMS SUCCESS] Sent to {to_phone}")
     except Exception as e:
-        print(f"❌ SMS failed to {to_phone}: {str(e)}")
+        print(f"[SMS FAILED] {to_phone}: {str(e)}")
 
 
 # =====================================================
@@ -170,8 +183,37 @@ cloudinary.config(
 
 
 # =====================================================
-# MISSING PERSONS
+# ROUTES
 # =====================================================
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        location = request.form.get("location")
+
+        if not all([email, phone, location]):
+            flash("All fields are required", "error")
+            return redirect(url_for("register"))
+
+        with get_db() as conn:
+            conn.execute(
+                "INSERT OR IGNORE INTO users (email, phone, location) VALUES (?, ?, ?)",
+                (email, phone, location)
+            )
+            conn.commit()
+
+        flash("Registered successfully!", "success")
+        return redirect(url_for("register"))
+
+    return render_template("register.html")
+
 
 @app.route("/missing")
 def missing():
@@ -179,7 +221,6 @@ def missing():
         persons = conn.execute(
             "SELECT * FROM missing_persons ORDER BY created_at DESC"
         ).fetchall()
-
     return render_template("missing.html", persons=persons)
 
 
@@ -193,15 +234,14 @@ def report_missing():
             result = cloudinary.uploader.upload(photo)
             photo_url = result["secure_url"]
         except Exception as e:
-            print(f"Cloudinary upload failed: {e}")
-            flash("Failed to upload photo", "error")
+            print(f"Cloudinary upload error: {e}")
 
     with get_db() as conn:
         conn.execute("""
             INSERT INTO missing_persons
             (name, age, gender, location, date_seen, description, notes,
              photo_url, reporter_name, reporter_contact, reporter_relation)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             request.form.get("name"),
             request.form.get("age"),
@@ -222,40 +262,7 @@ def report_missing():
 
 
 # =====================================================
-# HOME & STATIC PAGES
-# =====================================================
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        email = request.form.get("email")
-        phone = request.form.get("phone")
-        location = request.form.get("location")
-
-        if not email or not phone or not location:
-            flash("All fields are required", "error")
-            return redirect(url_for("register"))
-
-        with get_db() as conn:
-            conn.execute(
-                "INSERT OR IGNORE INTO users(email, phone, location) VALUES(?,?,?)",
-                (email, phone, location)
-            )
-            conn.commit()
-
-        flash("Registered successfully!", "success")
-        return redirect(url_for("register"))
-
-    return render_template("register.html")
-
-
-# =====================================================
-# ADMIN LOGIN - WEB
+# ADMIN - WEB
 # =====================================================
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -266,7 +273,7 @@ def admin_login():
 
         with get_db() as conn:
             admin = conn.execute(
-                "SELECT password FROM admins WHERE username=?",
+                "SELECT password FROM admins WHERE username = ?",
                 (username,)
             ).fetchone()
 
@@ -278,10 +285,6 @@ def admin_login():
 
     return render_template("admin_login.html")
 
-
-# =====================================================
-# ADMIN DASHBOARD - WEB
-# =====================================================
 
 @app.route("/admin/dashboard", methods=["GET", "POST"])
 def admin_dashboard():
@@ -306,7 +309,7 @@ def admin_dashboard():
                 """, (disaster_type, location, datetime_str, message))
 
                 users = c.execute(
-                    "SELECT email, phone FROM users WHERE location = ?",
+                    "SELECT email, phone FROM users WHERE LOWER(location) = LOWER(?)",
                     (location,)
                 ).fetchall()
 
@@ -316,7 +319,6 @@ def admin_dashboard():
                         args=(u["email"], location, message),
                         daemon=True
                     ).start()
-
                     threading.Thread(
                         target=send_alert_sms,
                         args=(u["phone"], location, message),
@@ -324,7 +326,7 @@ def admin_dashboard():
                     ).start()
 
                 conn.commit()
-                flash("Alert sent successfully!", "success")
+                flash("Alert broadcast started!", "success")
 
         users = c.execute("SELECT * FROM users").fetchall()
         alerts = c.execute("SELECT * FROM alerts ORDER BY id DESC").fetchall()
@@ -338,15 +340,15 @@ def admin_delete_user(user_id):
         return redirect(url_for("admin_login"))
 
     with get_db() as conn:
-        conn.execute("DELETE FROM users WHERE id=?", (user_id,))
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
         conn.commit()
 
-    flash("User deleted successfully", "success")
+    flash("User deleted", "success")
     return redirect(url_for("admin_dashboard"))
 
 
 # =====================================================
-# MOBILE ADMIN API
+# API - MOBILE / EXTERNAL
 # =====================================================
 
 @app.route("/api/admin/login", methods=["POST"])
@@ -360,7 +362,7 @@ def api_admin_login():
 
     with get_db() as conn:
         admin = conn.execute(
-            "SELECT password FROM admins WHERE username=?",
+            "SELECT password FROM admins WHERE username = ?",
             (username,)
         ).fetchone()
 
@@ -380,84 +382,48 @@ def api_send_alert():
     message = data.get("message")
 
     if not all([disaster_type, location, message]):
-        return jsonify({
-            "success": False,
-            "error": "Missing required fields: disaster_type, location, message"
-        }), 400
+        return jsonify({"success": False, "error": "Missing required fields"}), 400
 
     with get_db() as conn:
         c = conn.cursor()
 
-        # Save the alert
         c.execute("""
             INSERT INTO alerts (disaster_type, location, datetime, message)
             VALUES (?, ?, ?, ?)
         """, (disaster_type, location, datetime_str, message))
 
-        # Get users (case-insensitive match recommended)
-        users = c.execute("""
-            SELECT email, phone FROM users 
-            WHERE LOWER(location) = LOWER(?)
-        """, (location,)).fetchall()
+        users = c.execute(
+            "SELECT email, phone FROM users WHERE LOWER(location) = LOWER(?)",
+            (location,)
+        ).fetchall()
 
-        print(f"[ALERT] Found {len(users)} users for location: {location}")
+        print(f"[API ALERT] Found {len(users)} users for location: {location}")
 
-        # Send notifications in background
         for user in users:
-            email = user["email"]
-            phone = user["phone"]
-
-            if email and "@" in email:
+            if user["email"]:
                 threading.Thread(
                     target=send_alert_email,
-                    args=(email, location, message),
+                    args=(user["email"], location, message),
                     daemon=True
                 ).start()
 
-            if phone and len(str(phone).strip()) >= 8:
+            if user["phone"]:
                 threading.Thread(
                     target=send_alert_sms,
-                    args=(phone, location, message),
+                    args=(user["phone"], location, message),
                     daemon=True
                 ).start()
 
         conn.commit()
 
-    return jsonify({
-        "success": True,
-        "users_notified": len(users)
-    })
+    return jsonify({"success": True, "users_notified": len(users)})
 
-
-@app.route("/api/admin/users")
-def api_get_users():
-    with get_db() as conn:
-        rows = conn.execute("SELECT * FROM users").fetchall()
-    return jsonify([dict(r) for r in rows])
-
-
-@app.route("/api/admin/users/<int:id>", methods=["DELETE"])
-def api_delete_user(id):
-    with get_db() as conn:
-        conn.execute("DELETE FROM users WHERE id=?", (id,))
-        conn.commit()
-    return jsonify({"success": True})
-
-
-# =====================================================
-# API FOR MAP / DISASTERS
-# =====================================================
 
 @app.route("/api/disasters")
 def api_disasters():
     with get_db() as conn:
         rows = conn.execute("SELECT * FROM alerts ORDER BY id DESC").fetchall()
-    return jsonify([dict(r) for r in rows])
-
-
-@app.route("/get_disasters")
-def get_disasters():
-    return api_disasters()
+    return jsonify([dict(row) for row in rows])
 
 
 # =====================================================
@@ -510,7 +476,7 @@ def emergency():
 
 
 # =====================================================
-# MAIN
+# START
 # =====================================================
 
 if __name__ == "__main__":
