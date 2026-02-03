@@ -7,6 +7,9 @@ from email.mime.text import MIMEText
 from werkzeug.security import generate_password_hash, check_password_hash
 from twilio.rest import Client
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+
 
 # =====================================================
 # INIT
@@ -58,6 +61,24 @@ def init_db():
             location TEXT,
             datetime TEXT,
             message TEXT
+        )
+        """)
+
+        c.execute("""
+        CREATE TABLE IF NOT EXISTS missing_persons(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            age INTEGER,
+            gender TEXT,
+            location TEXT,
+            date_seen TEXT,
+            description TEXT,
+            notes TEXT,
+            photo_url TEXT,
+            reporter_name TEXT,
+            reporter_contact TEXT,
+            reporter_relation TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         """)
 
@@ -118,6 +139,59 @@ def send_alert_sms(to_phone, location, msg_text):
         pass
 
 
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+
+
+@app.route("/missing")
+def missing():
+
+    with get_db() as conn:
+        persons = conn.execute(
+            "SELECT * FROM missing_persons ORDER BY created_at DESC"
+        ).fetchall()
+
+    return render_template("missing.html", persons=persons)
+
+@app.route("/report-missing", methods=["POST"])
+def report_missing():
+
+    photo = request.files.get("photo")
+    photo_url = None
+
+    # upload to cloudinary
+    if photo and photo.filename:
+        result = cloudinary.uploader.upload(photo)
+        photo_url = result["secure_url"]
+
+    with get_db() as conn:
+        conn.execute("""
+            INSERT INTO missing_persons
+            (name, age, gender, location, date_seen, description, notes,
+             photo_url, reporter_name, reporter_contact, reporter_relation)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            request.form["name"],
+            request.form["age"],
+            request.form["gender"],
+            request.form["location"],
+            request.form["date"],
+            request.form["description"],
+            request.form.get("notes"),
+            photo_url,
+            request.form["reporter_name"],
+            request.form["reporter_contact"],
+            request.form["reporter_relation"]
+        ))
+
+        conn.commit()
+
+    flash("Missing person reported successfully", "success")
+    return redirect(url_for("missing"))
+
 # =====================================================
 # ROUTES
 # =====================================================
@@ -148,6 +222,7 @@ def register():
         return redirect(url_for("register"))
 
     return render_template("register.html")
+
 
 
 # =====================================================
@@ -512,11 +587,6 @@ def donation():
 @app.route("/firstaid")
 def firstaid():
     return render_template("firstaid.html")
-
-
-@app.route("/missing")
-def missing():
-    return render_template("missing.html")
 
 
 @app.route("/protection")

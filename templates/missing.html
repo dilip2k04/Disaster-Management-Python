@@ -3,83 +3,205 @@
 
 <style>
 :root{
- --primary:#2c3e50;
- --accent:#3498db;
- --secondary:#e74c3c;
- --success:#27ae60;
+ --primary:#1e293b;
+ --accent:#2563eb;
+ --secondary:#dc2626;
+ --success:#16a34a;
+ --bg:#f1f5f9;
 }
 
-.container{max-width:1200px;margin:auto;padding:30px 20px}
-.tabs{display:flex;margin-bottom:25px;border-bottom:2px solid #ddd}
-.tab{padding:12px 25px;cursor:pointer;font-weight:600}
-.tab.active{border-bottom:3px solid var(--accent);color:var(--accent)}
+body{
+ background:var(--bg);
+}
+
+/* container */
+.container{
+ max-width:1250px;
+ margin:auto;
+ padding:40px 20px;
+}
+
+/* heading */
+.page-title{
+ font-size:28px;
+ font-weight:700;
+ margin-bottom:25px;
+ color:var(--primary);
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+/* tabs */
+.tabs{
+ display:flex;
+ gap:15px;
+ margin-bottom:30px;
+}
+
+.tab{
+ padding:10px 22px;
+ background:#e2e8f0;
+ border-radius:8px;
+ font-weight:600;
+ cursor:pointer;
+ transition:.25s;
+}
+
+.tab.active{
+ background:var(--accent);
+ color:white;
+}
 
 .tab-content{display:none}
 .tab-content.active{display:block}
 
-.search-section{
- background:white;
- padding:25px;
- border-radius:10px;
- box-shadow:0 6px 18px rgba(0,0,0,.06);
- margin-bottom:30px;
-}
-
+/* cards grid */
 .missing-persons-grid{
  display:grid;
- grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+ grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
  gap:25px;
 }
 
+/* card */
 .person-card{
  background:white;
- border-radius:12px;
+ border-radius:14px;
  overflow:hidden;
- box-shadow:0 6px 18px rgba(0,0,0,.07);
- transition:.3s;
+ box-shadow:0 8px 20px rgba(0,0,0,.08);
+ transition:.25s;
+ display:flex;
+ flex-direction:column;
 }
-.person-card:hover{transform:translateY(-4px)}
 
+.person-card:hover{
+ transform:translateY(-6px);
+ box-shadow:0 12px 25px rgba(0,0,0,.12);
+}
+
+/* image */
 .person-image{
  height:240px;
  background-size:cover;
  background-position:center;
+ position:relative;
 }
 
-.person-details{padding:16px}
+/* top badges */
+.badges{
+ position:absolute;
+ top:10px;
+ left:10px;
+ display:flex;
+ gap:6px;
+}
 
+.badge{
+ background:rgba(0,0,0,.75);
+ color:white;
+ font-size:12px;
+ padding:4px 8px;
+ border-radius:6px;
+}
+
+/* details */
+.person-details{
+ padding:18px;
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+
+.person-details h4{
+ font-size:18px;
+ font-weight:700;
+}
+
+.info{
+ font-size:14px;
+ color:#475569;
+}
+
+.section-label{
+ font-weight:600;
+ color:#334155;
+ font-size:13px;
+ margin-top:6px;
+}
+
+.contact{
+ margin-top:8px;
+ background:#e0f2fe;
+ padding:8px;
+ border-radius:6px;
+ font-size:13px;
+ color:#0369a1;
+}
+
+/* report form */
+.search-section{
+ background:white;
+ padding:28px;
+ border-radius:14px;
+ box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+form{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+ gap:14px;
+}
+
+textarea{
+ grid-column:1/-1;
+}
+
+input,select,textarea{
+ padding:10px;
+ border-radius:8px;
+ border:1px solid #e2e8f0;
+ font-size:14px;
+}
+
+/* buttons */
 .btn{
  background:var(--accent);
  color:white;
  border:none;
- padding:10px 18px;
- border-radius:6px;
+ padding:11px 20px;
+ border-radius:8px;
  font-weight:600;
+ cursor:pointer;
 }
-.btn-secondary{background:var(--secondary)}
 
-input,textarea,select{
- width:100%;
- padding:10px;
- border-radius:6px;
- border:1px solid #ddd;
- margin-bottom:12px;
+.btn-secondary{
+ background:var(--secondary);
 }
+
+.submit-btn{
+ grid-column:1/-1;
+}
+
+.flash{
+ background:#dcfce7;
+ color:#065f46;
+ padding:10px;
+ border-radius:8px;
+ margin-bottom:20px;
+}
+
 </style>
 
 
 <div class="container">
 
-<h2 style="margin-bottom:20px">🔎 Missing Persons Registry</h2>
+<h2 class="page-title">🔎 Missing Persons Registry</h2>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<div style="background:#d1fae5;color:#065f46;padding:10px;border-radius:6px;margin-bottom:15px">
-  {{ messages[0] }}
-</div>
+<div class="flash">{{ messages[0] }}</div>
 {% endif %}
 {% endwith %}
-
 
 <div class="tabs">
   <div class="tab active" data-tab="list">Search Missing</div>
@@ -90,8 +212,6 @@ input,textarea,select{
 <!-- ================= LIST ================= -->
 <div class="tab-content active" id="list">
 
-<h3>Recently Reported</h3>
-
 <div class="missing-persons-grid">
 
 {% for p in persons %}
@@ -99,19 +219,34 @@ input,textarea,select{
 
   <div class="person-image"
        style="background-image:url('{{ p.photo_url or url_for('static', filename='no-image.png') }}')">
+
+      <div class="badges">
+        <span class="badge">{{ p.age }} yrs</span>
+        <span class="badge">{{ p.gender }}</span>
+      </div>
   </div>
 
   <div class="person-details">
+
       <h4>{{ p.name }}</h4>
-      <small>{{ p.age }} yrs • {{ p.gender }}</small>
 
-      <p><b>Last seen:</b> {{ p.location }} ({{ p.date_seen }})</p>
+      <div class="info"><b>Last Seen:</b> {{ p.location }}</div>
+      <div class="info"><b>Date:</b> {{ p.date_seen }}</div>
 
-      <p style="font-size:14px">{{ p.description }}</p>
+      <div class="section-label">Description</div>
+      <div class="info">{{ p.description }}</div>
 
-      <p style="font-size:12px;color:#666">
-        Contact: {{ p.reporter_contact }}
-      </p>
+      {% if p.notes %}
+      <div class="section-label">Additional Notes</div>
+      <div class="info">{{ p.notes }}</div>
+      {% endif %}
+
+      <div class="contact">
+        📞 {{ p.reporter_name }} | {{ p.reporter_contact }}
+        <br>
+        Relation: {{ p.reporter_relation }}
+      </div>
+
   </div>
 
 </div>
@@ -129,14 +264,13 @@ input,textarea,select{
 
 <div class="search-section">
 
-<h3>Report a Missing Person</h3>
+<h3 style="margin-bottom:15px">Report a Missing Person</h3>
 
 <form method="POST"
       action="/report-missing"
       enctype="multipart/form-data">
 
 <input name="name" placeholder="Full Name" required>
-
 <input name="age" type="number" placeholder="Age" required>
 
 <select name="gender" required>
@@ -147,7 +281,6 @@ input,textarea,select{
 </select>
 
 <input name="location" placeholder="Last Known Location" required>
-
 <input name="date" type="date" required>
 
 <textarea name="description" placeholder="Physical Description" required></textarea>
@@ -157,12 +290,10 @@ input,textarea,select{
 <input type="file" name="photo" accept="image/*">
 
 <input name="reporter_name" placeholder="Your Name" required>
-
 <input name="reporter_contact" placeholder="Phone or Email" required>
-
 <input name="reporter_relation" placeholder="Relationship" required>
 
-<button class="btn btn-secondary">Submit Report</button>
+<button class="btn btn-secondary submit-btn">Submit Report</button>
 
 </form>
 
