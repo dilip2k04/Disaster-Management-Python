@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect Your Home - Disaster Preparedness</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --primary-dark: #2c5282;
+            --danger: #e53e3e;
+            --warning: #dd6b20;
+            --safe: #38a169;
+            --light: #f7fafc;
+            --dark: #1a202c;
+            --gray: #718096;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-content p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Disaster Selection */
+        .disaster-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .disaster-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .disaster-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .disaster-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .disaster-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Protection Tips */
+        .protection-tips {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin: 3rem 0;
+        }
+
+        .protection-tips h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .tip-category {
+            margin-bottom: 2.5rem;
+        }
+
+        .tip-category h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tip-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+
+        .tip-content h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-content p {
+            color: var(--dark);
+        }
+
+        /* Emergency Kit */
+        .emergency-kit {
+            background: #f0f9ff;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid #bee3f8;
+        }
+
+        .kit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .kit-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .kit-item i {
+            color: var(--primary);
+            margin-top: 0.2rem;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin: 3rem 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-top: 0.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .disaster-selection {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Protect Your Home</h1>
+            <p>Disaster-specific home protection tips to keep your family safe</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="disaster-selection">
+            <div class="disaster-card" onclick="showTips('earthquake')">
+                <i class="fas fa-house-damage"></i>
+                <h3>Earthquakes</h3>
+                <p>Seismic protection</p>
+            </div>
+            
+            <div class="disaster-card" onclick="showTips('flood')">
+                <i class="fas fa-water"></i>
+                <h3>Floods</h3>
+                <p>Water damage prevention</p>
+            </div>
+            
+            <div class="disaster-card" onclick="showTips('fire')">
+                <i class="fas fa-fire"></i>
+                <h3>Wildfires</h3>
+                <p>Fire safety measures</p>
+            </div>
+            
+            <div class="disaster-card" onclick="showTips('hurricane')">
+                <i class="fas fa-wind"></i>
+                <h3>Hurricanes</h3>
+                <p>Storm preparation</p>
+            </div>
+            
+            <div class="disaster-card" onclick="showTips('tornado')">
+                <i class="fas fa-tornado"></i>
+                <h3>Tornadoes</h3>
+                <p>Wind protection</p>
+            </div>
+        </section>
+
+        <section class="protection-tips" id="protectionTips">
+            <h2>Earthquake Protection Tips</h2>
+            
+            <div class="tip-category">
+                <h3>Structural Safety</h3>
+                
+                <div class="tip-item">
+                    <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="tip-content">
+                        <h4>Secure Heavy Furniture</h4>
+                        <p>Anchor bookcases, cabinets, and appliances to wall studs</p>
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="tip-content">
+                        <h4>Brace Overhead Fixtures</h4>
+                        <p>Secure light fixtures, ceiling fans, and other hanging items</p>
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="tip-content">
+                        <h4>Install Latches on Cabinets</h4>
+                        <p>Prevent contents from spilling out during shaking</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tip-category">
+                <h3>Emergency Preparedness</h3>
+                
+                <div class="tip-item">
+                    <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="tip-content">
+                        <h4>Identify Safe Spots</h4>
+                        <p>Know where to take cover in each room (under sturdy furniture, against interior walls)</p>
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="tip-content">
+                        <h4>Practice Drills</h4>
+                        <p>Conduct regular earthquake drills with all household members</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="emergency-kit">
+            <h2>Essential Home Protection Kit</h2>
+            <p>Every home should have these basic emergency supplies:</p>
+            
+            <div class="kit-grid">
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Fire extinguisher (ABC type)</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Emergency water supply (1 gallon per person per day)</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>First aid kit</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Flashlights with extra batteries</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Utility shut-off tool</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Emergency radio (battery or hand-crank)</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Non-perishable food (3-day supply)</div>
+                </div>
+                <div class="kit-item">
+                    <i class="fas fa-check"></i>
+                    <div>Heavy-duty gloves</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="checklist">
+            <h2>Home Protection Checklist</h2>
+            <p>Mark items as you complete them:</p>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="item1">
+                <label for="item1">Created family emergency plan</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item2">
+                <label for="item2">Identified safe rooms for different disasters</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item3">
+                <label for="item3">Secured heavy furniture to walls</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item4">
+                <label for="item4">Learned how to shut off utilities</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item5">
+                <label for="item5">Prepared emergency supply kits</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item6">
+                <label for="item6">Copied important documents</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="item7">
+                <label for="item7">Installed smoke and CO detectors</label>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: var(--dark); color: white; padding: 3rem 1rem; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h3 style="margin-bottom: 1.5rem;">More Disaster Preparedness Resources</h3>
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <a href="first-aid.html" style="color: white; text-decoration: none;">First Aid</a>
+                <a href="evacuation.html" style="color: white; text-decoration: none;">Evacuation Routes</a>
+                <a href="emergency-contacts.html" style="color: white; text-decoration: none;">Emergency Contacts</a>
+                <a href="about.html" style="color: white; text-decoration: none;">About</a>
+            </div>
+            <p style="opacity: 0.8; margin-bottom: 1rem;">© 2025 Disaster Preparedness Initiative. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showTips(disasterType) {
+            const tipsSection = document.getElementById('protectionTips');
+            let title = '';
+            let tipsHTML = '';
+            
+            switch(disasterType) {
+                case 'earthquake':
+                    title = 'Earthquake Protection Tips';
+                    tipsHTML = `
+                        <h2>${title}</h2>
+                        <div class="tip-category">
+                            <h3>Structural Safety</h3>
+                            <div class="tip-item">
+                                <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="tip-content">
+                                    <h4>Secure Heavy Furniture</h4>
+                                    <p>Anchor bookcases, cabinets, and appliances to wall studs</p>
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="tip-content">
+                                    <h4>Brace Overhead Fixtures</h4>
+                                    <p>Secure light fixtures, ceiling fans, and other hanging items</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tip-category">
+                            <h3>Emergency Preparedness</h3>
+                            <div class="tip-item">
+                                <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="tip-content">
+                                    <h4>Identify Safe Spots</h4>
+                                    <p>Know where to take cover in each room</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
+                    
+                case 'flood':
+                    title = 'Flood Protection Tips';
+                    tipsHTML = `
+                        <h2>${title}</h2>
+                        <div class="tip-category">
+                            <h3>Prevention</h3>
+                            <div class="tip-item">
+                                <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="tip-content">
+                                    <h4>Elevate Utilities</h4>
+                                    <p>Raise electrical panels, sockets, and appliances above potential flood levels</p>
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="tip-content">
+                                    <h4>Install Backflow Valves</h4>
+                                    <p>Prevent sewage backup into your home</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
+                    
+                // Add cases for other disaster types
+                default:
+                    title = 'Home Protection Tips';
+            }
+            
+            tipsSection.innerHTML = tipsHTML;
+        }
+    </script>
+</body>
+</html>

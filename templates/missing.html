@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+:root{
+ --primary:#2c3e50;
+ --accent:#3498db;
+ --secondary:#e74c3c;
+ --success:#27ae60;
+}
+
+.container{max-width:1200px;margin:auto;padding:30px 20px}
+.tabs{display:flex;margin-bottom:25px;border-bottom:2px solid #ddd}
+.tab{padding:12px 25px;cursor:pointer;font-weight:600}
+.tab.active{border-bottom:3px solid var(--accent);color:var(--accent)}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.search-section{
+ background:white;
+ padding:25px;
+ border-radius:10px;
+ box-shadow:0 6px 18px rgba(0,0,0,.06);
+ margin-bottom:30px;
+}
+
+.missing-persons-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+ gap:25px;
+}
+
+.person-card{
+ background:white;
+ border-radius:12px;
+ overflow:hidden;
+ box-shadow:0 6px 18px rgba(0,0,0,.07);
+ transition:.3s;
+}
+.person-card:hover{transform:translateY(-4px)}
+
+.person-image{
+ height:240px;
+ background-size:cover;
+ background-position:center;
+}
+
+.person-details{padding:16px}
+
+.btn{
+ background:var(--accent);
+ color:white;
+ border:none;
+ padding:10px 18px;
+ border-radius:6px;
+ font-weight:600;
+}
+.btn-secondary{background:var(--secondary)}
+
+input,textarea,select{
+ width:100%;
+ padding:10px;
+ border-radius:6px;
+ border:1px solid #ddd;
+ margin-bottom:12px;
+}
+</style>
+
+
+<div class="container">
+
+<h2 style="margin-bottom:20px">🔎 Missing Persons Registry</h2>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div style="background:#d1fae5;color:#065f46;padding:10px;border-radius:6px;margin-bottom:15px">
+  {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<div class="tabs">
+  <div class="tab active" data-tab="list">Search Missing</div>
+  <div class="tab" data-tab="report">Report Missing</div>
+</div>
+
+
+<!-- ================= LIST ================= -->
+<div class="tab-content active" id="list">
+
+<h3>Recently Reported</h3>
+
+<div class="missing-persons-grid">
+
+{% for p in persons %}
+<div class="person-card">
+
+  <div class="person-image"
+       style="background-image:url('{{ p.photo_url or url_for('static', filename='no-image.png') }}')">
+  </div>
+
+  <div class="person-details">
+      <h4>{{ p.name }}</h4>
+      <small>{{ p.age }} yrs • {{ p.gender }}</small>
+
+      <p><b>Last seen:</b> {{ p.location }} ({{ p.date_seen }})</p>
+
+      <p style="font-size:14px">{{ p.description }}</p>
+
+      <p style="font-size:12px;color:#666">
+        Contact: {{ p.reporter_contact }}
+      </p>
+  </div>
+
+</div>
+{% else %}
+<p>No reports yet.</p>
+{% endfor %}
+
+</div>
+</div>
+
+
+
+<!-- ================= REPORT FORM ================= -->
+<div class="tab-content" id="report">
+
+<div class="search-section">
+
+<h3>Report a Missing Person</h3>
+
+<form method="POST"
+      action="/report-missing"
+      enctype="multipart/form-data">
+
+<input name="name" placeholder="Full Name" required>
+
+<input name="age" type="number" placeholder="Age" required>
+
+<select name="gender" required>
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<input name="location" placeholder="Last Known Location" required>
+
+<input name="date" type="date" required>
+
+<textarea name="description" placeholder="Physical Description" required></textarea>
+
+<textarea name="notes" placeholder="Additional Notes"></textarea>
+
+<input type="file" name="photo" accept="image/*">
+
+<input name="reporter_name" placeholder="Your Name" required>
+
+<input name="reporter_contact" placeholder="Phone or Email" required>
+
+<input name="reporter_relation" placeholder="Relationship" required>
+
+<button class="btn btn-secondary">Submit Report</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+
+<script>
+const tabs=document.querySelectorAll('.tab');
+const contents=document.querySelectorAll('.tab-content');
+
+tabs.forEach(t=>{
+ t.onclick=()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  contents.forEach(c=>c.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+ }
+});
+</script>
+
+{% endblock %}

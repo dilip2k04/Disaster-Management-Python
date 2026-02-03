@@ -1,0 +1,14 @@
+# virtual env
+myenv/
+venv/
+env/
+
+# python
+__pycache__/
+*.pyc
+
+# database
+*.db
+
+# secrets
+.env

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | Safety Bridge</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #ef4444;
+      --secondary: #2563eb;
+      --accent: #22c55e;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --glass: rgba(255,255,255,0.15);
+      --blur: blur(14px);
+      --radius: 18px;
+      --shadow: 0 20px 40px rgba(0,0,0,.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      color: var(--dark);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ================= HEADER ================= */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: var(--blur);
+      background: linear-gradient(135deg, rgba(239,68,68,0.85), rgba(37,99,235,0.85));
+      box-shadow: var(--shadow);
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: white;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    nav a { font-weight: 500; color: white; opacity: .9; }
+    nav a:hover { opacity: 1; }
+
+    /* ================= HERO ================= */
+    .hero {
+      min-height: 60vh;
+      padding-top: 120px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.75)),
+                  url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee') center/cover;
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    .hero h1 { font-size: 2.8rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; opacity: .95; }
+
+    /* ================= SECTIONS ================= */
+    section {
+      padding: 5rem 1.5rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 3rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .glass-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--secondary);
+    }
+
+    .glass-card p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: .95;
+    }
+
+    /* ================= FEATURES ================= */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .grid-item {
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border-radius: var(--radius);
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+      transition: transform .3s;
+    }
+
+    .grid-item:hover { transform: translateY(-8px); }
+
+    .grid-item i {
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .grid-item h3 {
+      margin-bottom: .6rem;
+      font-size: 1.3rem;
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+      position: relative;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: var(--blur);
+      color: white;
+      padding: 4.5rem 1.5rem 3rem;
+      border-top-left-radius: 60px;
+      border-top-right-radius: 60px;
+    }
+
+    footer::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, rgba(15,23,42,0.85) 61%);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+      text-align: left;
+    }
+
+    .footer-section {
+      flex: 1 1 220px;
+    }
+
+    .footer-section h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: .6rem;
+    }
+
+    .footer-section ul li a {
+      color: white;
+      opacity: 0.9;
+      transition: 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+      color: var(--primary);
+      opacity: 1;
+    }
+
+    .footer-section p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-bottom: .5rem;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media(max-width:768px){
+      nav ul { display: none; }
+      .hero h1 { font-size: 2.2rem; }
+      .footer-content { text-align: center; flex-direction: column; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <div class="logo"><i class="fas fa-shield-alt"></i> Safety Bridge</div>
+    <nav>
+      <ul>
+        <li><a href="{{url_for('home')}}">Home</a></li>
+        <li><a href="{{url_for('about')}}">About</a></li>
+        <li><a href="{{url_for('register')}}">Register</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-shield-heart" style="color:#fca5a5"></i> About Safety Bridge</h1>
+    <p>Strengthening communities through preparedness, technology, and rapid response</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <div class="glass-card">
+      <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+      <p>
+        Safety Bridge is a disaster preparedness and response platform designed to protect lives
+        and reduce damage by delivering real-time alerts, situational awareness, and coordinated
+        emergency support before, during, and after disasters.
+      </p>
+    </div>
+
+    <div class="glass-card">
+      <h2><i class="fas fa-people-group"></i> Community First</h2>
+      <p>
+        We believe disaster resilience starts at the community level. By empowering citizens,
+        responders, and authorities with timely information and tools, Safety Bridge enables faster
+        response, better coordination, and safer recovery.
+      </p>
+    </div>
+
+    <h2 class="section-title">
+      <i class="fas fa-bolt" style="color:#22c55e;margin-right:10px"></i>
+      What Safety Bridge Offers
+    </h2>
+
+    <div class="grid">
+      <div class="grid-item">
+        <i class="fas fa-bell"></i>
+        <h3>Early Warning Alerts</h3>
+        <p>Instant notifications for floods, earthquakes, cyclones, and emergencies.</p>
+      </div>
+
+      <div class="grid-item">
+        <i class="fas fa-map-marked-alt"></i>
+        <h3>Live Disaster Mapping</h3>
+        <p>Interactive maps showing affected areas, shelters, and safe zones.</p>
+      </div>
+
+      <div class="grid-item">
+        <i class="fas fa-hands-helping"></i>
+        <h3>Coordinated Response</h3>
+        <p>Connecting volunteers, responders, and resources efficiently.</p>
+      </div>
+
+      <div class="grid-item">
+        <i class="fas fa-heartbeat"></i>
+        <h3>Recovery & Support</h3>
+        <p>Post-disaster guidance, assistance, and long-term resilience planning.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-content">
+    <!-- Quick Links -->
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="{{url_for('home')}}">Home</a></li>
+        <li><a href="{{url_for('about')}}">About</a></li>
+        <li><a href="{{url_for('register')}}">Register</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Our Team -->
+    <div class="footer-section">
+      <h3>Contact Our Team</h3>
+      <p><i class="fas fa-envelope"></i> support@safetybridge.org</p>
+      <p><i class="fas fa-envelope"></i> info@safetybridge.org</p>
+      <p><i class="fas fa-envelope"></i> volunteer@safetybridge.org</p>
+    </div>
+  </div>
+
+  <p style="text-align:center; margin-top:2rem; font-size:0.9rem; opacity:0.8;">
+    &copy; Safety Bridge — Disaster Preparedness Platform
+  </p>
+</footer>
+
+</body>
+</html>

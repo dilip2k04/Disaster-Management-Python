@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Us Rebuild - Disaster Relief Fund</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(52, 152, 219, 0.8) 100%), url('https://www.pexels.com/photo/buildings-covered-with-the-water-14823611/') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: #f5f7fa;
+            transform: skewY(-3deg);
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .donation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .donation-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .donation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .card-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .amount-option {
+            background: var(--light);
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-option:hover, .amount-option.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .custom-amount {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: border 0.3s ease;
+        }
+        
+        .custom-amount:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        .selected-amount-display {
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--success);
+            display: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .impact-meter {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .meter-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .meter-container {
+            height: 30px;
+            background: var(--light);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .meter-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 15px;
+            width: 65%;
+            transition: width 1s ease;
+        }
+        
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .testimonials {
+            background: var(--primary);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .testimonial-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-title {
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            line-height: 1;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .payment-methods i {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+        }
+        
+        .payment-methods i:hover {
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+            position: relative;
+        }
+        
+        @keyframes modalFadeIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .modal-body p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .badge {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 3rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            animation: badgePulse 2s infinite;
+        }
+        
+        @keyframes badgePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn:hover {
+            background: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .amount-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>Help Rebuild Lives</h1>
+        <p>Your donation today can provide immediate relief to families affected by natural disasters. Every contribution makes a difference.</p>
+    </section>
+    
+    <div class="container">
+        <div class="donation-cards">
+            <div class="donation-card">
+                <div class="card-header">
+                    <i class="fas fa-home"></i>
+                    <h2>Shelter Support</h2>
+                </div>
+                <div class="card-body">
+                    <p>Provide temporary housing for families who have lost their homes in the disaster.</p>
+                    <div class="selected-amount-display" id="shelter-amount-display"></div>
+                    <div class="amount-options">
+                        <div class="amount-option" data-amount="25">$25</div>
+                        <div class="amount-option" data-amount="50">$50</div>
+                        <div class="amount-option" data-amount="100">$100</div>
+                        <div class="amount-option" data-amount="250">$250</div>
+                        <div class="amount-option" data-amount="500">$500</div>
+                        <div class="amount-option selected" data-amount="1000">$1000</div>
+                    </div>
+                    <input type="text" class="custom-amount" id="shelter-custom-amount" placeholder="Or enter custom amount">
+                    <button class="btn" id="shelter-donate-btn">Donate Now</button>
+                </div>
+            </div>
+            
+            <div class="donation-card">
+                <div class="card-header">
+                    <i class="fas fa-utensils"></i>
+                    <h2>Food Supplies</h2>
+                </div>
+                <div class="card-body">
+                    <p>Help deliver emergency food packages to affected communities.</p>
+                    <div class="selected-amount-display" id="food-amount-display"></div>
+                    <div class="amount-options">
+                        <div class="amount-option" data-amount="15">$15</div>
+                        <div class="amount-option" data-amount="30">$30</div>
+                        <div class="amount-option selected" data-amount="60">$60</div>
+                        <div class="amount-option" data-amount="120">$120</div>
+                        <div class="amount-option" data-amount="250">$250</div>
+                        <div class="amount-option" data-amount="500">$500</div>
+                    </div>
+                    <input type="text" class="custom-amount" id="food-custom-amount" placeholder="Or enter custom amount">
+                    <button class="btn" id="food-donate-btn">Donate Now</button>
+                </div>
+            </div>
+            
+            <div class="donation-card">
+                <div class="card-header">
+                    <i class="fas fa-medkit"></i>
+                    <h2>Medical Aid</h2>
+                </div>
+                <div class="card-body">
+                    <p>Support mobile medical units providing critical care in disaster zones.</p>
+                    <div class="selected-amount-display" id="medical-amount-display"></div>
+                    <div class="amount-options">
+                        <div class="amount-option" data-amount="35">$35</div>
+                        <div class="amount-option" data-amount="75">$75</div>
+                        <div class="amount-option" data-amount="150">$150</div>
+                        <div class="amount-option selected" data-amount="300">$300</div>
+                        <div class="amount-option" data-amount="600">$600</div>
+                        <div class="amount-option" data-amount="1200">$1200</div>
+                    </div>
+                    <input type="text" class="custom-amount" id="medical-custom-amount" placeholder="Or enter custom amount">
+                    <button class="btn" id="medical-donate-btn">Donate Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="impact-meter">
+            <h3 class="meter-title">Our Collective Impact</h3>
+            <div class="meter-container">
+                <div class="meter-progress"></div>
+            </div>
+            <div class="meter-labels">
+                <span>$0</span>
+                <span>$250,000</span>
+                <span>$500,000</span>
+            </div>
+            
+            <div class="impact-stats">
+                <div class="stat-item">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-text">Families Helped</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">120</div>
+                    <div class="stat-text">Communities Reached</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-text">Emergency Response</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-text">Funds to Programs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section class="testimonials">
+        <div class="testimonial-container">
+            <h3 class="testimonial-title">Stories of Hope</h3>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">After losing everything in the flood, the emergency shelter provided by your organization gave my family a safe place to stay while we rebuilt our lives.</p>
+                    <div class="testimonial-author">- Maria G., Disaster Survivor</div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">The food packages arrived just when we needed them most. Thank you for remembering our community when others had forgotten.</p>
+                    <div class="testimonial-author">- James T., Community Leader</div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">As a volunteer, I've seen firsthand how every dollar donated transforms into real help for people in their darkest hours.</p>
+                    <div class="testimonial-author">- Sarah K., Volunteer</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Donation Confirmation Modal -->
+    <div class="modal" id="donation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Thank You For Your Donation!</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="badge">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <p id="donation-message">Your generous donation of <strong>$<span id="donation-amount">0</span></strong> will help provide <span id="donation-impact">immediate relief</span> to disaster victims.</p>
+                <p>You've earned the <strong>First Responder</strong> badge for your quick action to help those in need.</p>
+                <button class="modal-btn" id="share-btn">Share Your Contribution</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Disaster Relief Network is a 501(c)(3) nonprofit organization. All donations are tax-deductible.</p>
+        <p>Disaster Relief Network. All rights reserved.</p>
+        <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-cc-amex"></i>
+            <i class="fab fa-cc-discover"></i>
+            <i class="fab fa-paypal"></i>
+        </div>
+    </footer>
+    
+    <script>
+        // Track selected amounts for each card
+        const selectedAmounts = {
+            shelter: 1000,
+            food: 60,
+            medical: 300
+        };
+        
+        // Initialize amount displays
+        document.getElementById('shelter-amount-display').textContent = `Selected: $${selectedAmounts.shelter}`;
+        document.getElementById('shelter-amount-display').style.display = 'block';
+        
+        document.getElementById('food-amount-display').textContent = `Selected: $${selectedAmounts.food}`;
+        document.getElementById('food-amount-display').style.display = 'block';
+        
+        document.getElementById('medical-amount-display').textContent = `Selected: $${selectedAmounts.medical}`;
+        document.getElementById('medical-amount-display').style.display = 'block';
+        
+        // Amount option selection
+        document.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Get the card type (shelter, food, or medical)
+                const cardType = this.closest('.donation-card').querySelector('h2').textContent.toLowerCase().replace(' ', '-');
+                
+                // Remove selected class from siblings
+                this.parentNode.querySelectorAll('.amount-option').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Add to clicked element
+                this.classList.add('selected');
+                
+                // Update selected amount
+                const amount = this.getAttribute('data-amount');
+                selectedAmounts[cardType] = amount;
+                
+                // Update display
+                const displayElement = document.getElementById(`${cardType}-amount-display`);
+                displayElement.textContent = `Selected: $${amount}`;
+                displayElement.style.display = 'block';
+                
+                // Clear custom amount field
+                document.getElementById(`${cardType}-custom-amount`).value = '';
+            });
+        });
+        
+        // Custom amount handling
+        document.querySelectorAll('.custom-amount').forEach(input => {
+            input.addEventListener('input', function() {
+                const cardType = this.closest('.donation-card').querySelector('h2').textContent.toLowerCase().replace(' ', '-');
+                const amount = this.value.trim();
+                
+                if (amount) {
+                    // Remove selected class from all amount options
+                    this.closest('.card-body').querySelectorAll('.amount-option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Update selected amount
+                    selectedAmounts[cardType] = amount;
+                    
+                    // Update display
+                    const displayElement = document.getElementById(`${cardType}-amount-display`);
+                    displayElement.textContent = `Selected: $${amount}`;
+                    displayElement.style.display = 'block';
+                }
+            });
+        });
+        
+        // Donation button click handlers
+        document.getElementById('shelter-donate-btn').addEventListener('click', () => handleDonation('shelter'));
+        document.getElementById('food-donate-btn').addEventListener('click', () => handleDonation('food'));
+        document.getElementById('medical-donate-btn').addEventListener('click', () => handleDonation('medical'));
+        
+        // Handle donation submission
+        function handleDonation(type) {
+            const amount = selectedAmounts[type];
+            
+            if (!amount || amount <= 0) {
+                alert('Please select or enter a valid donation amount.');
+                return;
+            }
+            
+            // Set the donation details in the modal
+            document.getElementById('donation-amount').textContent = amount;
+            
+            // Set impact message based on type and amount
+            let impactMessage = '';
+            if (type === 'shelter') {
+                impactMessage = `temporary housing for ${Math.floor(amount/50)} families`;
+            } else if (type === 'food') {
+                impactMessage = `food packages for ${Math.floor(amount/15)} people for a week`;
+            } else {
+                impactMessage = `medical care for ${Math.floor(amount/75)} patients`;
+            }
+            
+            document.getElementById('donation-impact').textContent = impactMessage;
+            
+            // Show the modal
+            document.getElementById('donation-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // In a real app, you would submit the donation to your server here
+            console.log(`Donation submitted: $${amount} for ${type}`);
+        }
+        
+        // Close modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('donation-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Share button
+        document.getElementById('share-btn').addEventListener('click', () => {
+            alert('In a real app, this would open social sharing options.');
+        });
+        
+        // Animate progress meter on scroll
+        window.addEventListener('scroll', function() {
+            const meter = document.querySelector('.meter-progress');
+            const position = meter.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            
+            if(position < screenPosition) {
+                meter.style.width = '65%';
+            }
+        });
+    </script>
+</body>
+</html>

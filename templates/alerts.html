@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Alerts & Preparedness</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root{
+            --primary:#2563eb;
+            --danger:#dc2626;
+            --warning:#f59e0b;
+            --safe:#10b981;
+            --dark:#1e293b;
+            --light:#f8fafc;
+        }
+
+        body{
+            margin:0;
+            font-family:Segoe UI, Arial;
+            background:#f1f5f9;
+        }
+
+        header{
+            background:linear-gradient(135deg,var(--primary),#1e40af);
+            color:white;
+            padding:2rem;
+            text-align:center;
+        }
+
+        h1{margin:0 0 8px}
+
+        .last-updated{
+            margin-top:10px;
+            background:rgba(255,255,255,.2);
+            display:inline-block;
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+            padding:20px;
+        }
+
+        .section-title{
+            font-size:22px;
+            margin-bottom:20px;
+        }
+
+        /* ===== ALERT CARDS ===== */
+
+        .alert-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+            gap:20px;
+        }
+
+        .alert-card{
+            background:white;
+            border-radius:10px;
+            box-shadow:0 3px 10px rgba(0,0,0,.08);
+            overflow:hidden;
+            border-left:6px solid gray;
+        }
+
+        .alert-card.high{border-color:var(--danger)}
+        .alert-card.medium{border-color:var(--warning)}
+        .alert-card.low{border-color:var(--safe)}
+
+        .alert-header{
+            padding:14px;
+            display:flex;
+            align-items:center;
+            border-bottom:1px solid #eee;
+        }
+
+        .alert-icon{
+            width:45px;
+            height:45px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#eef2ff;
+            margin-right:12px;
+        }
+
+        .alert-title{
+            font-weight:600;
+            font-size:16px;
+        }
+
+        .alert-severity{
+            font-size:12px;
+            font-weight:bold;
+            margin-top:2px;
+        }
+
+        .alert-body{
+            padding:14px;
+            font-size:14px;
+        }
+
+        .alert-detail{
+            margin-bottom:8px;
+        }
+
+        footer{
+            margin-top:40px;
+            padding:20px;
+            text-align:center;
+            background:#1e293b;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1><i class="fas fa-shield-exclamation"></i> Disaster Alerts & Preparedness</h1>
+    <p>Official Government Advisories for Public Safety</p>
+
+    <div class="last-updated">
+        Last Updated:
+        <span id="update-time"></span>
+    </div>
+</header>
+
+
+<div class="container">
+
+    <h2 class="section-title">Active Alerts</h2>
+
+    <div class="alert-grid" id="alert-grid">
+        <!-- alerts inserted here -->
+    </div>
+
+</div>
+
+
+<footer>
+    National Disaster Management Authority © 2026
+</footer>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+document.getElementById("update-time").textContent =
+    new Date().toLocaleString();
+
+
+/* ======================
+   Helpers
+====================== */
+
+function getSeverity(type){
+    const t = type.toLowerCase();
+
+    if(t.includes("flood") || t.includes("earthquake") ||
+       t.includes("fire") || t.includes("cyclone"))
+        return "high";
+
+    if(t.includes("storm") || t.includes("heat"))
+        return "medium";
+
+    return "low";
+}
+
+function getIcon(type){
+    const t = type.toLowerCase();
+
+    if(t.includes("flood")) return "fa-water";
+    if(t.includes("fire")) return "fa-fire";
+    if(t.includes("earthquake")) return "fa-mountain";
+    if(t.includes("cyclone")) return "fa-wind";
+    if(t.includes("heat")) return "fa-sun";
+
+    return "fa-exclamation-triangle";
+}
+
+
+/* ======================
+   Fetch alerts from Flask
+====================== */
+
+async function loadAlerts(){
+
+    const grid = document.getElementById("alert-grid");
+    grid.innerHTML = "Loading alerts...";
+
+    const res = await fetch("/api/disasters");
+    const alerts = await res.json();
+
+    grid.innerHTML = "";
+
+    if(alerts.length === 0){
+        grid.innerHTML = "<p>No active alerts ✅</p>";
+        return;
+    }
+
+    alerts.forEach(alert=>{
+
+        const severity = getSeverity(alert.disaster_type);
+        const icon = getIcon(alert.disaster_type);
+
+        const card = document.createElement("div");
+        card.className = `alert-card ${severity}`;
+
+        card.innerHTML = `
+            <div class="alert-header">
+                <div class="alert-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div>
+                    <div class="alert-title">${alert.disaster_type}</div>
+                    <div class="alert-severity">${severity.toUpperCase()}</div>
+                </div>
+            </div>
+
+            <div class="alert-body">
+                <div class="alert-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <b>Location:</b> ${alert.location}
+                </div>
+
+                <div class="alert-detail">
+                    <i class="fas fa-calendar"></i>
+                    <b>Date:</b> ${alert.datetime}
+                </div>
+
+                <div class="alert-detail">
+                    <i class="fas fa-info-circle"></i>
+                    ${alert.message}
+                </div>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* ======================
+   Load + auto refresh
+====================== */
+
+loadAlerts();
+setInterval(loadAlerts, 30000);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Preparedness - Build Your Survival Kit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================
+           MODERN CSS RESET & VARIABLES
+        ========================= */
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #dbeafe;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --water: #0ea5e9;
+            --health: #10b981;
+            --tools: #8b5cf6;
+            --docs: #f59e0b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-800);
+            min-height: 100vh;
+        }
+        
+        /* =========================
+           HEADER STYLES
+        ========================= */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header-content h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .header-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .header-icons i {
+            background: rgba(255, 255, 255, 0.15);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        /* =========================
+           PROGRESS SECTION
+        ========================= */
+        .progress-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-header h2 i {
+            color: var(--primary);
+        }
+        
+        #progressText {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .progress-bar {
+            height: 14px;
+            background: var(--gray-200);
+            border-radius: 7px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 7px;
+            transition: width 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, 0.2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.2) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            z-index: 1;
+            background-size: 20px 20px;
+            animation: move 2s linear infinite;
+        }
+        
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 0; }
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+        
+        /* =========================
+           CHECKLIST CONTAINER
+        ========================= */
+        .checklist-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* =========================
+           CATEGORY CARDS
+        ========================= */
+        .checklist-category {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .checklist-category:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .checklist-category.water {
+            border-top: 4px solid var(--water);
+        }
+        
+        .checklist-category.health {
+            border-top: 4px solid var(--health);
+        }
+        
+        .checklist-category.tools {
+            border-top: 4px solid var(--tools);
+        }
+        
+        .checklist-category.docs {
+            border-top: 4px solid var(--docs);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .water .category-icon {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--water);
+        }
+        
+        .health .category-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--health);
+        }
+        
+        .tools .category-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--tools);
+        }
+        
+        .docs .category-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--docs);
+        }
+        
+        .category-header h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--gray-900);
+        }
+        
+        .category-count {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: 3px;
+        }
+        
+        /* =========================
+           CHECKLIST ITEMS
+        ========================= */
+        .items {
+            flex: 1;
+            margin-bottom: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .items::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .items::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+        
+        .items::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 10px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        
+        .checklist-item:hover {
+            background: white;
+            border-color: var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .checklist-item.checked {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        
+        .checklist-item input[type="checkbox"]:checked {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .checklist-item input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .checklist-item input[type="text"] {
+            border: none;
+            background: transparent;
+            flex: 1;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            padding: 4px 0;
+            outline: none;
+            transition: var(--transition);
+        }
+        
+        .checklist-item.checked input[type="text"] {
+            color: var(--gray-500);
+            text-decoration: line-through;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 5px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        /* =========================
+           BUTTONS
+        ========================= */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+        
+        .category-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        /* =========================
+           ACTION SECTION
+        ========================= */
+        .action-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .action-info h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-info p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+        
+        /* =========================
+           FOOTER
+        ========================= */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        /* =========================
+           RESPONSIVE
+        ========================= */
+        @media (max-width: 768px) {
+            .checklist-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .header-icons {
+                gap: 1rem;
+                font-size: 1.5rem;
+            }
+            
+            .header-icons i {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .action-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-first-aid"></i> Emergency Preparedness Kit Builder</h1>
+            <p>Prepare for emergencies by building and tracking your survival kit. Check off items as you acquire them and monitor your progress.</p>
+            
+            <div class="header-icons">
+                <i class="fas fa-tint"></i>
+                <i class="fas fa-medkit"></i>
+                <i class="fas fa-tools"></i>
+                <i class="fas fa-file-alt"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Progress Section -->
+        <section class="progress-section">
+            <div class="progress-header">
+                <h2><i class="fas fa-chart-line"></i> Your Preparedness Progress</h2>
+                <span id="progressText">0% completed</span>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="progress-stats">
+                <span id="itemsTotal">0 items total</span>
+                <span id="itemsCompleted">0 items completed</span>
+            </div>
+        </section>
+
+        <!-- Checklist Categories -->
+        <div class="checklist-container" id="categories">
+            <!-- Water & Food Category -->
+            <div class="checklist-category water" data-cat="water">
+                <div class="category-header">
+                    <div class="category-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div>
+                        <h3>Water & Food</h3>
+                        <div class="category-count" id="waterCount">0 items</div>
+                    </div>
+                </div>
+                
+                <div class="items" id="waterItems"></div>
+                
+                <div class="category-footer">
+                    <button class="btn btn-primary btn-sm" onclick="addItem('water')">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="clearCategory('water')">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- First Aid Category -->
+            <div class="checklist-category health" data-cat="health">
+                <div class="category-header">
+                    <div class="category-icon">
+                        <i class="fas fa-medkit"></i>
+                    </div>
+                    <div>
+                        <h3>First Aid & Health</h3>
+                        <div class="category-count" id="healthCount">0 items</div>
+                    </div>
+                </div>
+                
+                <div class="items" id="healthItems"></div>
+                
+                <div class="category-footer">
+                    <button class="btn btn-primary btn-sm" onclick="addItem('health')">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="clearCategory('health')">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tools Category -->
+            <div class="checklist-category tools" data-cat="tools">
+                <div class="category-header">
+                    <div class="category-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div>
+                        <h3>Tools & Supplies</h3>
+                        <div class="category-count" id="toolsCount">0 items</div>
+                    </div>
+                </div>
+                
+                <div class="items" id="toolsItems"></div>
+                
+                <div class="category-footer">
+                    <button class="btn btn-primary btn-sm" onclick="addItem('tools')">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="clearCategory('tools')">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Documents Category -->
+            <div class="checklist-category docs" data-cat="docs">
+                <div class="category-header">
+                    <div class="category-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <h3>Documents & Essentials</h3>
+                        <div class="category-count" id="docsCount">0 items</div>
+                    </div>
+                </div>
+                
+                <div class="items" id="docsItems"></div>
+                
+                <div class="category-footer">
+                    <button class="btn btn-primary btn-sm" onclick="addItem('docs')">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="clearCategory('docs')">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Section -->
+        <section class="action-section">
+            <div class="action-info">
+                <h3><i class="fas fa-broom"></i> Clean Up Your Checklist</h3>
+                <p>Remove all checked items to keep your list clean and focused on what you still need.</p>
+            </div>
+            <button class="btn btn-danger" onclick="clearChecked()">
+                <i class="fas fa-check-double"></i> Clear Checked Items
+            </button>
+        </section>
+    </div>
+
+    <footer>
+        <p>Emergency Preparedness Kit Builder • Your safety is our priority • Data is saved locally in your browser</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Recommendations based on FEMA and Red Cross guidelines</p>
+    </footer>
+
+    <script>
+        /* =============================
+           ENHANCED DATA & FUNCTIONALITY
+        ============================= */
+        let data = JSON.parse(localStorage.getItem("kitData")) || {
+            water: ["Bottled water (1 gallon per person per day)", "Non-perishable canned food", "Manual can opener", "Energy bars", "Water purification tablets"],
+            health: ["First aid kit", "Prescription medications (7-day supply)", "Pain relievers", "Bandages & gauze", "Antiseptic wipes", "Thermometer"],
+            tools: ["Flashlight with extra batteries", "Multi-tool or Swiss Army knife", "Battery-powered radio", "Whistle", "Duct tape", "Work gloves"],
+            docs: ["ID copies (passport, driver's license)", "Insurance documents", "Emergency contact list", "Cash in small bills", "Map of local area"]
+        };
+
+        let checked = JSON.parse(localStorage.getItem("kitChecked")) || {};
+
+        function save() {
+            localStorage.setItem("kitData", JSON.stringify(data));
+            localStorage.setItem("kitChecked", JSON.stringify(checked));
+        }
+
+        function render() {
+            let total = 0;
+            let done = 0;
+            
+            // Render each category
+            const categories = ["water", "health", "tools", "docs"];
+            categories.forEach(cat => {
+                const itemsContainer = document.getElementById(`${cat}Items`);
+                itemsContainer.innerHTML = "";
+                
+                let categoryCount = 0;
+                
+                data[cat].forEach((text, i) => {
+                    const key = cat + "_" + i;
+                    total++;
+                    categoryCount++;
+                    
+                    if (checked[key]) done++;
+                    
+                    const itemDiv = document.createElement("div");
+                    itemDiv.className = `checklist-item ${checked[key] ? 'checked' : ''}`;
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" ${checked[key] ? 'checked' : ''} 
+                            onchange="toggle('${key}')">
+                        
+                        <input type="text" value="${text}" 
+                            onchange="edit('${cat}', ${i}, this.value)"
+                            placeholder="Item name">
+                        
+                        <div class="item-actions">
+                            <button class="btn btn-outline btn-icon btn-sm" onclick="moveItemUp('${cat}', ${i})" ${i === 0 ? 'disabled' : ''}>
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-outline btn-icon btn-sm" onclick="moveItemDown('${cat}', ${i})" ${i === data[cat].length - 1 ? 'disabled' : ''}>
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-danger btn-icon btn-sm" onclick="del('${cat}', ${i})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    itemsContainer.appendChild(itemDiv);
+                });
+                
+                // Update category count
+                document.getElementById(`${cat}Count`).textContent = `${categoryCount} ${categoryCount === 1 ? 'item' : 'items'}`;
+            });
+            
+            // Update progress
+            const percent = Math.round((done / total) * 100) || 0;
+            document.getElementById("progressFill").style.width = percent + "%";
+            document.getElementById("progressText").textContent = percent + "% completed";
+            document.getElementById("itemsTotal").textContent = total + " items total";
+            document.getElementById("itemsCompleted").textContent = done + " items completed";
+        }
+
+        function toggle(key) {
+            checked[key] = !checked[key];
+            save();
+            render();
+        }
+
+        function edit(cat, i, val) {
+            if (val.trim() === "") {
+                alert("Item name cannot be empty");
+                render();
+                return;
+            }
+            data[cat][i] = val;
+            save();
+        }
+
+        function addItem(cat) {
+            const name = prompt("Enter the name of the item to add:");
+            if (!name || name.trim() === "") return;
+            
+            data[cat].push(name.trim());
+            save();
+            render();
+            
+            // Show confirmation
+            showNotification(`"${name}" added to ${getCategoryName(cat)}`);
+        }
+
+        function del(cat, i) {
+            if (confirm(`Are you sure you want to remove "${data[cat][i]}"?`)) {
+                data[cat].splice(i, 1);
+                save();
+                render();
+                
+                showNotification("Item removed from your checklist");
+            }
+        }
+
+        function clearCategory(cat) {
+            if (data[cat].length === 0) {
+                alert(`The ${getCategoryName(cat)} category is already empty.`);
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to remove all items from ${getCategoryName(cat)}? This cannot be undone.`)) {
+                data[cat] = [];
+                save();
+                render();
+                
+                showNotification(`All items cleared from ${getCategoryName(cat)}`);
+            }
+        }
+
+        function moveItemUp(cat, i) {
+            if (i > 0) {
+                [data[cat][i], data[cat][i-1]] = [data[cat][i-1], data[cat][i]];
+                save();
+                render();
+            }
+        }
+
+        function moveItemDown(cat, i) {
+            if (i < data[cat].length - 1) {
+                [data[cat][i], data[cat][i+1]] = [data[cat][i+1], data[cat][i]];
+                save();
+                render();
+            }
+        }
+
+        function clearChecked() {
+            let checkedCount = 0;
+            for (const key in checked) {
+                if (checked[key]) checkedCount++;
+            }
+            
+            if (checkedCount === 0) {
+                alert("No items are currently checked.");
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to remove ${checkedCount} checked item${checkedCount === 1 ? '' : 's'}?`)) {
+                // Remove checked items from data
+                const categories = ["water", "health", "tools", "docs"];
+                categories.forEach(cat => {
+                    data[cat] = data[cat].filter((_, i) => !checked[cat + "_" + i]);
+                });
+                
+                // Clear all checked flags
+                checked = {};
+                save();
+                render();
+                
+                showNotification(`${checkedCount} checked item${checkedCount === 1 ? '' : 's'} removed`);
+            }
+        }
+
+        function getCategoryName(cat) {
+            const names = {
+                water: "Water & Food",
+                health: "First Aid & Health",
+                tools: "Tools & Supplies",
+                docs: "Documents & Essentials"
+            };
+            return names[cat] || cat;
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement("div");
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--secondary);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+                max-width: 300px;
+                font-weight: 500;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-check-circle" style="margin-right: 10px;"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Add CSS for notification animation
+        const style = document.createElement("style");
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>

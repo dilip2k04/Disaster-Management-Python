@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disaster Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h2>Disaster Locations</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        fetch('/get_disasters')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(disaster => {
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${disaster.location}`)
+                        .then(response => response.json())
+                        .then(locationData => {
+                            if (locationData.length > 0) {
+                                const lat = locationData[0].lat;
+                                const lon = locationData[0].lon;
+
+                                const popupContent = `
+                                    <strong>Disaster Type:</strong> ${disaster.disaster_type}<br>
+                                    <strong>Location:</strong> ${disaster.location}<br>
+                                    <strong>Date/Time:</strong> ${disaster.datetime}<br>
+                                    <strong>Report:</strong> ${disaster.report}
+                                `;
+
+                                L.marker([lat, lon]).addTo(map)
+                                    .bindPopup(popupContent);
+                            }
+                        });
+                });
+            });
+    </script>
+</body>
+</html>

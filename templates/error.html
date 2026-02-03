@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ error_code }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: white;
+            text-align: center;
+        }
+        .error-container {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+        }
+        .error-code {
+            font-size: 100px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .error-message {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">{{ error_code }}</h1>
+        <p class="error-message">{{ error_message }}</p>
+        <p>We're sorry for the inconvenience. Please try again later or return to the homepage.</p>
+        <a href="/" class="btn"><i class="fas fa-home"></i> Return Home</a>
+    </div>
+</body>
+</html>

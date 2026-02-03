@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: disaster-alert-system
+    runtime: python
+    branch: main
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: gunicorn app:app
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+      - key: SECRET_KEY
+        generateValue: true
+
+      # Add these in Render dashboard OR here manually
+      # - key: EMAIL_USER
+      #   value: your_email@gmail.com
+      # - key: EMAIL_PASS
+      #   value: your_app_password
+      # - key: TWILIO_SID
+      #   value: your_sid
+      # - key: TWILIO_TOKEN
+      #   value: your_token
+      # - key: TWILIO_PHONE
+      #   value: +1234567890
