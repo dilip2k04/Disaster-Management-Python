@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 import sqlite3
-import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
@@ -72,6 +71,16 @@ def init_db():
         )
         """)
 
+        # ⭐ ALERTS (FIXED — this was missing)
+        c.execute("""
+        CREATE TABLE IF NOT EXISTS alerts(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
         # DEFAULT ADMIN
         if not c.execute("SELECT id FROM admins WHERE username='admin'").fetchone():
             c.execute(
@@ -82,6 +91,7 @@ def init_db():
         conn.commit()
 
 
+# Initialize database at startup (important for Render)
 init_db()
 
 
@@ -95,7 +105,7 @@ def home():
 
 
 # =====================================================
-# STATIC PAGES (match template names)
+# STATIC PAGES
 # =====================================================
 
 @app.route("/about")
@@ -129,13 +139,18 @@ def routes():
 
 
 @app.route("/alerts")
-def alerts():
-    return render_template("alerts.html")
+def alerts_page():
+    with get_db() as conn:
+        alerts = conn.execute(
+            "SELECT * FROM alerts ORDER BY id DESC"
+        ).fetchall()
+
+    return render_template("alerts.html", alerts=alerts)
+
 
 @app.route("/user")
 def user():
     return render_template("user.html")
-
 
 
 @app.route("/map")
@@ -154,8 +169,8 @@ def emergency():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
 
+    if request.method == "POST":
         email = request.form["email"].lower()
         phone = request.form["phone"]
         location = request.form["location"]
@@ -214,7 +229,9 @@ def volunteer_enroll():
 @app.route("/volunteers")
 def volunteers():
     with get_db() as conn:
-        vols = conn.execute("SELECT * FROM volunteers ORDER BY id DESC").fetchall()
+        vols = conn.execute(
+            "SELECT * FROM volunteers ORDER BY id DESC"
+        ).fetchall()
 
     return render_template(
         "volunteers.html",
@@ -232,16 +249,6 @@ def delete_volunteer(vol_id):
     return redirect(url_for("volunteers"))
 
 
-@app.route("/admin/delete_volunteer/<int:vol_id>", methods=["POST"])
-def admin_delete_volunteer(vol_id):
-    with get_db() as conn:
-        conn.execute("DELETE FROM volunteers WHERE id=?", (vol_id,))
-        conn.commit()
-
-    flash("Volunteer deleted", "success")
-    return redirect(url_for("admin_dashboard"))
-
-
 # =====================================================
 # MISSING PERSONS
 # =====================================================
@@ -249,7 +256,9 @@ def admin_delete_volunteer(vol_id):
 @app.route("/missing")
 def missing():
     with get_db() as conn:
-        persons = conn.execute("SELECT * FROM missing_persons ORDER BY id DESC").fetchall()
+        persons = conn.execute(
+            "SELECT * FROM missing_persons ORDER BY id DESC"
+        ).fetchall()
 
     return render_template("missing.html", persons=persons)
 
@@ -298,7 +307,7 @@ def admin_login():
     return render_template("admin_login.html")
 
 
-@app.route("/admin/dashboard", methods=["GET", "POST"])
+@app.route("/admin/dashboard")
 def admin_dashboard():
 
     if not session.get("admin_logged_in"):
@@ -312,18 +321,26 @@ def admin_dashboard():
     return render_template(
         "admin_dashboard.html",
         users=users,
-        volunteers=volunteers,   # ⭐ added
+        volunteers=volunteers,
         alerts=alerts
     )
 
+
+@app.route("/admin/add_alert", methods=["POST"])
+def add_alert():
 
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
     with get_db() as conn:
-        users = conn.execute("SELECT * FROM users").fetchall()
+        conn.execute(
+            "INSERT INTO alerts(title,message) VALUES(?,?)",
+            (request.form["title"], request.form["message"])
+        )
+        conn.commit()
 
-    return render_template("admin_dashboard.html", users=users)
+    flash("Alert added", "success")
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
