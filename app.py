@@ -139,7 +139,7 @@ def routes():
 
 
 @app.route("/alerts")
-def alerts_page():
+def alerts():
     with get_db() as conn:
         alerts = conn.execute(
             "SELECT * FROM alerts ORDER BY id DESC"
