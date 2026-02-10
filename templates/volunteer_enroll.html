@@ -1,0 +1,688 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+/* ===== Main Styles ===== */
+body {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Hero Background Animation */
+.hero-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(220, 53, 69, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(13, 110, 253, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  animation: pulseBg 15s ease-in-out infinite alternate;
+}
+
+@keyframes pulseBg {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+}
+
+/* Floating Particles */
+.floating-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(220, 53, 69, 0.1);
+  border-radius: 50%;
+  animation: float 20s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Main Container */
+.volunteer-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Creative Card Design */
+.volunteer-card {
+  max-width: 1000px;
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  background: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.volunteer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 35px 60px -15px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+/* Left Panel - Visual */
+.visual-panel {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  padding: 60px 40px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.visual-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  opacity: 0.1;
+}
+
+.hero-icon {
+  font-size: 80px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.benefit-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Right Panel - Form */
+.form-panel {
+  padding: 60px 40px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-header {
+  margin-bottom: 40px;
+}
+
+.form-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.form-subtitle {
+  color: #666;
+  font-size: 15px;
+}
+
+/* Form Styles */
+.vol-form {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  color: #1e293b;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #dc3545;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-control::placeholder {
+  color: #94a3b8;
+}
+
+/* File Upload Styling */
+.file-upload-wrapper {
+  position: relative;
+  overflow: hidden;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.file-upload-wrapper:hover {
+  border-color: #dc3545;
+  background: white;
+}
+
+.file-upload-wrapper input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload-content {
+  pointer-events: none;
+}
+
+.file-upload-icon {
+  font-size: 32px;
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.file-upload-text {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.file-upload-text strong {
+  color: #dc3545;
+}
+
+/* Submit Button */
+.btn-submit {
+  width: 100%;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(220, 53, 69, 0.25);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.btn-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.6s;
+}
+
+.btn-submit:hover .btn-shine {
+  transform: rotate(30deg) translateX(100%);
+}
+
+/* Flash Messages */
+.flash-message {
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  animation: slideDown 0.5s ease;
+}
+
+.flash-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #bbf7d0;
+}
+
+.flash-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.flash-icon {
+  font-size: 20px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer Link */
+.form-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.view-volunteers-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #dc3545;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.view-volunteers-link:hover {
+  gap: 12px;
+  transform: translateX(5px);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .volunteer-card {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+  
+  .visual-panel,
+  .form-panel {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .volunteer-wrapper {
+    padding: 20px 15px;
+  }
+  
+  .visual-panel,
+  .form-panel {
+    padding: 30px 20px;
+  }
+  
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .form-title {
+    font-size: 24px;
+  }
+}
+
+/* Loading Animation */
+.loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Background Elements -->
+<div class="hero-bg"></div>
+<div class="floating-particles" id="particles"></div>
+
+<div class="volunteer-wrapper">
+  <div class="volunteer-card">
+    
+    <!-- Left Panel - Visual Section -->
+    <div class="visual-panel">
+      <div class="hero-icon">
+        <i class="fas fa-hand-holding-heart"></i>
+      </div>
+      
+      <h1 class="hero-title">Become a<br>Disaster Response Hero</h1>
+      
+      <p class="hero-subtitle">
+        Join our growing community of volunteers dedicated to helping during emergencies and natural disasters.
+      </p>
+      
+      <ul class="benefits-list">
+        <li class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <span>Get certified training</span>
+        </li>
+        <li class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <span>Join a supportive community</span>
+        </li>
+        <li class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-medal"></i>
+          </div>
+          <span>Earn recognition & awards</span>
+        </li>
+        <li class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <span>Insurance coverage provided</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Right Panel - Form Section -->
+    <div class="form-panel">
+      <div class="form-header">
+        <h2 class="form-title">Join Our Team</h2>
+        <p class="form-subtitle">Complete your registration in 2 minutes</p>
+      </div>
+      
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+          <div class="flash-message {{ 'flash-success' if category=='success' else 'flash-error' }}">
+            <i class="fas {{ 'fa-check-circle' if category=='success' else 'fa-exclamation-circle' }} flash-icon"></i>
+            <div>{{ message }}</div>
+          </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      <!-- Registration Form -->
+      <form method="POST" enctype="multipart/form-data" id="volForm" class="vol-form">
+        
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="name" required 
+                 class="form-control" 
+                 placeholder="Enter your full name">
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input type="number" name="age" min="16" required 
+                     class="form-control" 
+                     placeholder="18+">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" name="phone" required 
+                     class="form-control" 
+                     placeholder="+91 98765 43210">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" required 
+                 class="form-control" 
+                 placeholder="your.email@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Profile Photo (Optional)</label>
+          <div class="file-upload-wrapper">
+            <input type="file" name="profile_pic" accept="image/*">
+            <div class="file-upload-content">
+              <div class="file-upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <div class="file-upload-text">
+                <strong>Click to upload</strong> or drag and drop<br>
+                PNG, JPG or JPEG (Max 5MB)
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-shine"></span>
+          <i class="fas fa-user-plus"></i>
+          <span>Join as Volunteer</span>
+        </button>
+        
+        <div class="form-footer">
+          <a href="{{ url_for('volunteers') }}" class="view-volunteers-link">
+            View All Volunteers
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// Create floating particles
+function createParticles() {
+  const container = document.getElementById('particles');
+  const particleCount = 25;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    const size = Math.random() * 15 + 5;
+    const posX = Math.random() * 100;
+    const duration = Math.random() * 25 + 15;
+    const delay = Math.random() * 15;
+    
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${posX}%`;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${delay}s`;
+    particle.style.background = `rgba(${Math.random() > 0.5 ? '220, 53, 69' : '13, 110, 253'}, ${Math.random() * 0.1 + 0.1})`;
+    
+    container.appendChild(particle);
+  }
+}
+
+// Form submission handler
+document.getElementById('volForm').addEventListener('submit', function(e) {
+  const submitBtn = document.getElementById('submitBtn');
+  const originalHTML = submitBtn.innerHTML;
+  
+  // Show loading state
+  submitBtn.innerHTML = `
+    <i class="fas fa-circle-notch fa-spin"></i>
+    <span>Processing...</span>
+  `;
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+  
+  // Re-enable button after 8 seconds if still processing
+  setTimeout(() => {
+    submitBtn.innerHTML = originalHTML;
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+  }, 8000);
+});
+
+// File upload feedback
+const fileInput = document.querySelector('input[type="file"]');
+const fileUploadWrapper = document.querySelector('.file-upload-wrapper');
+const fileUploadText = document.querySelector('.file-upload-text');
+
+fileInput.addEventListener('change', function() {
+  if (this.files.length > 0) {
+    const fileName = this.files[0].name;
+    fileUploadWrapper.style.borderColor = '#10b981';
+    fileUploadWrapper.style.background = '#f0fdf4';
+    fileUploadText.innerHTML = `
+      <strong>✓ Selected:</strong> ${fileName}<br>
+      <small style="color:#059669;">Ready to upload</small>
+    `;
+  } else {
+    fileUploadWrapper.style.borderColor = '#e2e8f0';
+    fileUploadWrapper.style.background = '#f8fafc';
+    fileUploadText.innerHTML = `
+      <strong>Click to upload</strong> or drag and drop<br>
+      PNG, JPG or JPEG (Max 5MB)
+    `;
+  }
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  createParticles();
+  
+  // Add subtle animation to hero icon
+  const heroIcon = document.querySelector('.hero-icon');
+  setInterval(() => {
+    heroIcon.style.transform = 'translateY(-5px)';
+    setTimeout(() => {
+      heroIcon.style.transform = 'translateY(0)';
+    }, 1000);
+  }, 3000);
+  
+  // Input focus effects
+  const inputs = document.querySelectorAll('.form-control');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.style.transform = 'scale(1.02)';
+    });
+    
+    input.addEventListener('blur', function() {
+      this.parentElement.style.transform = 'scale(1)';
+    });
+  });
+});
+</script>
+
+{% endblock %}

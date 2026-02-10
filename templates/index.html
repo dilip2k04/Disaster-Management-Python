@@ -1,4 +1,4 @@
-<!-- UPDATED MODERN GLASSMORPHISM UI VERSION -->
+<!-- ENHANCED MODERN GLASSMORPHISM UI WITH CREATIVE ELEMENTS -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +7,9 @@
   <title>Safety Bridge | Disaster Preparedness & Response</title>
 
   <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -17,28 +18,74 @@
   <style>
     :root {
       --primary: #ef4444;
+      --primary-gradient: linear-gradient(135deg, #ef4444, #f87171);
       --secondary: #2563eb;
+      --secondary-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
       --accent: #22c55e;
+      --accent-gradient: linear-gradient(135deg, #22c55e, #4ade80);
+      --warning: #f59e0b;
+      --warning-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
       --dark: #0f172a;
       --light: #f8fafc;
-      --glass: rgba(255,255,255,0.15);
-      --blur: blur(20px);
-      --radius: 18px;
-      --shadow: 0 20px 40px rgba(0,0,0,.15);
+      --glass: rgba(255, 255, 255, 0.12);
+      --glass-dark: rgba(15, 23, 42, 0.7);
+      --blur: blur(25px);
+      --radius: 24px;
+      --radius-large: 32px;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-heavy: 0 35px 70px -15px rgba(0, 0, 0, 0.35);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
 
-   body {
-font-family: 'Inter', sans-serif;
-background:
-linear-gradient(rgba(15,23,42,0.65), rgba(15,23,42,0.65)),
-url("/static/images/flood2.jpeg") no-repeat center center fixed;
-background-size: cover;
-color: var(--dark);
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: 
+        radial-gradient(circle at 0% 0%, rgba(239, 68, 68, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+        linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.97)),
+        url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80") no-repeat center center fixed;
+      background-size: cover;
+      background-attachment: fixed;
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-    a { text-decoration: none; color: inherit; }
+    /* Animated Background Elements */
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    a { 
+      text-decoration: none; 
+      color: inherit; 
+      transition: all 0.3s ease;
+    }
 
     /* ================= HEADER ================= */
     header {
@@ -47,268 +94,683 @@ color: var(--dark);
       width: 100%;
       z-index: 1000;
       backdrop-filter: var(--blur);
-      background: linear-gradient(135deg, rgba(239,68,68,0.85), rgba(37,99,235,0.85));
+      background: var(--glass-dark);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    header.scrolled {
+      background: rgba(15, 23, 42, 0.95);
+      padding: 0.5rem 0;
       box-shadow: var(--shadow);
-      border-bottom-left-radius: 40px;
-      border-bottom-right-radius: 40px;
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: auto;
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      font-weight: 700;
-      font-size: 1.4rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
       display: flex;
       align-items: center;
-      gap: .5rem;
+      gap: .8rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     nav ul {
       display: flex;
-      gap: 1.8rem;
+      gap: 2.2rem;
       align-items: center;
       list-style: none;
     }
 
-    nav a { font-weight: 500; opacity: .9; }
-    nav a:hover { color: var(--primary); }
+    nav a { 
+      font-weight: 600; 
+      font-size: 0.95rem;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-gradient);
+      transition: width 0.4s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
 
     .sos-nav-button {
-      background: var(--primary);
+      background: var(--primary-gradient);
       color: white;
-      padding: .55rem 1.2rem;
+      padding: .8rem 1.8rem;
       border-radius: 999px;
       border: none;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(239,68,68,.4);
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sos-nav-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
+
+    .sos-nav-button:hover::before {
+      left: 100%;
+    }
+
+    .sos-nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6);
     }
 
     /* ================= HERO ================= */
     .hero {
       min-height: 100vh;
-      padding-top: 90px;
       display: flex;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      background: linear-gradient(rgba(15,23,42,.7), rgba(15,23,42,.7)), url('https://www.pexels.com/photo/buildings-covered-with-the-water-14823611/') center/cover;
-      color: white;
+      padding: 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      bottom: -150px;
+      left: -150px;
+      border-radius: 50%;
+      z-index: -1;
     }
 
     .hero-content {
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
       padding: 2rem;
+      z-index: 2;
     }
 
-    .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
-    .hero p { font-size: 1.2rem; opacity: .9; }
+    .hero h1 { 
+      font-size: 3.8rem; 
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff, #a5b4fc, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero p { 
+      font-size: 1.3rem; 
+      opacity: .85;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
 
     .hero-buttons {
-      margin-top: 2rem;
       display: flex;
-      gap: 1rem;
+      gap: 1.5rem;
       justify-content: center;
       flex-wrap: wrap;
+      margin-top: 3rem;
     }
 
     .btn {
-      padding: .8rem 1.8rem;
+      padding: 1rem 2.2rem;
       border-radius: 999px;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
       cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      min-width: 180px;
+      justify-content: center;
     }
-	/* Quick Access Section */
-.quick-access {
-  padding: 5rem 1.5rem;
-  background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.9));
-  color: white;
-}
 
-.quick-access .section-title {
-  text-align: center;
-  font-size: 2.4rem;
-  margin-bottom: 3rem;
-  font-weight: 700;
-}
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
 
-/* Grid layout */
-.quick-access .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem;
-}
+    .btn:hover::before {
+      left: 100%;
+    }
 
-/* Glassmorphic cards */
-.quick-access .grid-item {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 25px;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
+    .btn:hover {
+      transform: translateY(-5px);
+    }
 
-.quick-access .grid-item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-}
+    .btn-primary { 
+      background: var(--primary-gradient); 
+      color: white; 
+      box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+    }
 
-/* Icon container */
-.quick-access .icon-container {
-  font-size: 2.8rem;
-  margin-bottom: 1rem;
-  width: 70px;
-  height: 70px;
-  line-height: 70px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: transform 0.3s;
-}
+    .btn-primary:hover {
+      box-shadow: 0 20px 45px rgba(239, 68, 68, 0.6);
+    }
 
-/* Gradient Icon Background */
-.quick-access .gradient-icon {
-  background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
-}
+    .btn-secondary { 
+      background: var(--secondary-gradient); 
+      color: white; 
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+    }
 
-.quick-access .grid-item:hover .icon-container {
-  transform: scale(1.2) rotate(10deg);
-}
+    .btn-secondary:hover {
+      box-shadow: 0 20px 45px rgba(37, 99, 235, 0.6);
+    }
 
-/* Card Headings */
-.quick-access h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.8rem;
-  font-weight: 600;
-}
+    .btn-alert { 
+      background: var(--warning-gradient); 
+      color: white; 
+      box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+    }
 
-/* Buttons */
-.quick-access .btn-gradient {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
-  color: white;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
+    .btn-alert:hover {
+      box-shadow: 0 20px 45px rgba(245, 158, 11, 0.6);
+    }
 
-.quick-access .btn-gradient:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-}
-
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-secondary { background: var(--secondary); color: white; }
-    .btn-alert { background: #f59e0b; color: white; }
-
-    /* ================= DASHBOARD ================= */
-    section { padding: 5rem 1.5rem; }
+    /* ================= LIVE DASHBOARD ================= */
+    .dashboard-section {
+      padding: 6rem 2rem;
+      position: relative;
+    }
 
     .section-title {
       text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 3rem;
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 4rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .section-title i {
+      background: var(--secondary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-right: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
     }
 
     .glass-card {
-      background: rgba(255,255,255,0.2);
+      background: var(--glass);
       backdrop-filter: var(--blur);
-      border-radius: var(--radius);
+      border-radius: var(--radius-large);
       box-shadow: var(--shadow);
-      padding: 1.5rem;
+      padding: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-heavy);
+      transform: translateY(-5px);
     }
 
     #disasterMap {
-      height: 480px;
+      height: 550px;
       border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .map-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .control-btn.active {
+      background: var(--primary-gradient);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
     }
 
     .stats {
-      margin-top: 2rem;
+      margin-top: 3rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
     }
 
     .stat-card {
       text-align: center;
-      padding: 2rem;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg,#fff,#f1f5f9);
+      padding: 2.5rem 2rem;
+      border-radius: var(--radius-large);
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .stat-card h2 { font-size: 2.2rem; color: var(--primary); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary-gradient);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .stat-card h2 { 
+      font-size: 3rem; 
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-card p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
 
     /* ================= QUICK ACCESS ================= */
+    .quick-access {
+      padding: 6rem 2rem;
+      position: relative;
+      background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.9) 100%);
+      backdrop-filter: var(--blur);
+    }
+
+    .quick-access .section-title {
+      color: white;
+    }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
     }
 
     .grid-item {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius-large);
       padding: 2.5rem 2rem;
       text-align: center;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      transition: transform .3s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
     }
 
-    .grid-item:hover { transform: translateY(-8px); }
+    .grid-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(37,99,235,0.1), rgba(34,197,94,0.1));
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
 
-    .grid-item i {
-      font-size: 2.5rem;
+    .grid-item:hover::before {
+      opacity: 1;
+    }
+
+    .grid-item:hover {
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .icon-container {
+      font-size: 3.2rem;
+      margin-bottom: 1.5rem;
+      width: 90px;
+      height: 90px;
+      line-height: 90px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .grid-item:hover .icon-container {
+      transform: scale(1.15) rotate(10deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .grid-item h3 {
+      font-size: 1.5rem;
       margin-bottom: 1rem;
-      color: var(--secondary);
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
     }
 
-    /* ================= CHATBOT ================= */
+    .grid-item p {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-gradient {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: 1rem;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .btn-gradient::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
+
+    .btn-gradient:hover::before {
+      left: 100%;
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ================= AI CHATBOT ================= */
     .ai-assistant {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 40px;
+      right: 40px;
+      z-index: 1000;
     }
 
     .ai-button {
-      width: 64px;
-      height: 64px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      background: linear-gradient(135deg,var(--primary),#fb7185);
+      background: linear-gradient(135deg, #ef4444, #fb7185);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       box-shadow: var(--shadow);
       cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4); }
+      50% { transform: scale(1.1); box-shadow: 0 20px 45px rgba(239, 68, 68, 0.6); }
+    }
+
+    .ai-button:hover {
+      transform: scale(1.15) rotate(15deg);
+      animation: none;
+    }
+
+    .ai-chatbox {
+      position: fixed;
+      bottom: 130px;
+      right: 40px;
+      width: 380px;
+      max-height: 500px;
+      background: var(--glass-dark);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius-large);
+      box-shadow: var(--shadow-heavy);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+      transform-origin: bottom right;
+    }
+
+    .chat-header {
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(37, 99, 235, 0.2));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .close-chat:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-messages {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .message {
+      margin-bottom: 1.2rem;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot p {
+      background: rgba(37, 99, 235, 0.2);
+      border-radius: 18px 18px 18px 5px;
+      padding: 1rem 1.2rem;
+      display: inline-block;
+      max-width: 85%;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .chat-input input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.8rem 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .chat-input input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .chat-input button {
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 999px;
+      background: var(--primary-gradient);
+      color: white;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .chat-input button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     /* ================= FOOTER ================= */
     footer {
       position: relative;
-      background: rgba(15,23,42,0.85);
-      backdrop-filter: var(--blur);
+      background: linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(15,23,42,1) 100%);
       color: white;
-      padding: 5rem 1.5rem 3rem;
-      border-top-left-radius: 60px;
-      border-top-right-radius: 60px;
+      padding: 6rem 2rem 3rem;
+      border-top-left-radius: 80px;
+      border-top-right-radius: 80px;
+      margin-top: 4rem;
+      overflow: hidden;
     }
 
     footer::before {
@@ -318,27 +780,40 @@ color: var(--dark);
       left: 0;
       width: 100%;
       height: 60px;
-      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, rgba(15,23,42,0.85) 61%);
+      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, rgba(15,23,42,0.9) 61%);
     }
 
     .footer-content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      text-align: left;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
       max-width: 1200px;
-      margin: auto;
+      margin: 0 auto 3rem;
     }
 
     .footer-section {
-      flex: 1 1 220px;
+      display: flex;
+      flex-direction: column;
     }
 
     .footer-section h3 {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      position: relative;
+      padding-bottom: 0.7rem;
+    }
+
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
     }
 
     .footer-section ul {
@@ -347,93 +822,158 @@ color: var(--dark);
     }
 
     .footer-section ul li {
-      margin-bottom: .6rem;
+      margin-bottom: 0.8rem;
     }
 
     .footer-section ul li a {
-      color: white;
-      opacity: 0.9;
-      transition: 0.3s;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .footer-section ul li a:hover {
       color: var(--primary);
-      opacity: 1;
+      transform: translateX(5px);
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
     .social-icons a {
-      display: inline-block;
-      margin-right: 0.5rem;
-      font-size: 1.2rem;
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
-      transition: 0.3s;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
     }
 
     .social-icons a:hover {
-      color: var(--primary);
+      background: var(--primary-gradient);
+      transform: translateY(-3px);
     }
 
     .newsletter {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       display: flex;
       gap: .5rem;
     }
 
     .newsletter input {
-      padding: .5rem .8rem;
-      border-radius: 999px;
-      border: none;
       flex: 1;
+      padding: .8rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .newsletter input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
     }
 
     .newsletter button {
       border: none;
-      padding: .5rem 1rem;
+      padding: .8rem 1.5rem;
       border-radius: 999px;
-      background: var(--primary);
+      background: var(--primary-gradient);
       color: white;
       cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .newsletter button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.2);
-      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       font-size: 0.9rem;
       max-width: 1200px;
-      margin: auto;
+      margin: 0 auto;
     }
 
-    .footer-bottom .footer-links a {
-      margin-left: 1rem;
-      color: white;
+    .footer-bottom p {
       opacity: 0.8;
-      transition: 0.3s;
     }
 
-    .footer-bottom .footer-links a:hover {
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
       color: var(--primary);
-      opacity: 1;
     }
 
     /* ================= RESPONSIVE ================= */
-    @media(max-width:768px){
+    @media(max-width: 1024px) {
+      .hero h1 { font-size: 3rem; }
+      .section-title { font-size: 2.4rem; }
+      .grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    }
+
+    @media(max-width: 768px) {
       nav ul { display: none; }
-      .hero h1 { font-size: 2.2rem; }
-      .footer-content { text-align: center; flex-direction: column; gap: 1.5rem; }
-      .footer-bottom { flex-direction: column; gap: 0.5rem; }
-      .footer-bottom .footer-links a { margin-left: 0; margin-right: 1rem; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1.1rem; }
+      .section-title { font-size: 2rem; }
+      .btn { padding: 0.9rem 1.8rem; min-width: 160px; }
+      .hero-buttons { gap: 1rem; }
+      .ai-chatbox { width: calc(100vw - 80px); right: 20px; }
+      .footer-content { grid-template-columns: 1fr; text-align: center; }
+      .footer-section h3::after { left: 50%; transform: translateX(-50%); }
+      .footer-bottom { flex-direction: column; gap: 1rem; }
+    }
+
+    @media(max-width: 480px) {
+      .nav-container { padding: 1rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1rem; }
+      .btn { width: 100%; justify-content: center; }
+      .hero-buttons { flex-direction: column; }
+      .section-title { font-size: 1.8rem; }
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+
+<!-- Floating Background Shapes -->
+<div class="floating-shapes" id="floatingShapes"></div>
+
 <!-- ===== HEADER ===== -->
-<header>
+<header id="mainHeader">
   <div class="nav-container">
-    <div class="logo"><i class="fas fa-shield-alt"></i> Safety Bridge</div>
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      Safety Bridge
+    </div>
     <nav>
       <ul>
         <li><a href="{{url_for('home')}}">Home</a></li>
@@ -449,21 +989,27 @@ color: var(--dark);
 <!-- ===== HERO ===== -->
 <section class="hero">
   <div class="hero-content">
-    <h1><i class="fas fa-shield-heart" style="margin-right:10px;color:#fca5a5"></i>Empowering Resilience Through Preparedness & Action</h1>
-    <p>Real‑time alerts, life‑saving resources, and community support</p>
+    <h1><i class="fas fa-shield-heart"></i>Empowering Resilience Through Preparedness & Action</h1>
+    <p>Real‑time alerts, life‑saving resources, and community support to keep you safe during disasters and emergencies.</p>
     <div class="hero-buttons">
-      <a href="{{ url_for('alerts') }}" class="btn btn-primary">Get Alerts</a>
-      <a href="{{url_for('contacts')}}" class="btn btn-secondary">Emergency Contacts</a>
-      <a href="#" class="btn btn-alert">Report Disaster</a>
+      <a href="{{ url_for('alerts') }}" class="btn btn-primary">
+        <i class="fas fa-bell"></i> Get Alerts
+      </a>
+      <a href="{{url_for('contacts')}}" class="btn btn-secondary">
+        <i class="fas fa-phone-alt"></i> Emergency Contacts
+      </a>
+      <!-- <a href="#" class="btn btn-alert" id="reportDisasterBtn">
+        <i class="fas fa-exclamation-triangle"></i> Report Disaster
+      </a> -->
     </div>
   </div>
 </section>
 
 <!-- ===== LIVE THREAT DASHBOARD ===== -->
-<section>
-  <h2 class="section-title"><i class="fas fa-chart-line" style="color:#2563eb;margin-right:10px"></i>Live Threat Dashboard</h2>
+<section class="dashboard-section">
+  <h2 class="section-title"><i class="fas fa-chart-line"></i>Live Threat Dashboard</h2>
   <div class="glass-card">
-    <div class="map-controls" style="margin-bottom:10px;">
+    <div class="map-controls">
       <button class="control-btn active" data-layer="all">All Threats</button>
       <button class="control-btn" data-layer="earthquake">Earthquakes</button>
       <button class="control-btn" data-layer="flood">Floods</button>
@@ -474,58 +1020,103 @@ color: var(--dark);
   </div>
 
   <div class="stats">
-    <div class="stat-card"><h2><i class="fas fa-triangle-exclamation"></i> <span id="activeDisasters">4</span></h2><p>Active Disasters</p></div>
-    <div class="stat-card"><h2><i class="fas fa-users"></i> <span id="peopleAssisted">3,452</span></h2><p>People Assisted Today</p></div>
-    <div class="stat-card"><h2><i class="fas fa-person-running"></i> <span id="preparednessDrills">12</span></h2><p>Preparedness Drills</p></div>
+    <div class="stat-card">
+      <h2><i class="fas fa-triangle-exclamation"></i> <span id="activeDisasters">4</span></h2>
+      <p>Active Disasters</p>
+    </div>
+    <div class="stat-card">
+      <h2><i class="fas fa-users"></i> <span id="peopleAssisted">3,452</span></h2>
+      <p>People Assisted Today</p>
+    </div>
+    <div class="stat-card">
+      <h2><i class="fas fa-person-running"></i> <span id="preparednessDrills">12</span></h2>
+      <p>Preparedness Drills</p>
+    </div>
+    <div class="stat-card">
+      <h2><i class="fas fa-hand-holding-heart"></i> <span id="volunteersCount">156</span></h2>
+      <p>Active Volunteers</p>
+    </div>
   </div>
 </section>
 
-<!-- Preparedness Quick Access -->
+<!-- ===== PREPAREDNESS QUICK ACCESS ===== -->
 <section class="quick-access">
   <div class="container">
-    <h2 class="section-title"><i class="fas fa-bolt" style="color:#ef4444;margin-right:8px"></i>Get Prepared in Minutes</h2>
+    <h2 class="section-title"><i class="fas fa-bolt"></i>Get Prepared in Minutes</h2>
     <div class="grid">
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-first-aid"></i></div>
+
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-first-aid"></i></div>
         <h3>Build Your Emergency Kit</h3>
-        <p>Essential items checklist tailored to your location</p>
-        <a href="{{url_for('emergency')}}" class="btn btn-gradient">Get Checklist</a>
+        <p>Essential items checklist tailored to your location and disaster type</p>
+        <a href="{{url_for('emergency')}}" class="btn-gradient">
+          <i class="fas fa-clipboard-list"></i> Get Checklist
+        </a>
       </div>
 
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-people-arrows"></i></div>
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-people-arrows"></i></div>
         <h3>Find Your Family</h3>
-        <p>Reports of missing persons available here</p>
-        <a href="{{url_for('missing')}}" class="btn btn-gradient">Find Now</a>
+        <p>Locate missing persons and connect with loved ones</p>
+        <a href="{{url_for('missing')}}" class="btn-gradient">
+          <i class="fas fa-search"></i> Find Now
+        </a>
       </div>
 
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-map-marked-alt"></i></div>
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-hand-holding-heart"></i></div>
+        <h3>Join as Volunteer</h3>
+        <p>Help your community during emergencies and disasters</p>
+        <a href="{{ url_for('volunteer_enroll') }}" class="btn-gradient">
+          <i class="fas fa-user-plus"></i> Become a Volunteer
+        </a>
+      </div>
+
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-hands-helping"></i></div>
+        <h3>Volunteer Network</h3>
+        <p>Connect with other volunteers and coordinate efforts</p>
+        <a href="{{url_for('volunteers')}}" class="btn-gradient">
+          <i class="fas fa-users"></i> Join Community
+        </a>
+      </div>
+
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-map-marked-alt"></i></div>
         <h3>Know Your Evacuation Routes</h3>
-        <p>Personalized evacuation maps for your area</p>
-        <a href="{{url_for('routes')}}" class="btn btn-gradient">View Routes</a>
+        <p>Personalized evacuation maps and safe zone locations</p>
+        <a href="{{url_for('routes')}}" class="btn-gradient">
+          <i class="fas fa-map"></i> View Routes
+        </a>
       </div>
 
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-heartbeat"></i></div>
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-heartbeat"></i></div>
         <h3>Learn CPR & First Aid</h3>
-        <p>Free training resources and local classes</p>
-        <a href="{{url_for('firstaid')}}" class="btn btn-gradient">Learn Now</a>
+        <p>Free training resources, tutorials, and local class information</p>
+        <a href="{{url_for('firstaid')}}" class="btn-gradient">
+          <i class="fas fa-graduation-cap"></i> Learn Now
+        </a>
       </div>
 
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-home"></i></div>
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-home"></i></div>
         <h3>Protect Your Home</h3>
-        <p>Disaster-specific home protection tips</p>
-        <a href="{{url_for('protection')}}" class="btn btn-gradient">Secure Home</a>
+        <p>Disaster-specific home protection and reinforcement tips</p>
+        <a href="{{url_for('protection')}}" class="btn-gradient">
+          <i class="fas fa-shield-alt"></i> Secure Home
+        </a>
       </div>
 
-      <div class="grid-item glass-card">
-        <div class="icon-container gradient-icon"><i class="fas fa-hands-helping"></i></div>
-        <h3>Donations</h3>
-        <p>Build your social network</p>
-        <a href="{{url_for('donation')}}" class="btn btn-gradient">Join Community</a>
+      <div class="grid-item">
+        <div class="icon-container"><i class="fas fa-donate"></i></div>
+        <h3>Support Relief Efforts</h3>
+        <p>Donate to disaster relief and support affected communities</p>
+        <a href="{{url_for('donation')}}" class="btn-gradient">
+          <i class="fas fa-hands-helping"></i> Donate Now
+        </a>
       </div>
+
     </div>
   </div>
 </section>
@@ -533,17 +1124,17 @@ color: var(--dark);
 <!-- ===== AI CHATBOT ===== -->
 <div class="ai-assistant" id="aiAssistant">
   <div class="ai-button" id="aiButton"><i class="fas fa-robot"></i></div>
-  <div class="ai-chatbox" id="aiChatbox" style="display:none;position:fixed;bottom:100px;right:30px;width:300px;background:var(--glass);backdrop-filter:var(--blur);border-radius:var(--radius);box-shadow:var(--shadow);z-index:1000;">
-    <div class="chat-header" style="padding:.5rem 1rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2);">
-      <h3>DisasterBot Assistant</h3>
-      <button class="close-chat" style="background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+  <div class="ai-chatbox" id="aiChatbox">
+    <div class="chat-header">
+      <h3><i class="fas fa-robot"></i> DisasterBot Assistant</h3>
+      <button class="close-chat" id="closeChat"><i class="fas fa-times"></i></button>
     </div>
-    <div class="chat-messages" id="chatMessages" style="max-height:300px;overflow-y:auto;padding:1rem;color:white;">
-      <div class="message bot"><p>Hello! I'm DisasterBot. How can I help you today?</p></div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot"><p>Hello! I'm DisasterBot. How can I help you today? You can ask me about emergency procedures, disaster preparedness, or current alerts.</p></div>
     </div>
-    <div class="chat-input" style="display:flex;padding:.5rem;">
-      <input type="text" id="userInput" placeholder="Ask me anything..." style="flex:1;border-radius:999px;border:none;padding:.5rem .8rem;">
-      <button id="sendMessage" style="border:none;padding:.5rem .8rem;border-radius:999px;background:var(--primary);color:white;margin-left:.3rem;"><i class="fas fa-paper-plane"></i></button>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Ask me anything about disaster safety...">
+      <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
 </div>
@@ -554,89 +1145,284 @@ color: var(--dark);
     <div class="footer-section">
       <h3>Quick Links</h3>
       <ul>
-        <li><a href="{{url_for('contacts')}}">Emergency Contacts</a></li>
-        <li><a href="{{url_for('user')}}">Disaster Types</a></li>
-        <li><a href="{{url_for('missing')}}">Volunteer Opportunities</a></li>
-        <li><a href="{{url_for('donation')}}">Donate</a></li>
+        <li><a href="{{url_for('contacts')}}"><i class="fas fa-phone-alt"></i> Emergency Contacts</a></li>
+        <li><a href="{{url_for('user')}}"><i class="fas fa-exclamation-triangle"></i> Disaster Types</a></li>
+        <li><a href="{{url_for('volunteers')}}"><i class="fas fa-hands-helping"></i> Volunteer Opportunities</a></li>
+        <li><a href="{{url_for('donation')}}"><i class="fas fa-donate"></i> Donate</a></li>
       </ul>
     </div>
     <div class="footer-section">
       <h3>Resources</h3>
       <ul>
-        <li><a href="#">Printable Guides</a></li>
-        <li><a href="#">Mobile App</a></li>
-        <li><a href="#">Training Courses</a></li>
-        <li><a href="#">Research</a></li>
+        <li><a href="#"><i class="fas fa-file-pdf"></i> Printable Guides</a></li>
+        <li><a href="#"><i class="fas fa-mobile-alt"></i> Mobile App</a></li>
+        <li><a href="#"><i class="fas fa-graduation-cap"></i> Training Courses</a></li>
+        <li><a href="#"><i class="fas fa-chart-bar"></i> Research & Data</a></li>
       </ul>
     </div>
     <div class="footer-section">
-      <h3>Connect</h3>
+      <h3>Connect With Us</h3>
       <div class="social-icons">
-        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
         <a href="#"><i class="fab fa-twitter"></i></a>
         <a href="#"><i class="fab fa-instagram"></i></a>
         <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
       </div>
       <div class="newsletter">
-        <input type="email" placeholder="Your email">
+        <input type="email" placeholder="Your email address">
         <button>Subscribe</button>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>&copy; ResilienceHub. All rights reserved.</p>
+    <p>© 2024 Safety Bridge. All rights reserved. Empowering communities through disaster preparedness.</p>
     <div class="footer-links">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms of Service</a>
       <a href="#">Accessibility</a>
+      <a href="#">Contact Us</a>
     </div>
   </div>
 </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+  // Create floating shapes
+  const shapesContainer = document.getElementById('floatingShapes');
+  for(let i = 0; i < 15; i++) {
+    const shape = document.createElement('div');
+    shape.classList.add('shape');
+    const size = Math.random() * 100 + 20;
+    const posX = Math.random() * 100;
+    const posY = Math.random() * 100;
+    const duration = Math.random() * 20 + 15;
+    const delay = Math.random() * 10;
+    
+    shape.style.width = `${size}px`;
+    shape.style.height = `${size}px`;
+    shape.style.left = `${posX}%`;
+    shape.style.top = `${posY}%`;
+    shape.style.animationDuration = `${duration}s`;
+    shape.style.animationDelay = `${delay}s`;
+    shape.style.opacity = Math.random() * 0.1 + 0.05;
+    
+    shapesContainer.appendChild(shape);
+  }
+
+  // Header scroll effect
+  const header = document.getElementById('mainHeader');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
   // Initialize map
   const map = L.map('disasterMap').setView([20.5937, 78.9629], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors, © CARTO'
+  }).addTo(map);
 
-  // Sample markers
+  // Custom icon
+  const redIcon = L.divIcon({
+    className: 'custom-marker',
+    html: '<div style="background: linear-gradient(135deg, #ef4444, #f87171); width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(239,68,68,0.8); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;"><i class="fas fa-exclamation"></i></div>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+  });
+
+  const yellowIcon = L.divIcon({
+    className: 'custom-marker',
+    html: '<div style="background: linear-gradient(135deg, #f59e0b, #fbbf24); width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(245,158,11,0.8); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;"><i class="fas fa-exclamation-triangle"></i></div>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+  });
+
+  // Sample markers with better data
   const markers = [
-    {coords:[19.0760,72.8777],icon:'🌋',popup:'Mumbai: Earthquake Alert (4.5)'},
-    {coords:[28.6139,77.2090],icon:'🌊',popup:'Delhi: Flood Warning'},
-    {coords:[12.9716,77.5946],icon:'🔥',popup:'Bengaluru: Wildfire'},
-    {coords:[13.0827,80.2707],icon:'🌀',popup:'Chennai: Cyclone Warning'}
+    {coords:[19.0760,72.8777], icon: redIcon, popup:'<b>Mumbai</b><br>Earthquake Alert (4.5 Magnitude)<br>Status: Active<br><a href="#">View Details</a>'},
+    {coords:[28.6139,77.2090], icon: redIcon, popup:'<b>Delhi</b><br>Flood Warning<br>Status: High Risk<br><a href="#">Evacuation Routes</a>'},
+    {coords:[12.9716,77.5946], icon: yellowIcon, popup:'<b>Bengaluru</b><br>Wildfire Alert<br>Status: Monitoring<br><a href="#">Safety Tips</a>'},
+    {coords:[13.0827,80.2707], icon: redIcon, popup:'<b>Chennai</b><br>Cyclone Warning<br>Status: Prepare to Evacuate<br><a href="#">Shelter Locations</a>'},
+    {coords:[22.5726,88.3639], icon: yellowIcon, popup:'<b>Kolkata</b><br>Heavy Rainfall Alert<br>Status: Moderate Risk<br><a href="#">Flood Preparedness</a>'},
   ];
-  markers.forEach(m=>{
-    L.marker(m.coords,{icon:L.divIcon({className:'marker-icon',html:m.icon})}).addTo(map).bindPopup(m.popup);
+
+  markers.forEach(m => {
+    L.marker(m.coords, {icon: m.icon})
+      .addTo(map)
+      .bindPopup(m.popup);
   });
 
   // Layer filter buttons
-  document.querySelectorAll('.control-btn').forEach(btn=>{
-    btn.addEventListener('click',function(){
-      document.querySelectorAll('.control-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.control-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
-      console.log('Layer:',this.dataset.layer);
+      
+      // Add visual feedback
+      this.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 150);
     });
   });
 
-  // AI Chatbot toggle
-  const aiButton=document.getElementById('aiButton');
-  const aiChatbox=document.getElementById('aiChatbox');
-  const closeChat=aiChatbox.querySelector('.close-chat');
-  aiButton.addEventListener('click',()=>aiChatbox.style.display=aiChatbox.style.display==='block'?'none':'block');
-  closeChat.addEventListener('click',()=>aiChatbox.style.display='none');
+  // AI Chatbot functionality
+  const aiButton = document.getElementById('aiButton');
+  const aiChatbox = document.getElementById('aiChatbox');
+  const closeChat = document.getElementById('closeChat');
+  const sendMessage = document.getElementById('sendMessage');
+  const userInput = document.getElementById('userInput');
+  const chatMessages = document.getElementById('chatMessages');
+
+  aiButton.addEventListener('click', () => {
+    aiChatbox.style.display = 'block';
+    setTimeout(() => {
+      aiChatbox.style.transform = 'scale(1)';
+      aiChatbox.style.opacity = '1';
+    }, 10);
+  });
+
+  closeChat.addEventListener('click', () => {
+    aiChatbox.style.transform = 'scale(0.8)';
+    aiChatbox.style.opacity = '0';
+    setTimeout(() => {
+      aiChatbox.style.display = 'none';
+    }, 300);
+  });
+
+  // Chat responses
+  const botResponses = {
+    greetings: ["Hello! How can I assist you today?", "Hi there! What can I help you with?", "Welcome! I'm here to help with disaster preparedness."],
+    emergency: ["If this is an emergency, please call 112 immediately. I can provide guidance while you wait for help.", "For immediate emergencies, contact local authorities at 112. How else can I assist?"],
+    preparedness: ["Here are key preparedness steps: 1) Create an emergency plan 2) Build a disaster kit 3) Stay informed about local risks 4) Practice evacuation routes.", "Disaster preparedness starts with knowing your risks. What specific disaster are you concerned about?"],
+    default: ["I'm here to help with disaster preparedness and safety information. Could you be more specific?", "That's a great question about disaster safety. Let me find the best information for you."]
+  };
+
+  function addMessage(text, isBot = true) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', isBot ? 'bot' : 'user');
+    messageDiv.innerHTML = `<p>${text}</p>`;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function getBotResponse(input) {
+    input = input.toLowerCase();
+    
+    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
+      return botResponses.greetings[Math.floor(Math.random() * botResponses.greetings.length)];
+    }
+    
+    if (input.includes('emergency') || input.includes('help') || input.includes('urgent')) {
+      return botResponses.emergency[Math.floor(Math.random() * botResponses.emergency.length)];
+    }
+    
+    if (input.includes('prepare') || input.includes('kit') || input.includes('plan')) {
+      return botResponses.preparedness[Math.floor(Math.random() * botResponses.preparedness.length)];
+    }
+    
+    return botResponses.default[Math.floor(Math.random() * botResponses.default.length)];
+  }
+
+  sendMessage.addEventListener('click', () => {
+    const message = userInput.value.trim();
+    if (message) {
+      addMessage(message, false);
+      userInput.value = '';
+      
+      setTimeout(() => {
+        const response = getBotResponse(message);
+        addMessage(response);
+      }, 1000);
+    }
+  });
+
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessage.click();
+    }
+  });
 
   // SOS button
-  const sosButton=document.getElementById('sosButton');
-  sosButton.addEventListener('click',()=>{
-    sosButton.innerHTML='<i class="fas fa-spinner fa-spin"></i> SENDING SOS...';
-    navigator.geolocation.getCurrentPosition(pos=>{
-      console.log('SOS Coordinates:', pos.coords.latitude,pos.coords.longitude);
-      sosButton.innerHTML='<i class="fas fa-check"></i> SOS SENT!';
-      setTimeout(()=>sosButton.innerHTML='<i class="fas fa-bell"></i> EMERGENCY SOS',5000);
-    },err=>{
-      sosButton.innerHTML='<i class="fas fa-exclamation-triangle"></i> LOCATION DENIED';
-      setTimeout(()=>sosButton.innerHTML='<i class="fas fa-bell"></i> EMERGENCY SOS',3000);
+  const sosButton = document.getElementById('sosButton');
+  sosButton.addEventListener('click', () => {
+    const originalHTML = sosButton.innerHTML;
+    sosButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING SOS...';
+    sosButton.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+    
+    navigator.geolocation.getCurrentPosition(pos => {
+      console.log('SOS Coordinates:', pos.coords.latitude, pos.coords.longitude);
+      
+      // Simulate API call
+      setTimeout(() => {
+        sosButton.innerHTML = '<i class="fas fa-check"></i> SOS SENT! HELP IS COMING';
+        sosButton.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+        
+        // Show confirmation message
+        addMessage("⚠️ EMERGENCY SOS ACTIVATED: Your location has been shared with emergency services. Help is on the way!");
+        
+        setTimeout(() => {
+          sosButton.innerHTML = originalHTML;
+          sosButton.style.background = 'var(--primary-gradient)';
+        }, 5000);
+      }, 2000);
+      
+    }, err => {
+      sosButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> LOCATION ACCESS DENIED';
+      sosButton.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+      
+      setTimeout(() => {
+        sosButton.innerHTML = originalHTML;
+        sosButton.style.background = 'var(--primary-gradient)';
+      }, 3000);
+    });
+  });
+
+  // Report disaster button
+  const reportBtn = document.getElementById('reportDisasterBtn');
+  reportBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    addMessage("To report a disaster, please provide details about: 1) Location 2) Type of disaster 3) Current situation 4) Immediate needs");
+  });
+
+  // Animate stats
+  function animateCounter(element, target, suffix = '') {
+    const current = parseInt(element.textContent.replace(/[^0-9]/g, ''));
+    const increment = Math.ceil(target / 50);
+    let currentValue = 0;
+    
+    const timer = setInterval(() => {
+      currentValue += increment;
+      if (currentValue >= target) {
+        currentValue = target;
+        clearInterval(timer);
+      }
+      element.textContent = suffix ? `${currentValue.toLocaleString()}${suffix}` : currentValue.toLocaleString();
+    }, 30);
+  }
+
+  // Animate all stats
+  setTimeout(() => {
+    animateCounter(document.getElementById('activeDisasters'), 4);
+    animateCounter(document.getElementById('peopleAssisted'), 3452);
+    animateCounter(document.getElementById('preparednessDrills'), 12);
+    animateCounter(document.getElementById('volunteersCount'), 156);
+  }, 1000);
+
+  // Add hover effect to all buttons
+  document.querySelectorAll('.btn, .btn-gradient, .control-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+      this.style.transform = this.style.transform.includes('translateY') 
+        ? this.style.transform.replace('translateY(-', 'translateY(-').replace(')', 'px)')
+        : 'translateY(-3px)';
+    });
+    
+    btn.addEventListener('mouseleave', function() {
+      this.style.transform = '';
     });
   });
 });

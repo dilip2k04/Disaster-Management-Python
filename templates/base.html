@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- ================= GLOBAL STYLES ================= -->
   <style>
     :root {
       --primary: #ef4444;
@@ -94,42 +95,7 @@
       box-shadow: 0 10px 25px rgba(239,68,68,.4);
     }
 
-    /* ================= FLASH MESSAGES ================= */
-    .flash-container {
-      max-width: 1000px;
-      margin: 1.5rem auto 0;
-      padding: 0 1.5rem;
-    }
-
-    .flash {
-      padding: .9rem 1.2rem;
-      border-radius: 14px;
-      margin-bottom: .8rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: var(--shadow);
-    }
-
-    .flash.success {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .flash.error {
-      background: #fee2e2;
-      color: #7f1d1d;
-    }
-
-    .flash button {
-      border: none;
-      background: transparent;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: inherit;
-    }
-
-    /* ================= MAIN CONTENT ================= */
+    /* ================= MAIN ================= */
     main {
       flex: 1;
       max-width: 1200px;
@@ -149,29 +115,17 @@
       border-top-right-radius: 60px;
     }
 
-    footer::before {
-      content: "";
-      position: absolute;
-      top: -60px;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, #020617 61%);
-    }
-
     footer p {
       font-size: .85rem;
       opacity: .85;
     }
-
-    /* ================= RESPONSIVE ================= */
-    @media(max-width:768px){
-      nav ul {
-        display: none;
-      }
-    }
   </style>
+
+  <!-- ⭐ PAGE SPECIFIC CSS GOES HERE -->
+  {% block head %}{% endblock %}
 </head>
+
+
 <body>
 
 <!-- HEADER -->
@@ -189,24 +143,12 @@
   </div>
 </header>
 
-<!-- FLASH MESSAGES -->
-<div class="flash-container">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">
-          <span>{{ message }}</span>
-          <button onclick="this.parentElement.style.display='none'">&times;</button>
-        </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-</div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <main>
   {% block content %}{% endblock %}
 </main>
+
 
 <!-- FOOTER -->
 <footer>
@@ -214,7 +156,7 @@
     <i class="fas fa-shield"></i>
     Safety Bridge — Disaster Preparedness & Response Platform
   </p>
-  <p>&copy; {{ 2026 }} All Rights Reserved</p>
+  <p>&copy; 2026 All Rights Reserved</p>
 </footer>
 
 </body>

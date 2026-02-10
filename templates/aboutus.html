@@ -6,31 +6,79 @@
   <title>About Us | Safety Bridge</title>
 
   <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --primary: #ef4444;
+      --primary-gradient: linear-gradient(135deg, #ef4444, #f87171);
       --secondary: #2563eb;
+      --secondary-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
       --accent: #22c55e;
+      --accent-gradient: linear-gradient(135deg, #22c55e, #4ade80);
       --dark: #0f172a;
       --light: #f8fafc;
-      --glass: rgba(255,255,255,0.15);
-      --blur: blur(14px);
-      --radius: 18px;
-      --shadow: 0 20px 40px rgba(0,0,0,.15);
+      --glass: rgba(255, 255, 255, 0.12);
+      --glass-dark: rgba(15, 23, 42, 0.7);
+      --blur: blur(20px);
+      --radius: 24px;
+      --radius-large: 32px;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-heavy: 0 35px 70px -15px rgba(0, 0, 0, 0.35);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #eef2ff, #f8fafc);
-      color: var(--dark);
+      background: 
+        radial-gradient(circle at 0% 0%, rgba(239, 68, 68, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+        linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.97)),
+        url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80") no-repeat center center fixed;
+      background-size: cover;
+      background-attachment: fixed;
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    a { text-decoration: none; color: inherit; }
+    /* Animated Background Elements */
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      animation: float 25s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+
+    a { 
+      text-decoration: none; 
+      color: inherit; 
+      transition: all 0.3s ease;
+    }
 
     /* ================= HEADER ================= */
     header {
@@ -39,141 +87,604 @@
       width: 100%;
       z-index: 1000;
       backdrop-filter: var(--blur);
-      background: linear-gradient(135deg, rgba(239,68,68,0.85), rgba(37,99,235,0.85));
+      background: var(--glass-dark);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    header.scrolled {
+      background: rgba(15, 23, 42, 0.95);
+      padding: 0.5rem 0;
       box-shadow: var(--shadow);
-      border-bottom-left-radius: 40px;
-      border-bottom-right-radius: 40px;
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: auto;
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      font-weight: 700;
-      font-size: 1.4rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
       display: flex;
       align-items: center;
-      gap: .5rem;
+      gap: .8rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     nav ul {
       display: flex;
-      gap: 1.8rem;
+      gap: 2.2rem;
       align-items: center;
       list-style: none;
     }
 
-    nav a { font-weight: 500; color: white; opacity: .9; }
-    nav a:hover { opacity: 1; }
+    nav a { 
+      font-weight: 600; 
+      font-size: 0.95rem;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-gradient);
+      transition: width 0.4s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .sos-nav-button {
+      background: var(--primary-gradient);
+      color: white;
+      padding: .8rem 1.8rem;
+      border-radius: 999px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sos-nav-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
+
+    .sos-nav-button:hover::before {
+      left: 100%;
+    }
+
+    .sos-nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6);
+    }
 
     /* ================= HERO ================= */
     .hero {
-      min-height: 60vh;
-      padding-top: 120px;
+      min-height: 80vh;
       display: flex;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      background: linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.75)),
-                  url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee') center/cover;
-      color: white;
+      padding: 0 2rem;
+      position: relative;
+      overflow: hidden;
+      margin-top: 80px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      bottom: -150px;
+      left: -150px;
+      border-radius: 50%;
+      z-index: -1;
     }
 
     .hero-content {
       max-width: 900px;
       margin: auto;
-      padding: 2rem;
+      padding: 3rem;
+      z-index: 2;
+      animation: fadeInUp 1s ease;
     }
 
-    .hero h1 { font-size: 2.8rem; margin-bottom: 1rem; }
-    .hero p { font-size: 1.2rem; opacity: .95; }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    /* ================= SECTIONS ================= */
-    section {
-      padding: 5rem 1.5rem;
+    .hero h1 { 
+      font-size: 3.5rem; 
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff, #a5b4fc, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero p { 
+      font-size: 1.3rem; 
+      opacity: .85;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+      animation: fadeIn 1s ease backwards;
+    }
+
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 900;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+
+    /* ================= MAIN CONTENT ================= */
+    .content-section {
+      padding: 5rem 2rem;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .section-title {
       text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 3rem;
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 4rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
+    .section-title i {
+      background: var(--secondary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-right: 15px;
     }
 
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    /* ================= GLASS CARDS ================= */
     .glass-card {
       background: var(--glass);
       backdrop-filter: var(--blur);
-      border-radius: var(--radius);
+      border-radius: var(--radius-large);
       box-shadow: var(--shadow);
-      padding: 2.5rem;
-      margin-bottom: 2.5rem;
+      padding: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary-gradient);
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-heavy);
+      transform: translateY(-10px);
     }
 
     .glass-card h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
-      gap: .6rem;
-      color: var(--secondary);
+      gap: 1rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .glass-card p {
-      font-size: 1.05rem;
-      line-height: 1.7;
-      opacity: .95;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      opacity: 0.9;
     }
 
-    /* ================= FEATURES ================= */
+    /* ================= FEATURE GRID ================= */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
       margin-top: 3rem;
     }
 
     .grid-item {
-      padding: 2.5rem 2rem;
-      text-align: center;
-      border-radius: var(--radius);
       background: var(--glass);
       backdrop-filter: var(--blur);
-      box-shadow: var(--shadow);
-      transition: transform .3s;
+      border-radius: var(--radius-large);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
     }
 
-    .grid-item:hover { transform: translateY(-8px); }
+    .grid-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(37,99,235,0.1), rgba(34,197,94,0.1));
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
 
-    .grid-item i {
-      font-size: 2.6rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
+    .grid-item:hover::before {
+      opacity: 1;
+    }
+
+    .grid-item:hover {
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .grid-item:hover .feature-icon {
+      transform: scale(1.15) rotate(10deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
     .grid-item h3 {
-      margin-bottom: .6rem;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
+    }
+
+    .grid-item p {
+      font-size: 1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ================= TEAM SECTION ================= */
+    .team-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.9) 100%);
+      backdrop-filter: var(--blur);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .team-card {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius-large);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .team-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, #ef4444, #fbbf24, #22c55e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .team-card h4 {
       font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .team-card p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+    }
+
+    /* ================= TIMELINE ================= */
+    .timeline-section {
+      padding: 5rem 2rem;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 3rem auto 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--primary-gradient);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      width: 45%;
+      animation: fadeIn 0.8s ease backwards;
+    }
+
+    .timeline-item:nth-child(odd) {
+      left: 0;
+    }
+
+    .timeline-item:nth-child(even) {
+      left: 55%;
+    }
+
+    .timeline-content {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-content h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    /* ================= CTA SECTION ================= */
+    .cta-section {
+      padding: 5rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.95));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-card {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 4rem;
+      border-radius: var(--radius-large);
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .cta-card h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff, #a5b4fc, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      min-width: 180px;
+      justify-content: center;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .btn-primary { 
+      background: var(--primary-gradient); 
+      color: white; 
+      box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 20px 45px rgba(239, 68, 68, 0.6);
+    }
+
+    .btn-secondary { 
+      background: var(--secondary-gradient); 
+      color: white; 
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 20px 45px rgba(37, 99, 235, 0.6);
     }
 
     /* ================= FOOTER ================= */
     footer {
       position: relative;
-      background: rgba(15,23,42,0.85);
-      backdrop-filter: var(--blur);
+      background: linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(15,23,42,1) 100%);
       color: white;
-      padding: 4.5rem 1.5rem 3rem;
-      border-top-left-radius: 60px;
-      border-top-right-radius: 60px;
+      padding: 6rem 2rem 3rem;
+      border-top-left-radius: 80px;
+      border-top-right-radius: 80px;
+      margin-top: 4rem;
+      overflow: hidden;
     }
 
     footer::before {
@@ -183,27 +694,40 @@
       left: 0;
       width: 100%;
       height: 60px;
-      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, rgba(15,23,42,0.85) 61%);
+      background: radial-gradient(120% 100% at 50% 100%, transparent 60%, rgba(15,23,42,0.9) 61%);
     }
 
     .footer-content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
       max-width: 1200px;
-      margin: auto;
-      text-align: left;
+      margin: 0 auto 3rem;
     }
 
     .footer-section {
-      flex: 1 1 220px;
+      display: flex;
+      flex-direction: column;
     }
 
     .footer-section h3 {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: var(--secondary);
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      position: relative;
+      padding-bottom: 0.7rem;
+    }
+
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
     }
 
     .footer-section ul {
@@ -212,137 +736,480 @@
     }
 
     .footer-section ul li {
-      margin-bottom: .6rem;
+      margin-bottom: 0.8rem;
     }
 
     .footer-section ul li a {
-      color: white;
-      opacity: 0.9;
-      transition: 0.3s;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .footer-section ul li a:hover {
       color: var(--primary);
-      opacity: 1;
+      transform: translateX(5px);
     }
 
-    .footer-section p {
-      font-size: 0.95rem;
-      opacity: 0.9;
-      margin-bottom: .5rem;
+    .contact-info p {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icons a {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      background: var(--primary-gradient);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     /* ================= RESPONSIVE ================= */
-    @media(max-width:768px){
+    @media(max-width: 1024px) {
+      .hero h1 { font-size: 3rem; }
+      .section-title { font-size: 2.4rem; }
+      .grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .timeline::before { left: 30px; }
+      .timeline-item { width: calc(100% - 80px); left: 80px !important; }
+    }
+
+    @media(max-width: 768px) {
       nav ul { display: none; }
-      .hero h1 { font-size: 2.2rem; }
-      .footer-content { text-align: center; flex-direction: column; gap: 1.5rem; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1.1rem; }
+      .section-title { font-size: 2rem; }
+      .btn { padding: 0.9rem 1.8rem; min-width: 160px; }
+      .cta-card { padding: 3rem 2rem; }
+      .cta-buttons { flex-direction: column; }
+      .footer-content { grid-template-columns: 1fr; text-align: center; }
+      .footer-section h3::after { left: 50%; transform: translateX(-50%); }
+      .contact-info p { justify-content: center; }
+    }
+
+    @media(max-width: 480px) {
+      .nav-container { padding: 1rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1rem; }
+      .glass-card { padding: 2rem 1.5rem; }
+      .grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 1.5rem; }
+      .stat-number { font-size: 2.2rem; }
     }
   </style>
 </head>
 <body>
 
-<header>
+<!-- Floating Background Shapes -->
+<div class="floating-shapes" id="floatingShapes"></div>
+
+<!-- ===== HEADER ===== -->
+<header id="mainHeader">
   <div class="nav-container">
-    <div class="logo"><i class="fas fa-shield-alt"></i> Safety Bridge</div>
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      Safety Bridge
+    </div>
     <nav>
       <ul>
         <li><a href="{{url_for('home')}}">Home</a></li>
         <li><a href="{{url_for('about')}}">About</a></li>
         <li><a href="{{url_for('register')}}">Register</a></li>
+        <li><a href="{{url_for('volunteer_enroll')}}">Volunteer</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
+<!-- ===== HERO SECTION ===== -->
 <section class="hero">
   <div class="hero-content">
-    <h1><i class="fas fa-shield-heart" style="color:#fca5a5"></i> About Safety Bridge</h1>
-    <p>Strengthening communities through preparedness, technology, and rapid response</p>
+    <h1><i class="fas fa-shield-heart"></i> About Safety Bridge</h1>
+    <p>Empowering communities with cutting-edge disaster preparedness, real-time response coordination, and life-saving technology to build resilience in the face of adversity.</p>
+    
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-number" id="communitiesServed">500+</span>
+        <span class="stat-label">Communities Served</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="alertsSent">10K+</span>
+        <span class="stat-label">Alerts Sent</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="livesProtected">50K+</span>
+        <span class="stat-label">Lives Protected</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="responseTime">2 min</span>
+        <span class="stat-label">Avg Response Time</span>
+      </div>
+    </div>
   </div>
 </section>
 
-<section>
+<!-- ===== MISSION SECTION ===== -->
+<section class="content-section">
   <div class="container">
-
+    <h2 class="section-title"><i class="fas fa-bullseye"></i> Our Mission & Vision</h2>
+    
     <div class="glass-card">
       <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
       <p>
-        Safety Bridge is a disaster preparedness and response platform designed to protect lives
-        and reduce damage by delivering real-time alerts, situational awareness, and coordinated
-        emergency support before, during, and after disasters.
+        Safety Bridge is dedicated to revolutionizing disaster response through technology, community empowerment, and proactive preparedness. We bridge the gap between critical information and those who need it most, ensuring that no community is left unprepared when disaster strikes.
       </p>
     </div>
 
     <div class="glass-card">
-      <h2><i class="fas fa-people-group"></i> Community First</h2>
+      <h2><i class="fas fa-eye"></i> Our Vision</h2>
       <p>
-        We believe disaster resilience starts at the community level. By empowering citizens,
-        responders, and authorities with timely information and tools, Safety Bridge enables faster
-        response, better coordination, and safer recovery.
+        We envision a world where every individual and community has access to real-time disaster intelligence, coordinated response networks, and the tools needed to not just survive disasters, but to thrive in their aftermath. A world where technology serves as a bridge to safety for all.
       </p>
     </div>
+  </div>
+</section>
 
-    <h2 class="section-title">
-      <i class="fas fa-bolt" style="color:#22c55e;margin-right:10px"></i>
-      What Safety Bridge Offers
-    </h2>
-
+<!-- ===== WHAT WE OFFER ===== -->
+<section class="content-section" style="background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.9) 100%);">
+  <div class="container">
+    <h2 class="section-title"><i class="fas fa-bolt"></i> What We Offer</h2>
+    
     <div class="grid">
       <div class="grid-item">
-        <i class="fas fa-bell"></i>
+        <div class="feature-icon">
+          <i class="fas fa-bell"></i>
+        </div>
         <h3>Early Warning Alerts</h3>
-        <p>Instant notifications for floods, earthquakes, cyclones, and emergencies.</p>
+        <p>Instant notifications for floods, earthquakes, cyclones, and other emergencies with location-specific guidance.</p>
       </div>
 
       <div class="grid-item">
-        <i class="fas fa-map-marked-alt"></i>
+        <div class="feature-icon">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
         <h3>Live Disaster Mapping</h3>
-        <p>Interactive maps showing affected areas, shelters, and safe zones.</p>
+        <p>Interactive real-time maps showing affected areas, safe zones, shelters, and evacuation routes.</p>
       </div>
 
       <div class="grid-item">
-        <i class="fas fa-hands-helping"></i>
+        <div class="feature-icon">
+          <i class="fas fa-hands-helping"></i>
+        </div>
         <h3>Coordinated Response</h3>
-        <p>Connecting volunteers, responders, and resources efficiently.</p>
+        <p>Connecting volunteers, first responders, and resources for efficient disaster management.</p>
       </div>
 
       <div class="grid-item">
-        <i class="fas fa-heartbeat"></i>
+        <div class="feature-icon">
+          <i class="fas fa-heartbeat"></i>
+        </div>
         <h3>Recovery & Support</h3>
-        <p>Post-disaster guidance, assistance, and long-term resilience planning.</p>
+        <p>Post-disaster guidance, mental health support, and long-term community resilience planning.</p>
+      </div>
+
+      <div class="grid-item">
+        <div class="feature-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <h3>AI-Powered Assistant</h3>
+        <p>24/7 AI chatbot providing instant answers to disaster-related questions and guidance.</p>
+      </div>
+
+      <div class="grid-item">
+        <div class="feature-icon">
+          <i class="fas fa-chart-network"></i>
+        </div>
+        <h3>Community Network</h3>
+        <p>Building resilient communities through volunteer networks and neighborhood support systems.</p>
       </div>
     </div>
+  </div>
+</section>
 
+<!-- ===== OUR JOURNEY ===== -->
+<section class="timeline-section">
+  <div class="container">
+    <h2 class="section-title"><i class="fas fa-road"></i> Our Journey</h2>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2018 - Foundation</h4>
+          <p>Safety Bridge was founded by emergency response professionals and technologists who witnessed communication gaps during major disasters.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2019 - First Deployment</h4>
+          <p>Successfully deployed during the Kerala floods, providing real-time flood maps and connecting 500+ volunteers with affected communities.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2020 - Platform Launch</h4>
+          <p>Launched the comprehensive Safety Bridge platform with AI-powered alerts and volunteer coordination features.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2022 - National Expansion</h4>
+          <p>Expanded to cover all disaster-prone regions in India, partnering with government agencies and NGOs.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2023 - Mobile App Release</h4>
+          <p>Launched mobile applications for iOS and Android, making disaster preparedness accessible to everyone.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2024 - Global Vision</h4>
+          <p>Currently developing international partnerships to expand our life-saving technology worldwide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="cta-section">
+  <div class="cta-card">
+    <h2>Join Our Mission</h2>
+    <p>Whether you're a concerned citizen, a disaster response professional, or a technology enthusiast, there's a place for you in the Safety Bridge community. Together, we can build a safer, more resilient world.</p>
+    
+    <div class="cta-buttons">
+      <a href="{{ url_for('register') }}" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Register for Alerts
+      </a>
+      <a href="{{ url_for('volunteer_enroll') }}" class="btn btn-secondary">
+        <i class="fas fa-hands-helping"></i> Become a Volunteer
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- ===== FOOTER ===== -->
 <footer>
   <div class="footer-content">
-    <!-- Quick Links -->
     <div class="footer-section">
       <h3>Quick Links</h3>
       <ul>
-        <li><a href="{{url_for('home')}}">Home</a></li>
-        <li><a href="{{url_for('about')}}">About</a></li>
-        <li><a href="{{url_for('register')}}">Register</a></li>
+        <li><a href="{{url_for('home')}}"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="{{url_for('about')}}"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="{{url_for('register')}}"><i class="fas fa-bell"></i> Register for Alerts</a></li>
+        <li><a href="{{url_for('volunteers')}}"><i class="fas fa-users"></i> Volunteers</a></li>
       </ul>
     </div>
 
-    <!-- Contact Our Team -->
     <div class="footer-section">
       <h3>Contact Our Team</h3>
-      <p><i class="fas fa-envelope"></i> support@safetybridge.org</p>
-      <p><i class="fas fa-envelope"></i> info@safetybridge.org</p>
-      <p><i class="fas fa-envelope"></i> volunteer@safetybridge.org</p>
+      <div class="contact-info">
+        <p><i class="fas fa-envelope"></i> support@safetybridge.org</p>
+        <p><i class="fas fa-envelope"></i> info@safetybridge.org</p>
+        <p><i class="fas fa-envelope"></i> volunteer@safetybridge.org</p>
+        <p><i class="fas fa-phone"></i> Emergency Hotline: 112</p>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h3>Connect With Us</h3>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
     </div>
   </div>
 
-  <p style="text-align:center; margin-top:2rem; font-size:0.9rem; opacity:0.8;">
-    &copy; Safety Bridge — Disaster Preparedness Platform
-  </p>
+  <div class="footer-bottom">
+    <p>&copy; 2024 Safety Bridge. All rights reserved. Empowering communities through disaster preparedness and response.</p>
+  </div>
 </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // Create floating shapes
+  const shapesContainer = document.getElementById('floatingShapes');
+  for(let i = 0; i < 12; i++) {
+    const shape = document.createElement('div');
+    shape.classList.add('shape');
+    const size = Math.random() * 80 + 20;
+    const posX = Math.random() * 100;
+    const posY = Math.random() * 100;
+    const duration = Math.random() * 25 + 15;
+    const delay = Math.random() * 10;
+    
+    shape.style.width = `${size}px`;
+    shape.style.height = `${size}px`;
+    shape.style.left = `${posX}%`;
+    shape.style.top = `${posY}%`;
+    shape.style.animationDuration = `${duration}s`;
+    shape.style.animationDelay = `${delay}s`;
+    shape.style.opacity = Math.random() * 0.1 + 0.05;
+    
+    shapesContainer.appendChild(shape);
+  }
+
+  // Header scroll effect
+  const header = document.getElementById('mainHeader');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
+  // Animated counters
+  function animateCounter(element, target, suffix = '') {
+    const current = parseInt(element.textContent.replace(/[^0-9]/g, ''));
+    const increment = Math.ceil(target / 50);
+    let currentValue = 0;
+    
+    const timer = setInterval(() => {
+      currentValue += increment;
+      if (currentValue >= target) {
+        currentValue = target;
+        clearInterval(timer);
+      }
+      element.textContent = suffix ? `${currentValue.toLocaleString()}${suffix}` : currentValue.toLocaleString();
+    }, 40);
+  }
+
+  // Animate all stats
+  setTimeout(() => {
+    animateCounter(document.getElementById('communitiesServed'), 500, '+');
+    animateCounter(document.getElementById('alertsSent'), 10000, '+');
+    animateCounter(document.getElementById('livesProtected'), 50000, '+');
+  }, 500);
+
+  // Timeline animation
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.animation = `fadeIn 0.8s ease ${index * 0.2}s backwards`;
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, index * 100);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  timelineItems.forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    observer.observe(item);
+  });
+
+  // Glass card hover effect
+  const glassCards = document.querySelectorAll('.glass-card, .grid-item');
+  glassCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-10px)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+    });
+  });
+
+  // Feature icon animation
+  const featureIcons = document.querySelectorAll('.feature-icon');
+  featureIcons.forEach(icon => {
+    icon.addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.15) rotate(10deg)';
+    });
+    
+    icon.addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1) rotate(0deg)';
+    });
+  });
+
+  // Add ripple effect to buttons
+  const buttons = document.querySelectorAll('.btn');
+  buttons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      const ripple = document.createElement('span');
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.classList.add('ripple');
+      
+      this.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    });
+  });
+
+  // Add style for ripple effect
+  const style = document.createElement('style');
+  style.textContent = `
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+    }
+    
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+});
+</script>
 
 </body>
 </html>
