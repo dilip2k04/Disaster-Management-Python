@@ -1,7 +1,16 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session, flash, g
 import sqlite3
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
+import smtplib
+from email.mime.text import MIMEText
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
+from twilio.rest import Client
+from concurrent.futures import ThreadPoolExecutor
+
+import cloudinary
+import cloudinary.uploader
+
 
 # =====================================================
 # INIT
@@ -9,104 +18,177 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+
+
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
 
 DB_NAME = "users.db"
 
 
 # =====================================================
-# DATABASE
+# DATABASE (PRO STYLE)
 # =====================================================
 
 def get_db():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    return conn
+    if "db" not in g:
+        g.db = sqlite3.connect(DB_NAME)
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db:
+        db.close()
 
 
 def init_db():
-    with get_db() as conn:
-        c = conn.cursor()
+    db = sqlite3.connect(DB_NAME)
+    c = db.cursor()
 
-        # USERS
-        c.execute("""
-        CREATE TABLE IF NOT EXISTS users(
+    tables = [
+
+        """CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE COLLATE NOCASE,
+            email TEXT UNIQUE,
             phone TEXT,
             location TEXT
-        )
-        """)
+        )""",
 
-        # VOLUNTEERS
-        c.execute("""
-        CREATE TABLE IF NOT EXISTS volunteers(
+        """CREATE TABLE IF NOT EXISTS volunteers(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             age INTEGER,
-            email TEXT UNIQUE COLLATE NOCASE,
+            email TEXT UNIQUE,
             phone TEXT,
+            profile_pic_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
+        )""",
 
-        # MISSING PERSONS
-        c.execute("""
-        CREATE TABLE IF NOT EXISTS missing_persons(
+        """CREATE TABLE IF NOT EXISTS missing_persons(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
+            age INTEGER,
+            gender TEXT,
             location TEXT,
+            date_seen TEXT,
             description TEXT,
+            notes TEXT,
+            reporter_name TEXT,
+            reporter_contact TEXT,
+            reporter_relation TEXT,
+            photo_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
+        )""",
 
-        # ADMINS
-        c.execute("""
-        CREATE TABLE IF NOT EXISTS admins(
+        """CREATE TABLE IF NOT EXISTS admins(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password TEXT
-        )
-        """)
+        )""",
 
-        # ⭐ ALERTS (FIXED — this was missing)
-        c.execute("""
-        CREATE TABLE IF NOT EXISTS alerts(
+        """CREATE TABLE IF NOT EXISTS alerts(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             message TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )"""
+    ]
+
+    for t in tables:
+        c.execute(t)
+
+    if not c.execute("SELECT id FROM admins WHERE username='admin'").fetchone():
+        c.execute(
+            "INSERT INTO admins(username,password) VALUES(?,?)",
+            ("admin", generate_password_hash("admin123"))
         )
-        """)
 
-        # DEFAULT ADMIN
-        if not c.execute("SELECT id FROM admins WHERE username='admin'").fetchone():
-            c.execute(
-                "INSERT INTO admins(username,password) VALUES(?,?)",
-                ("admin", generate_password_hash("admin123"))
-            )
-
-        conn.commit()
+    db.commit()
+    db.close()
 
 
-# Initialize database at startup (important for Render)
 init_db()
 
 
 # =====================================================
-# HOME
+# SERVICES (CLEAN ARCHITECTURE)
+# =====================================================
+
+TWILIO_CLIENT = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_TOKEN"))
+
+
+def send_sms(phone, text):
+    if not phone:
+        return
+    try:
+        TWILIO_CLIENT.messages.create(
+            body=text,
+            from_=os.getenv("TWILIO_PHONE"),
+            to=phone.strip()
+        )
+    except Exception as e:
+        print("SMS error:", e)
+
+
+def send_email_bulk(recipients, subject, text):
+    try:
+        with smtplib.SMTP_SSL(os.getenv("EMAIL_HOST"), int(os.getenv("EMAIL_PORT"))) as server:
+            server.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
+
+            for email in recipients:
+                if not email:
+                    continue
+                msg = MIMEText(text)
+                msg["Subject"] = subject
+                msg["From"] = os.getenv("EMAIL_USER")
+                msg["To"] = email
+                server.send_message(msg)
+
+    except Exception as e:
+        print("Email error:", e)
+
+
+def broadcast_alert(title, message, location=None):
+    text = f"🚨 ALERT: {title}\n\n{message}"
+
+    db = get_db()
+
+    if location:
+        users = db.execute(
+            "SELECT phone,email FROM users WHERE location=?",
+            (location,)
+        ).fetchall()
+    else:
+        users = db.execute("SELECT phone,email FROM users").fetchall()
+
+    phones = [u["phone"] for u in users]
+    emails = [u["email"] for u in users]
+
+    # parallel SMS
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        for phone in phones:
+            executor.submit(send_sms, phone, text)
+
+    # bulk email
+    send_email_bulk(emails, title, text)
+
+
+# =====================================================
+# ROUTES
 # =====================================================
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# =====================================================
-# STATIC PAGES
-# =====================================================
 
 @app.route("/about")
 def about():
@@ -138,21 +220,6 @@ def routes():
     return render_template("routes.html")
 
 
-@app.route("/alerts")
-def alerts_page():
-    with get_db() as conn:
-        alerts = conn.execute(
-            "SELECT * FROM alerts ORDER BY id DESC"
-        ).fetchall()
-
-    return render_template("alerts.html", alerts=alerts)
-
-
-@app.route("/user")
-def user():
-    return render_template("user.html")
-
-
 @app.route("/map")
 def map():
     return render_template("map.html")
@@ -163,37 +230,43 @@ def emergency():
     return render_template("emergency.html")
 
 
-# =====================================================
-# USER REGISTER
-# =====================================================
+@app.route("/user")
+def user():
+    return render_template("user.html")
 
-@app.route("/register", methods=["GET", "POST"])
+
+@app.route("/alerts")
+def alerts():
+    alerts = get_db().execute(
+        "SELECT * FROM alerts ORDER BY id DESC"
+    ).fetchall()
+    return render_template("alerts.html", alerts=alerts)
+
+
+@app.route("/missing")
+def missing():
+    persons = get_db().execute(
+        "SELECT * FROM missing_persons"
+    ).fetchall()
+    return render_template("missing.html", persons=persons)
+
+
+@app.route("/register", methods=["POST", "GET"])
 def register():
-
     if request.method == "POST":
-        email = request.form["email"].lower()
-        phone = request.form["phone"]
-        location = request.form["location"]
-
-        with get_db() as conn:
-
-            if conn.execute("SELECT id FROM users WHERE email=?", (email,)).fetchone():
-                flash("Email already registered", "error")
-                return redirect(url_for("register"))
-
-            conn.execute(
-                "INSERT INTO users(email,phone,location) VALUES(?,?,?)",
-                (email, phone, location)
-            )
-            conn.commit()
-
-        flash("Registered successfully", "success")
+        db = get_db()
+        db.execute(
+            "INSERT INTO users(email,phone,location) VALUES(?,?,?)",
+            (request.form["email"], request.form["phone"], request.form["location"])
+        )
+        db.commit()
+        flash("Registered successfully")
 
     return render_template("register.html")
 
 
 # =====================================================
-# VOLUNTEERS
+# VOLUNTEER ENROLL
 # =====================================================
 
 @app.route("/volunteer/enroll", methods=["GET", "POST"])
@@ -201,108 +274,125 @@ def volunteer_enroll():
 
     if request.method == "POST":
 
-        email = request.form["email"].lower()
+        profile_url = None
+        file = request.files.get("profile_pic")
+
+        # upload image
+        if file and file.filename:
+            upload = cloudinary.uploader.upload(file)
+            profile_url = upload["secure_url"]
 
         with get_db() as conn:
-
-            if conn.execute("SELECT id FROM volunteers WHERE email=?", (email,)).fetchone():
-                flash("Volunteer already exists", "error")
-                return redirect(url_for("volunteer_enroll"))
-
-            conn.execute(
-                "INSERT INTO volunteers(name,age,email,phone) VALUES(?,?,?,?)",
-                (
-                    request.form["name"],
-                    request.form["age"],
-                    email,
-                    request.form["phone"]
-                )
-            )
+            conn.execute("""
+                INSERT INTO volunteers(name,age,email,phone,profile_pic_url)
+                VALUES (?,?,?,?,?)
+            """, (
+                request.form["name"],
+                request.form["age"],
+                request.form["email"],
+                request.form["phone"],
+                profile_url
+            ))
             conn.commit()
 
-        flash("Volunteer added successfully", "success")
+        flash("Volunteer registered successfully", "success")
         return redirect(url_for("volunteers"))
 
     return render_template("volunteer_enroll.html")
 
 
-@app.route("/volunteers")
-def volunteers():
-    with get_db() as conn:
-        vols = conn.execute(
-            "SELECT * FROM volunteers ORDER BY id DESC"
-        ).fetchall()
+    if request.method == "POST":
+        db = get_db()
 
-    return render_template(
-        "volunteers.html",
-        volunteers=vols,
-        is_admin=session.get("admin_logged_in")
-    )
+        db.execute(
+            "INSERT INTO volunteers(name,age,email,phone) VALUES(?,?,?,?)",
+            (
+                request.form["name"],
+                request.form["age"],
+                request.form["email"],
+                request.form["phone"]
+            )
+        )
+        db.commit()
 
+        flash("Volunteer registered successfully")
+        return redirect(url_for("volunteers"))
 
-@app.route("/volunteer/delete/<int:vol_id>", methods=["POST"])
-def delete_volunteer(vol_id):
-    with get_db() as conn:
-        conn.execute("DELETE FROM volunteers WHERE id=?", (vol_id,))
-        conn.commit()
-
-    return redirect(url_for("volunteers"))
-
-
-# =====================================================
-# MISSING PERSONS
-# =====================================================
-
-@app.route("/missing")
-def missing():
-    with get_db() as conn:
-        persons = conn.execute(
-            "SELECT * FROM missing_persons ORDER BY id DESC"
-        ).fetchall()
-
-    return render_template("missing.html", persons=persons)
-
+    return render_template("volunteer_enroll.html")
 
 @app.route("/report-missing", methods=["POST"])
 def report_missing():
+
+    photo_url = None
+
+    # upload image to cloudinary
+    file = request.files.get("photo")
+
+    if file and file.filename:
+        upload_result = cloudinary.uploader.upload(file)
+        photo_url = upload_result["secure_url"]
+
     with get_db() as conn:
-        conn.execute(
-            "INSERT INTO missing_persons(name,location,description) VALUES(?,?,?)",
-            (
-                request.form["name"],
-                request.form["location"],
-                request.form["description"]
+        conn.execute("""
+            INSERT INTO missing_persons(
+                name, age, gender, location, date_seen,
+                description, notes,
+                reporter_name, reporter_contact, reporter_relation,
+                photo_url
             )
-        )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            request.form["name"],
+            request.form["age"],
+            request.form["gender"],
+            request.form["location"],
+            request.form["date"],
+            request.form["description"],
+            request.form.get("notes"),
+            request.form["reporter_name"],
+            request.form["reporter_contact"],
+            request.form["reporter_relation"],
+            photo_url
+        ))
         conn.commit()
 
-    flash("Report submitted", "success")
+    flash("Missing person reported successfully")
     return redirect(url_for("missing"))
+
+
+# =====================================================
+# VOLUNTEERS LIST
+# =====================================================
+
+@app.route("/volunteers")
+def volunteers():
+    db = get_db()
+
+    volunteers = db.execute(
+        "SELECT * FROM volunteers ORDER BY id DESC"
+    ).fetchall()
+
+    return render_template("volunteers.html", volunteers=volunteers)
 
 
 # =====================================================
 # ADMIN
 # =====================================================
 
-@app.route("/admin/login", methods=["GET", "POST"])
+@app.route("/admin/login", methods=["POST", "GET"])
 def admin_login():
 
     if request.method == "POST":
+        admin = get_db().execute(
+            "SELECT password FROM admins WHERE username=?",
+            (request.form["username"],)
+        ).fetchone()
 
-        username = request.form["username"]
-        password = request.form["password"]
-
-        with get_db() as conn:
-            admin = conn.execute(
-                "SELECT password FROM admins WHERE username=?",
-                (username,)
-            ).fetchone()
-
-        if admin and check_password_hash(admin["password"], password):
+        if admin and check_password_hash(admin["password"], request.form["password"]):
             session["admin_logged_in"] = True
             return redirect(url_for("admin_dashboard"))
 
-        flash("Invalid credentials", "error")
+        flash("Invalid login")
 
     return render_template("admin_login.html")
 
@@ -313,43 +403,76 @@ def admin_dashboard():
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
-    with get_db() as conn:
-        users = conn.execute("SELECT * FROM users").fetchall()
-        volunteers = conn.execute("SELECT * FROM volunteers").fetchall()
-        alerts = conn.execute("SELECT * FROM alerts ORDER BY id DESC").fetchall()
+    db = get_db()
 
     return render_template(
         "admin_dashboard.html",
-        users=users,
-        volunteers=volunteers,
-        alerts=alerts
+        users=db.execute("SELECT * FROM users").fetchall(),
+        volunteers=db.execute("SELECT * FROM volunteers").fetchall(),
+        alerts=db.execute("SELECT * FROM alerts ORDER BY id DESC").fetchall()
     )
 
 
 @app.route("/admin/add_alert", methods=["POST"])
 def add_alert():
 
-    if not session.get("admin_logged_in"):
-        return redirect(url_for("admin_login"))
+    title = request.form["title"]
+    message = request.form["message"]
+    location = request.form.get("location")
 
-    with get_db() as conn:
-        conn.execute(
-            "INSERT INTO alerts(title,message) VALUES(?,?)",
-            (request.form["title"], request.form["message"])
-        )
-        conn.commit()
+    db = get_db()
+    db.execute(
+        "INSERT INTO alerts(title,message) VALUES(?,?)",
+        (title, message)
+    )
+    db.commit()
 
-    flash("Alert added", "success")
+    broadcast_alert(title, message, location)
+
+    flash("Alert sent successfully")
     return redirect(url_for("admin_dashboard"))
 
+# =====================================================
+# DELETE USER (ADMIN)
+# =====================================================
 
 @app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
 def admin_delete_user(user_id):
-    with get_db() as conn:
-        conn.execute("DELETE FROM users WHERE id=?", (user_id,))
-        conn.commit()
+
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    db = get_db()
+
+    db.execute("DELETE FROM users WHERE id=?", (user_id,))
+    db.commit()
+
+    flash("User deleted successfully")
+    return redirect(url_for("admin_dashboard"))
+
+# =====================================================
+# DELETE VOLUNTEER (ADMIN)
+# =====================================================
+
+@app.route("/admin/delete_volunteer/<int:vol_id>", methods=["POST"])
+def admin_delete_volunteer(vol_id):
+
+    # security check
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    db = get_db()
+
+    db.execute(
+        "DELETE FROM volunteers WHERE id=?",
+        (vol_id,)
+    )
+    db.commit()
+
+    flash("Volunteer deleted successfully", "success")
 
     return redirect(url_for("admin_dashboard"))
+
 
 
 @app.route("/admin/logout")

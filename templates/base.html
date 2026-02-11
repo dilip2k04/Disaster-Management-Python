@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Safety Bridge | Disaster Management System</title>
+  <title>{% block title %}Safety Bridge | Disaster Management System{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- ================= GLOBAL STYLES ================= -->
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Global Styles -->
   <style>
     :root {
       --primary: #ef4444;
       --secondary: #2563eb;
       --dark: #0f172a;
       --light: #f8fafc;
-      --glass: rgba(255,255,255,0.75);
+      --glass: rgba(255,255,255,0.12);
       --blur: blur(14px);
       --radius: 18px;
       --shadow: 0 20px 40px rgba(0,0,0,.15);
@@ -37,127 +40,224 @@
       flex-direction: column;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* ================= HEADER ================= */
+    /* ================= HEADER / NAVBAR ================= */
     header {
-      background: linear-gradient(135deg, rgba(239,68,68,.9), rgba(37,99,235,.9));
+      background: linear-gradient(135deg, rgba(239,68,68,0.92), rgba(37,99,235,0.92));
       backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       box-shadow: var(--shadow);
       border-bottom-left-radius: 50px;
       border-bottom-right-radius: 50px;
-      padding: 1.2rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 1rem 0;
     }
 
     .nav-container {
-      max-width: 1200px;
-      margin: auto;
+      max-width: 1400px;
+      margin: 0 auto;
       padding: 0 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: white;
+      flex-wrap: wrap;
     }
 
     .brand {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 700;
+      color: white;
       display: flex;
       align-items: center;
-      gap: .5rem;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .brand i {
+      font-size: 1.6rem;
     }
 
     nav ul {
-      list-style: none;
       display: flex;
-      gap: 1.5rem;
       align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 1.8rem;
     }
 
-    nav a {
+    nav ul li a,
+    nav ul li button {
+      color: white;
+      text-decoration: none;
       font-weight: 500;
-      opacity: .9;
+      transition: all 0.25s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
 
-    nav a:hover {
-      opacity: 1;
-      text-decoration: underline;
+    nav ul li a:hover,
+    nav ul li button:hover {
+      color: #fff;
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
-    .nav-btn {
-      background: var(--primary);
-      padding: .45rem 1.2rem;
-      border-radius: 999px;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(239,68,68,.4);
+    .sos-nav-button {
+      background: rgba(255,255,255,0.18) !important;
+      border: 1px solid rgba(255,255,255,0.4) !important;
+      border-radius: 50px !important;
+      padding: 0.55rem 1.35rem !important;
+      font-weight: 600 !important;
+      transition: all 0.3s ease !important;
     }
 
-    /* ================= MAIN ================= */
+    .sos-nav-button:hover {
+      background: rgba(255,255,255,0.3) !important;
+      transform: scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(239,68,68,0.4) !important;
+    }
+
+    /* Mobile menu toggle */
+    .navbar-toggler {
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 991px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 1.5rem 0;
+        gap: 1.2rem;
+        background: rgba(15,23,42,0.6);
+        border-radius: 16px;
+        margin-top: 1rem;
+      }
+      .sos-nav-button {
+        width: fit-content;
+        align-self: center;
+      }
+    }
+
+    /* ================= MAIN CONTENT ================= */
     main {
       flex: 1;
-      max-width: 1200px;
-      margin: auto;
+      max-width: 1400px;
+      margin: 2.5rem auto;
       width: 100%;
-      padding: 2rem 1.5rem 4rem;
+      padding: 0 1.5rem 4rem;
     }
 
     /* ================= FOOTER ================= */
     footer {
-      position: relative;
       background: #020617;
       color: white;
       text-align: center;
-      padding: 3.5rem 1.5rem 2rem;
+      padding: 3.5rem 1.5rem 2.5rem;
       border-top-left-radius: 60px;
       border-top-right-radius: 60px;
+      margin-top: auto;
     }
 
     footer p {
-      font-size: .85rem;
-      opacity: .85;
+      margin: 0;
+      opacity: 0.8;
+      font-size: 0.95rem;
     }
   </style>
 
-  <!-- ⭐ PAGE SPECIFIC CSS GOES HERE -->
   {% block head %}{% endblock %}
 </head>
 
-
 <body>
 
-<!-- HEADER -->
+<!-- ================= NAVBAR ================= -->
 <header>
   <div class="nav-container">
-    <div class="brand">
-      <i class="fas fa-shield-halved"></i> Safety Bridge
-    </div>
-    <nav>
+    <a href="/" class="brand">
+      <i class="fas fa-shield-halved"></i>
+      Safety Bridge
+    </a>
+
+    <!-- Desktop / Large screen nav -->
+    <nav class="d-none d-lg-flex">
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/admin/login" class="nav-btn">Admin Login</a></li>
+        <li><a href="/admin/login">Send Alerts</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/register">Register</a></li>
+        <li>
+          <button class="sos-nav-button" id="sosButton">
+            <i class="fas fa-bell"></i> EMERGENCY SOS
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Mobile menu toggle (Bootstrap) -->
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#mobileNavbar" aria-controls="mobileNavbar" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+
+  <!-- Mobile collapse menu -->
+  <div class="collapse navbar-collapse d-lg-none" id="mobileNavbar">
+    <nav class="nav-container">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/admin/login">Send Alerts</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/register">Register</a></li>
+        <li>
+          <button class="sos-nav-button" id="sosButtonMobile">
+            <i class="fas fa-bell"></i> EMERGENCY SOS
+          </button>
+        </li>
       </ul>
     </nav>
   </div>
 </header>
 
-
-<!-- MAIN -->
+<!-- ================= PAGE CONTENT ================= -->
 <main>
   {% block content %}{% endblock %}
 </main>
 
-
-<!-- FOOTER -->
+<!-- ================= FOOTER ================= -->
 <footer>
-  <p>
-    <i class="fas fa-shield"></i>
-    Safety Bridge — Disaster Preparedness & Response Platform
-  </p>
-  <p>&copy; 2026 All Rights Reserved</p>
+  <p>© 2026 Safety Bridge — Disaster Preparedness & Response Platform</p>
 </footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SOS button functionality (both desktop & mobile) -->
+<script>
+  function activateSOS() {
+    // You can replace this with real SOS logic later
+    alert("EMERGENCY SOS ACTIVATED!\nHelp request has been initiated.");
+    // Future features:
+    // - Send geolocation
+    // - Call emergency API
+    // - Flash screen red
+    // - Play siren sound
+  }
+
+  document.getElementById('sosButton')?.addEventListener('click', activateSOS);
+  document.getElementById('sosButtonMobile')?.addEventListener('click', activateSOS);
+</script>
+
+{% block scripts %}{% endblock %}
 
 </body>
 </html>

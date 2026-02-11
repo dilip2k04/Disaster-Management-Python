@@ -1,319 +1,416 @@
 {% extends "base.html" %}
+{% block title %}Missing Persons Registry - Safety Bridge{% endblock %}
+
 {% block content %}
 
 <style>
-:root{
- --primary:#1e293b;
- --accent:#2563eb;
- --secondary:#dc2626;
- --success:#16a34a;
- --bg:#f1f5f9;
+:root {
+    --primary: #1e293b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --bg: #f8fafc;
+    --card-bg: white;
+    --text: #0f172a;
+    --text-light: #475569;
+    --border: #e2e8f0;
+    --radius: 16px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    --shadow-hover: 0 16px 40px rgba(0,0,0,0.12);
 }
 
-body{
- background:var(--bg);
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
 }
 
-/* container */
-.container{
- max-width:1250px;
- margin:auto;
- padding:40px 20px;
+.page-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* heading */
-.page-title{
- font-size:28px;
- font-weight:700;
- margin-bottom:25px;
- color:var(--primary);
- display:flex;
- align-items:center;
- gap:10px;
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
 }
 
-/* tabs */
-.tabs{
- display:flex;
- gap:15px;
- margin-bottom:30px;
+.tab {
+    padding: 0.75rem 1.6rem;
+    background: #e5e7eb;
+    color: #334155;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
 }
 
-.tab{
- padding:10px 22px;
- background:#e2e8f0;
- border-radius:8px;
- font-weight:600;
- cursor:pointer;
- transition:.25s;
+.tab:hover {
+    background: #d1d5db;
 }
 
-.tab.active{
- background:var(--accent);
- color:white;
+.tab.active {
+    background: var(--accent);
+    color: white;
+    position: relative;
+    top: 2px;
 }
 
-.tab-content{display:none}
-.tab-content.active{display:block}
-
-/* cards grid */
-.missing-persons-grid{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
- gap:25px;
+/* Grid */
+.missing-persons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.8rem;
 }
 
-/* card */
-.person-card{
- background:white;
- border-radius:14px;
- overflow:hidden;
- box-shadow:0 8px 20px rgba(0,0,0,.08);
- transition:.25s;
- display:flex;
- flex-direction:column;
+/* Person Card */
+.person-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.28s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-.person-card:hover{
- transform:translateY(-6px);
- box-shadow:0 12px 25px rgba(0,0,0,.12);
+.person-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
 }
 
-/* image */
-.person-image{
- height:240px;
- background-size:cover;
- background-position:center;
- position:relative;
+.person-image {
+    height: 260px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
 }
 
-/* top badges */
-.badges{
- position:absolute;
- top:10px;
- left:10px;
- display:flex;
- gap:6px;
+.badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 8px;
 }
 
-.badge{
- background:rgba(0,0,0,.75);
- color:white;
- font-size:12px;
- padding:4px 8px;
- border-radius:6px;
+.badge {
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 0.82rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 500;
 }
 
-/* details */
-.person-details{
- padding:18px;
- display:flex;
- flex-direction:column;
- gap:8px;
+.person-details {
+    padding: 1.4rem 1.5rem 1.6rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
 }
 
-.person-details h4{
- font-size:18px;
- font-weight:700;
+.person-details h4 {
+    font-size: 1.38rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
 }
 
-.info{
- font-size:14px;
- color:#475569;
+.info-row {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.45;
 }
 
-.section-label{
- font-weight:600;
- color:#334155;
- font-size:13px;
- margin-top:6px;
+.section-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 0.6rem;
 }
 
-.contact{
- margin-top:8px;
- background:#e0f2fe;
- padding:8px;
- border-radius:6px;
- font-size:13px;
- color:#0369a1;
+.contact-info {
+    margin-top: auto;
+    padding: 1rem;
+    background: #e0f2fe;
+    border-radius: 10px;
+    font-size: 0.94rem;
+    color: #0369a1;
+    line-height: 1.5;
 }
 
-/* report form */
-.search-section{
- background:white;
- padding:28px;
- border-radius:14px;
- box-shadow:0 8px 20px rgba(0,0,0,.08);
+/* Report Form */
+.report-section {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2.2rem;
+    box-shadow: var(--shadow);
+    margin-top: 1rem;
 }
 
-form{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
- gap:14px;
+.report-section h3 {
+    margin: 0 0 1.8rem;
+    color: var(--primary);
 }
 
-textarea{
- grid-column:1/-1;
+form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.4rem;
 }
 
-input,select,textarea{
- padding:10px;
- border-radius:8px;
- border:1px solid #e2e8f0;
- font-size:14px;
+input, select, textarea {
+    width: 100%;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.97rem;
+    transition: border-color 0.2s;
 }
 
-/* buttons */
-.btn{
- background:var(--accent);
- color:white;
- border:none;
- padding:11px 20px;
- border-radius:8px;
- font-weight:600;
- cursor:pointer;
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
 }
 
-.btn-secondary{
- background:var(--secondary);
+textarea {
+    grid-column: 1 / -1;
+    min-height: 110px;
+    resize: vertical;
 }
 
-.submit-btn{
- grid-column:1/-1;
+.btn {
+    padding: 0.95rem 1.8rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s;
 }
 
-.flash{
- background:#dcfce7;
- color:#065f46;
- padding:10px;
- border-radius:8px;
- margin-bottom:20px;
+.btn-primary {
+    background: var(--accent);
+    color: white;
 }
 
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.submit-btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+}
+
+.flash {
+    background: #dcfce7;
+    color: #065f46;
+    padding: 1rem 1.4rem;
+    border-radius: 10px;
+    margin-bottom: 1.8rem;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 5rem 1rem;
+    color: #64748b;
+    font-size: 1.15rem;
+}
+
+@media (max-width: 768px) {
+    .tabs { gap: 0.8rem; flex-wrap: wrap; }
+    .tab { padding: 0.7rem 1.3rem; font-size: 0.95rem; }
+    .missing-persons-grid { grid-template-columns: 1fr; }
+}
 </style>
-
 
 <div class="container">
 
-<h2 class="page-title">🔎 Missing Persons Registry</h2>
+    <h2 class="page-title">
+        <i class="fas fa-search"></i> Missing Persons Registry
+    </h2>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="flash">{{ messages[0] }}</div>
-{% endif %}
-{% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {% if category == 'error' %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-<div class="tabs">
-  <div class="tab active" data-tab="list">Search Missing</div>
-  <div class="tab" data-tab="report">Report Missing</div>
+    <div class="tabs">
+        <div class="tab active" data-tab="list">Search / View Reports</div>
+        <div class="tab" data-tab="report">Report Missing Person</div>
+    </div>
+
+    <!-- ================= LIST TAB ================= -->
+    <div class="tab-content active" id="list">
+        {% if persons %}
+            <div class="missing-persons-grid">
+                {% for p in persons %}
+                <div class="person-card">
+                    <div class="person-image" 
+                         style="background-image: url('{{ p.photo_url or url_for('static', filename='images/no-image-person.jpg') }}')">
+                        <div class="badges">
+                            <span class="badge">{{ p.age or '?' }} yrs</span>
+                            <span class="badge">{{ p.gender or 'Unknown' }}</span>
+                            {% if p.status == 'found' %}
+                            <span class="badge" style="background:#16a34a;">FOUND</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="person-details">
+                        <h4>{{ p.name }}</h4>
+
+                        <div class="info-row"><b>Last seen:</b> {{ p.location or '—' }}</div>
+                        <div class="info-row"><b>Date:</b> {{ p.date_seen or '—' }}</div>
+
+                        <div class="section-label">Description</div>
+                        <div class="info-row">{{ p.description or 'No description provided.' }}</div>
+
+                        {% if p.notes %}
+                        <div class="section-label">Additional Notes</div>
+                        <div class="info-row">{{ p.notes }}</div>
+                        {% endif %}
+
+                        <div class="contact-info">
+                            Reported by: <strong>{{ p.reporter_name }}</strong><br>
+                            Contact: {{ p.reporter_contact }}<br>
+                            Relation: {{ p.reporter_relation or 'Not specified' }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-exclamation-circle" style="font-size:3.5rem;color:#94a3b8;margin-bottom:1rem;"></i>
+                <p>No missing persons reports have been submitted yet.</p>
+                <p>Be the first to help — use the "Report Missing" tab above.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- ================= REPORT TAB ================= -->
+    <div class="tab-content" id="report">
+
+        <div class="report-section">
+            <h3><i class="fas fa-user-plus"></i> Report a Missing Person</h3>
+
+            <form method="POST" action="{{ url_for('report_missing') }}" enctype="multipart/form-data">
+                <div>
+                    <label>Full Name <span style="color:#ef4444;">*</span></label>
+                    <input name="name" type="text" placeholder="e.g. Ramesh Kumar" required>
+                </div>
+
+                <div>
+                    <label>Age <span style="color:#ef4444;">*</span></label>
+                    <input name="age" type="number" min="0" max="120" placeholder="Age in years" required>
+                </div>
+
+                <div>
+                    <label>Gender <span style="color:#ef4444;">*</span></label>
+                    <select name="gender" required>
+                        <option value="">Select gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                        <option>Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Last Known Location <span style="color:#ef4444;">*</span></label>
+                    <input name="location" type="text" placeholder="City, area or landmark" required>
+                </div>
+
+                <div>
+                    <label>Date Last Seen <span style="color:#ef4444;">*</span></label>
+                    <input name="date_seen" type="date" required>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label>Physical Description <span style="color:#ef4444;">*</span></label>
+                    <textarea name="description" rows="4" placeholder="Height, build, clothing last worn, distinguishing features..." required></textarea>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label>Additional Notes / Circumstances</label>
+                    <textarea name="notes" rows="3" placeholder="Any other helpful information..."></textarea>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label>Photo (if available)</label>
+                    <input type="file" name="photo" accept="image/*">
+                </div>
+
+                <hr style="grid-column:1/-1; border:none; border-top:1px solid #e2e8f0; margin:1.5rem 0;">
+
+                <div>
+                    <label>Your Name <span style="color:#ef4444;">*</span></label>
+                    <input name="reporter_name" type="text" placeholder="Your full name" required>
+                </div>
+
+                <div>
+                    <label>Your Contact Number / Email <span style="color:#ef4444;">*</span></label>
+                    <input name="reporter_contact" type="text" placeholder="Phone or email" required>
+                </div>
+
+                <div>
+                    <label>Relationship to Missing Person <span style="color:#ef4444;">*</span></label>
+                    <input name="reporter_relation" type="text" placeholder="e.g. Father, Friend, Colleague" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Report
+                </button>
+            </form>
+        </div>
+    </div>
+
 </div>
-
-
-<!-- ================= LIST ================= -->
-<div class="tab-content active" id="list">
-
-<div class="missing-persons-grid">
-
-{% for p in persons %}
-<div class="person-card">
-
-  <div class="person-image"
-       style="background-image:url('{{ p.photo_url or url_for('static', filename='no-image.png') }}')">
-
-      <div class="badges">
-        <span class="badge">{{ p.age }} yrs</span>
-        <span class="badge">{{ p.gender }}</span>
-      </div>
-  </div>
-
-  <div class="person-details">
-
-      <h4>{{ p.name }}</h4>
-
-      <div class="info"><b>Last Seen:</b> {{ p.location }}</div>
-      <div class="info"><b>Date:</b> {{ p.date_seen }}</div>
-
-      <div class="section-label">Description</div>
-      <div class="info">{{ p.description }}</div>
-
-      {% if p.notes %}
-      <div class="section-label">Additional Notes</div>
-      <div class="info">{{ p.notes }}</div>
-      {% endif %}
-
-      <div class="contact">
-        📞 {{ p.reporter_name }} | {{ p.reporter_contact }}
-        <br>
-        Relation: {{ p.reporter_relation }}
-      </div>
-
-  </div>
-
-</div>
-{% else %}
-<p>No reports yet.</p>
-{% endfor %}
-
-</div>
-</div>
-
-
-
-<!-- ================= REPORT FORM ================= -->
-<div class="tab-content" id="report">
-
-<div class="search-section">
-
-<h3 style="margin-bottom:15px">Report a Missing Person</h3>
-
-<form method="POST"
-      action="/report-missing"
-      enctype="multipart/form-data">
-
-<input name="name" placeholder="Full Name" required>
-<input name="age" type="number" placeholder="Age" required>
-
-<select name="gender" required>
-<option value="">Gender</option>
-<option>Male</option>
-<option>Female</option>
-<option>Other</option>
-</select>
-
-<input name="location" placeholder="Last Known Location" required>
-<input name="date" type="date" required>
-
-<textarea name="description" placeholder="Physical Description" required></textarea>
-
-<textarea name="notes" placeholder="Additional Notes"></textarea>
-
-<input type="file" name="photo" accept="image/*">
-
-<input name="reporter_name" placeholder="Your Name" required>
-<input name="reporter_contact" placeholder="Phone or Email" required>
-<input name="reporter_relation" placeholder="Relationship" required>
-
-<button class="btn btn-secondary submit-btn">Submit Report</button>
-
-</form>
-
-</div>
-</div>
-
-</div>
-
 
 <script>
-const tabs=document.querySelectorAll('.tab');
-const contents=document.querySelectorAll('.tab-content');
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
 
-tabs.forEach(t=>{
- t.onclick=()=>{
-  tabs.forEach(x=>x.classList.remove('active'));
-  contents.forEach(c=>c.classList.remove('active'));
-  t.classList.add('active');
-  document.getElementById(t.dataset.tab).classList.add('active');
- }
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
 });
 </script>
 
