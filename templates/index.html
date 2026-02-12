@@ -1122,7 +1122,7 @@
 </section>
 
 <!-- ===== AI CHATBOT ===== -->
-<div class="ai-assistant" id="aiAssistant">
+<!-- <div class="ai-assistant" id="aiAssistant">
   <div class="ai-button" id="aiButton"><i class="fas fa-robot"></i></div>
   <div class="ai-chatbox" id="aiChatbox">
     <div class="chat-header">
@@ -1137,7 +1137,7 @@
       <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
@@ -1295,12 +1295,12 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // Chat responses
-  const botResponses = {
-    greetings: ["Hello! How can I assist you today?", "Hi there! What can I help you with?", "Welcome! I'm here to help with disaster preparedness."],
-    emergency: ["If this is an emergency, please call 112 immediately. I can provide guidance while you wait for help.", "For immediate emergencies, contact local authorities at 112. How else can I assist?"],
-    preparedness: ["Here are key preparedness steps: 1) Create an emergency plan 2) Build a disaster kit 3) Stay informed about local risks 4) Practice evacuation routes.", "Disaster preparedness starts with knowing your risks. What specific disaster are you concerned about?"],
-    default: ["I'm here to help with disaster preparedness and safety information. Could you be more specific?", "That's a great question about disaster safety. Let me find the best information for you."]
-  };
+  // const botResponses = {
+  //   greetings: ["Hello! How can I assist you today?", "Hi there! What can I help you with?", "Welcome! I'm here to help with disaster preparedness."],
+  //   emergency: ["If this is an emergency, please call 112 immediately. I can provide guidance while you wait for help.", "For immediate emergencies, contact local authorities at 112. How else can I assist?"],
+  //   preparedness: ["Here are key preparedness steps: 1) Create an emergency plan 2) Build a disaster kit 3) Stay informed about local risks 4) Practice evacuation routes.", "Disaster preparedness starts with knowing your risks. What specific disaster are you concerned about?"],
+  //   default: ["I'm here to help with disaster preparedness and safety information. Could you be more specific?", "That's a great question about disaster safety. Let me find the best information for you."]
+  // };
 
   function addMessage(text, isBot = true) {
     const messageDiv = document.createElement('div');
@@ -1310,42 +1310,42 @@ document.addEventListener('DOMContentLoaded', function(){
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  function getBotResponse(input) {
-    input = input.toLowerCase();
+  // function getBotResponse(input) {
+  //   input = input.toLowerCase();
     
-    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
-      return botResponses.greetings[Math.floor(Math.random() * botResponses.greetings.length)];
-    }
+  //   if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
+  //     return botResponses.greetings[Math.floor(Math.random() * botResponses.greetings.length)];
+  //   }
     
-    if (input.includes('emergency') || input.includes('help') || input.includes('urgent')) {
-      return botResponses.emergency[Math.floor(Math.random() * botResponses.emergency.length)];
-    }
+  //   if (input.includes('emergency') || input.includes('help') || input.includes('urgent')) {
+  //     return botResponses.emergency[Math.floor(Math.random() * botResponses.emergency.length)];
+  //   }
     
-    if (input.includes('prepare') || input.includes('kit') || input.includes('plan')) {
-      return botResponses.preparedness[Math.floor(Math.random() * botResponses.preparedness.length)];
-    }
+  //   if (input.includes('prepare') || input.includes('kit') || input.includes('plan')) {
+  //     return botResponses.preparedness[Math.floor(Math.random() * botResponses.preparedness.length)];
+  //   }
     
-    return botResponses.default[Math.floor(Math.random() * botResponses.default.length)];
-  }
+  //   return botResponses.default[Math.floor(Math.random() * botResponses.default.length)];
+  // }
 
-  sendMessage.addEventListener('click', () => {
-    const message = userInput.value.trim();
-    if (message) {
-      addMessage(message, false);
-      userInput.value = '';
+  // sendMessage.addEventListener('click', () => {
+  //   const message = userInput.value.trim();
+  //   if (message) {
+  //     addMessage(message, false);
+  //     userInput.value = '';
       
-      setTimeout(() => {
-        const response = getBotResponse(message);
-        addMessage(response);
-      }, 1000);
-    }
-  });
+  //     setTimeout(() => {
+  //       const response = getBotResponse(message);
+  //       addMessage(response);
+  //     }, 1000);
+  //   }
+  // });
 
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      sendMessage.click();
-    }
-  });
+  // userInput.addEventListener('keypress', (e) => {
+  //   if (e.key === 'Enter') {
+  //     sendMessage.click();
+  //   }
+  // });
 
   // SOS button
   const sosButton = document.getElementById('sosButton');

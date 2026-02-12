@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash, g
+from flask import Flask, request, render_template, redirect, url_for, session, flash, g,jsonify
 import sqlite3
 import os
 import smtplib
@@ -242,6 +242,29 @@ def alerts():
     ).fetchall()
     return render_template("alerts.html", alerts=alerts)
 
+@app.route("/api/disasters")
+def api_disasters():
+    db = get_db()
+
+    alerts = db.execute("""
+        SELECT id, title, message, created_at
+        FROM alerts
+        ORDER BY id DESC
+    """).fetchall()
+
+    result = []
+
+    for a in alerts:
+        result.append({
+            "id": a["id"],
+            "disaster_type": a["title"],   # maps to your JS
+            "location": "General Area",    # you don't store location yet
+            "datetime": a["created_at"],
+            "message": a["message"]
+        })
+
+    return jsonify(result)
+
 
 @app.route("/missing")
 def missing():
@@ -271,6 +294,47 @@ def register():
 
 @app.route("/volunteer/enroll", methods=["GET", "POST"])
 def volunteer_enroll():
+
+    if request.method == "POST":
+        db = get_db()
+
+        email = request.form["email"]
+
+        # ✅ check duplicate first
+        existing = db.execute(
+            "SELECT id FROM volunteers WHERE email=?",
+            (email,)
+        ).fetchone()
+
+        if existing:
+            flash("⚠️ This email is already registered as a volunteer.", "error")
+            return redirect(url_for("volunteer_enroll"))
+
+        profile_url = None
+        file = request.files.get("profile_pic")
+
+        if file and file.filename:
+            upload = cloudinary.uploader.upload(file)
+            profile_url = upload["secure_url"]
+
+        db.execute("""
+            INSERT INTO volunteers(name,age,email,phone,profile_pic_url)
+            VALUES (?,?,?,?,?)
+        """, (
+            request.form["name"],
+            request.form["age"],
+            email,
+            request.form["phone"],
+            profile_url
+        ))
+
+        db.commit()
+
+        flash("✅ Volunteer registered successfully", "success")
+        return redirect(url_for("volunteers"))
+
+    return render_template("volunteer_enroll.html")
+
 
     if request.method == "POST":
 
@@ -346,7 +410,7 @@ def report_missing():
             request.form["age"],
             request.form["gender"],
             request.form["location"],
-            request.form["date"],
+            request.form["date_seen"],
             request.form["description"],
             request.form.get("notes"),
             request.form["reporter_name"],

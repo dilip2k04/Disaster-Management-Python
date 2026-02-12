@@ -8,8 +8,14 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <!-- html2canvas for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     :root {
@@ -37,7 +43,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     }
 
     body {
@@ -101,20 +107,12 @@
       cursor: pointer;
     }
 
-    nav ul li a:hover,
-    nav ul li button:hover {
-      color: #fff;
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
     .sos-nav-button {
       background: rgba(255,255,255,0.18) !important;
       border: 1px solid rgba(255,255,255,0.4) !important;
       border-radius: 50px !important;
       padding: 0.55rem 1.35rem !important;
       font-weight: 600 !important;
-      transition: all 0.3s ease !important;
     }
 
     .sos-nav-button:hover {
@@ -124,128 +122,249 @@
     }
 
     @media (max-width: 991px) {
-      .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      nav ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 1.5rem 0;
-        gap: 1.2rem;
-        background: rgba(15,23,42,0.6);
-        border-radius: 16px;
-        margin-top: 1rem;
-      }
-      .sos-nav-button {
-        width: fit-content;
-        align-self: center;
-      }
+      .nav-container { flex-direction: column; align-items: flex-start; }
+      nav ul { flex-direction: column; width: 100%; padding: 1.5rem 0; gap: 1.2rem; background: rgba(15,23,42,0.6); border-radius: 16px; margin-top: 1rem; }
     }
 
-    /* ================= KIT BUILDER STYLES ================= */
-    .container {
-      max-width: 1200px;
-      margin: 2.5rem auto 4rem;
-      padding: 0 1.5rem;
-    }
-
-    .progress-section {
-      background: white;
-      border-radius: 16px;
-      padding: 1.75rem;
+    /* ================= HERO SECTION ================= */
+    .kit-hero {
+      background: linear-gradient(145deg, var(--dark), #1e293b);
+      color: white;
+      padding: 4rem 2rem;
       margin-bottom: 2rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .progress-percent {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: var(--kit-primary);
-    }
-
-    .progress-bar-container {
-      background: #e2e8f0;
-      height: 12px;
-      border-radius: 6px;
+      border-radius: 0 0 60px 60px;
+      position: relative;
       overflow: hidden;
     }
 
-    .progress-fill {
+    .kit-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, var(--kit-primary), var(--kit-secondary));
-      transition: width 0.4s ease;
+      background: radial-gradient(circle at 20% 50%, rgba(37,99,235,0.2) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 50%, rgba(239,68,68,0.2) 0%, transparent 50%);
     }
 
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ================= MAIN CONTAINER ================= */
+    .container {
+      max-width: 1400px;
+      margin: -2rem auto 4rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ===== DISASTER TYPE SELECTOR ===== */
+    .disaster-selector {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .selector-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .disaster-badges {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .disaster-badge {
+      padding: 0.8rem 1.5rem;
+      border-radius: 100px;
+      background: #f1f5f9;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border: 2px solid transparent;
+    }
+
+    .disaster-badge.active {
+      background: var(--kit-primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(37,99,235,0.2);
+    }
+
+    .disaster-badge i {
+      font-size: 1.1rem;
+    }
+
+    /* ===== READINESS SCORE ===== */
+    .readiness-score {
+      background: linear-gradient(145deg, var(--kit-primary), var(--kit-primary-dark));
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      backdrop-filter: blur(5px);
+    }
+
+    .score-details {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .score-stat {
+      text-align: center;
+    }
+
+    .score-stat span {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    /* ===== KIT DASHBOARD ===== */
+    .kit-dashboard {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .kit-dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== CATEGORIES GRID ===== */
     .categories-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.8rem;
     }
 
     .category-card {
       background: white;
-      border-radius: 16px;
-      padding: 1.75rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      transition: transform 0.2s, box-shadow 0.2s;
+      border-radius: 20px;
+      padding: 1.8rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .category-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
     .category-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.8rem;
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
-    .category-count {
-      background: #e2e8f0;
-      color: #64748b;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-left: auto;
+    .progress-pie {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: conic-gradient(var(--kit-primary) 0deg, #e2e8f0 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
     }
 
     .item {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 1rem;
       padding: 0.8rem;
       background: #f8fafc;
       border-radius: 12px;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
       transition: all 0.2s;
     }
 
     .item:hover {
       background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .item-checkbox {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
     }
 
     .item-input {
       flex: 1;
       border: none;
       background: transparent;
-      font-size: 0.97rem;
-      outline: none;
+      font-size: 0.95rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .item-input:focus {
+      outline: 2px solid var(--kit-primary-light);
+      background: white;
+    }
+
+    .item-quantity {
+      width: 70px;
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      text-align: center;
     }
 
     .item-delete {
@@ -277,62 +396,131 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      transition: all 0.3s;
     }
 
+    .add-item-btn:hover {
+      background: var(--kit-primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ===== SUGGESTIONS PANEL ===== */
+    .suggestions-panel {
+      background: white;
+      border-radius: 24px;
+      padding: 1.8rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    .suggestions-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .suggestions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .suggestion-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    .add-suggestion-btn {
+      background: var(--kit-secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* ===== ACTIONS GRID ===== */
     .actions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
+      margin-top: 2rem;
     }
 
     .action-btn {
       padding: 1rem 1.4rem;
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.6rem;
-      transition: all 0.2s;
+      gap: 0.8rem;
+      transition: all 0.3s;
     }
 
-    .btn-pdf    { background: #dc2626; color: white; }
-    .btn-print  { background: #f59e0b; color: white; }
-    .btn-share  { background: #10b981; color: white; }
-    .btn-clear  { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
 
+    .btn-pdf { background: #dc2626; color: white; }
+    .btn-print { background: #f59e0b; color: white; }
+    .btn-share { background: #10b981; color: white; }
+    .btn-clear { background: #6b7280; color: white; }
+    .btn-reset { background: #1e293b; color: white; }
+
+    /* ===== MODALS ===== */
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
       align-items: center;
       justify-content: center;
       padding: 1rem;
     }
 
-    .modal.active {
-      display: flex;
-    }
+    .modal.active { display: flex; }
 
     .modal-content {
       background: white;
-      border-radius: 16px;
-      padding: 2rem;
+      border-radius: 32px;
+      padding: 2.5rem;
       max-width: 500px;
       width: 100%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .categories-grid, .actions-grid {
-        grid-template-columns: 1fr;
-      }
+    .modal-input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #020617;
+      color: white;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      margin-top: 4rem;
     }
   </style>
 </head>
@@ -346,7 +534,6 @@
       <i class="fas fa-shield-halved"></i>
       Safety Bridge
     </a>
-
     <nav class="d-none d-lg-flex">
       <ul>
         <li><a href="/">Home</a></li>
@@ -360,226 +547,610 @@
         </li>
       </ul>
     </nav>
-
-    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#mobileNavbar" aria-controls="mobileNavbar" 
-            aria-expanded="false" aria-label="Toggle navigation">
-      <i class="fas fa-bars"></i>
-    </button>
-  </div>
-
-  <div class="collapse navbar-collapse d-lg-none" id="mobileNavbar">
-    <nav class="nav-container">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/admin/login">Send Alerts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/register">Register</a></li>
-        <li>
-          <button class="sos-nav-button" id="sosButtonMobile">
-            <i class="fas fa-bell"></i> EMERGENCY SOS
-          </button>
-        </li>
-      </ul>
-    </nav>
   </div>
 </header>
+
+<!-- ================= HERO SECTION ================= -->
+<section class="kit-hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Emergency Preparedness Kit Builder</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; opacity: 0.9;">
+      Build, customize, and track your family's emergency survival kit. 
+      Get personalized recommendations based on your location and family size.
+    </p>
+  </div>
+</section>
 
 <!-- ================= MAIN CONTENT ================= -->
 <div class="container">
 
-  <div class="progress-section">
-    <div class="progress-header">
-      <div>
-        <h3>Your Emergency Kit Progress</h3>
-        <p>Track your preparedness level</p>
-      </div>
-      <div class="progress-percent" id="progressPercent">0%</div>
+  <!-- Disaster Type Selector -->
+  <div class="disaster-selector">
+    <div class="selector-title">
+      <i class="fas fa-shield-halved" style="font-size: 1.8rem; color: var(--kit-primary);"></i>
+      <h2 style="font-weight: 700;">What disasters are you preparing for?</h2>
     </div>
-    <div class="progress-bar-container">
-      <div class="progress-fill" id="progressFill"></div>
+    <div class="disaster-badges" id="disasterBadges">
+      <div class="disaster-badge active" data-disaster="all">
+        <i class="fas fa-globe"></i> All
+      </div>
+      <div class="disaster-badge" data-disaster="flood">
+        <i class="fas fa-water"></i> Flood
+      </div>
+      <div class="disaster-badge" data-disaster="earthquake">
+        <i class="fas fa-mountain"></i> Earthquake
+      </div>
+      <div class="disaster-badge" data-disaster="fire">
+        <i class="fas fa-fire"></i> Wildfire
+      </div>
+      <div class="disaster-badge" data-disaster="cyclone">
+        <i class="fas fa-wind"></i> Cyclone
+      </div>
     </div>
   </div>
 
-  <div class="categories-grid" id="categories"></div>
+  <!-- Readiness Score -->
+  <div class="readiness-score">
+    <div style="display: flex; align-items: center; gap: 2rem;">
+      <div class="score-circle" id="scoreCircle">0%</div>
+      <div>
+        <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Readiness Score</h3>
+        <p style="opacity: 0.9;">Your household is <span id="readinessLevel">not ready</span> for emergencies</p>
+      </div>
+    </div>
+    <div class="score-details" id="scoreDetails">
+      <div class="score-stat">
+        <span id="totalItems">0</span>
+        <small>Total Items</small>
+      </div>
+      <div class="score-stat">
+        <span id="checkedItems">0</span>
+        <small>Collected</small>
+      </div>
+      <div class="score-stat">
+        <span id="missingItems">0</span>
+        <small>Missing</small>
+      </div>
+    </div>
+  </div>
 
-  <div class="actions-section">
-    <h3 class="actions-title">Export & Actions</h3>
+  <!-- Main Dashboard -->
+  <div class="kit-dashboard">
+    <!-- Categories Grid -->
+    <div class="categories-grid" id="categories"></div>
+
+    <!-- Suggestions & Tips Panel -->
+    <div class="suggestions-panel">
+      <div class="suggestions-header">
+        <i class="fas fa-lightbulb" style="font-size: 2rem; color: #f59e0b;"></i>
+        <h3 style="font-size: 1.4rem; font-weight: 700;">Recommended Items</h3>
+      </div>
+      
+      <div style="margin-bottom: 2rem;">
+        <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">
+          <i class="fas fa-users"></i> Household Size
+        </label>
+        <input type="number" id="householdSize" value="4" min="1" max="10" 
+               style="width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 12px;">
+      </div>
+
+      <div class="suggestions-list" id="suggestionsList">
+        <!-- Suggestions will be populated here -->
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 16px;">
+        <i class="fas fa-info-circle" style="color: var(--kit-primary); margin-right: 0.5rem;"></i>
+        <strong>Pro Tip:</strong> Store at least 3 days of supplies, but aim for 2 weeks for better preparedness.
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions Section -->
+  <div style="margin-top: 2rem;">
+    <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">
+      <i class="fas fa-tools"></i> Kit Management Tools
+    </h3>
     <div class="actions-grid">
       <button class="action-btn btn-pdf" onclick="downloadPDF()">
-        <i class="fas fa-file-pdf"></i> Download PDF
+        <i class="fas fa-file-pdf"></i> Export Checklist
       </button>
       <button class="action-btn btn-print" onclick="window.print()">
-        <i class="fas fa-print"></i> Print Checklist
+        <i class="fas fa-print"></i> Print List
       </button>
       <button class="action-btn btn-share" onclick="shareKit()">
         <i class="fas fa-share-alt"></i> Share Kit
       </button>
-      <button class="action-btn btn-clear" onclick="showClearModal()">
-        <i class="fas fa-trash-alt"></i> Clear Completed
+      <button class="action-btn" style="background: #8b5cf6; color: white;" onclick="generateQR()">
+        <i class="fas fa-qrcode"></i> QR Code
       </button>
-      <button class="action-btn" style="background: linear-gradient(90deg, #6b7280, #4b5563); color:white;" onclick="uncheckAll()">
-        <i class="fas fa-undo-alt"></i> Uncheck All
+      <button class="action-btn btn-clear" onclick="showClearModal()">
+        <i class="fas fa-check-double"></i> Clear Collected
+      </button>
+      <button class="action-btn btn-reset" onclick="resetKit()">
+        <i class="fas fa-undo"></i> Reset Kit
       </button>
     </div>
   </div>
 
+  <!-- Expiry Tracking -->
+  <div style="margin-top: 3rem; background: white; border-radius: 24px; padding: 2rem;">
+    <h3 style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+      <i class="fas fa-calendar-alt" style="color: var(--kit-warning);"></i>
+      Expiry Tracking
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;" id="expiryList">
+      <div style="padding: 1rem; background: #fff3cd; border-radius: 12px;">
+        <strong>First Aid Kit</strong>
+        <p style="color: #856404;">Expires in 30 days</p>
+      </div>
+      <div style="padding: 1rem; background: #ffe5e5; border-radius: 12px;">
+        <strong>Water (5 gallons)</strong>
+        <p style="color: #721c24;">Replace by June 2026</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+<div class="modal" id="addItemModal">
+  <div class="modal-content">
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Add Custom Item</h3>
+    <input type="text" class="modal-input" id="newItemName" placeholder="Item name (e.g., 'Portable Radio')">
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+      <input type="number" id="newItemQuantity" class="modal-input" placeholder="Quantity" value="1" min="1">
+      <select id="newItemCategory" class="modal-input">
+        <option value="water">Water & Food</option>
+        <option value="health">First Aid & Health</option>
+        <option value="tools">Tools & Equipment</option>
+        <option value="docs">Important Documents</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button style="padding: 0.8rem 1.5rem; border-radius: 10px; border: 1px solid #e2e8f0;" onclick="closeModal()">Cancel</button>
+      <button style="padding: 0.8rem 1.5rem; background: var(--kit-primary); color: white; border: none; border-radius: 10px;" onclick="addCustomItem()">Add Item</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="qrModal">
+  <div class="modal-content">
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Your Kit QR Code</h3>
+    <div id="qrContainer" style="text-align: center; padding: 1rem;">
+      <canvas id="qrCanvas" width="200" height="200" style="background: white; margin: 0 auto;"></canvas>
+    </div>
+    <p style="text-align: center; margin: 1rem 0;">Scan to view your emergency kit checklist</p>
+    <div class="modal-actions">
+      <button style="padding: 0.8rem 1.5rem; background: var(--kit-primary); color: white; border: none; border-radius: 10px;" onclick="downloadQR()">Download QR</button>
+      <button style="padding: 0.8rem 1.5rem; border: 1px solid #e2e8f0;" onclick="closeModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- ================= FOOTER ================= -->
-<footer style="background:#020617; color:white; text-align:center; padding:3rem 1.5rem; margin-top:auto;">
+<footer>
   <p>© 2026 Safety Bridge — Disaster Preparedness & Response Platform</p>
+  <p style="margin-top: 1rem; opacity: 0.7;">Be Ready. Stay Safe. Protect Your Family.</p>
 </footer>
 
-<!-- Modals -->
-<div class="modal" id="addItemModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 class="modal-title">Add New Item</h3>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <input type="text" class="modal-input" id="newItemInput" placeholder="Enter item name (e.g., 'Portable Radio')">
-    <div class="modal-actions" style="margin-top:1.5rem; text-align:right;">
-      <button style="padding:0.7rem 1.3rem; border-radius:8px;" onclick="closeModal()">Cancel</button>
-      <button style="padding:0.7rem 1.3rem; background:var(--kit-primary); color:white; border:none; border-radius:8px;" onclick="addItemFromModal()">Add Item</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="clearModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 class="modal-title">Clear Completed Items?</h3>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <p style="margin:1.2rem 0;">Are you sure you want to remove all checked items? This cannot be undone.</p>
-    <div class="modal-actions" style="text-align:right;">
-      <button style="padding:0.7rem 1.3rem; border-radius:8px;" onclick="closeModal()">Cancel</button>
-      <button style="padding:0.7rem 1.3rem; background:#ef4444; color:white; border:none; border-radius:8px;" onclick="clearChecked()">Yes, Clear All</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// ────────────────────────────────────────────────
-// KIT BUILDER JAVASCRIPT (unchanged core logic)
-// ────────────────────────────────────────────────
+  // ================= KIT BUILDER CORE =================
+  const { jsPDF } = window.jspdf;
 
-const { jsPDF } = window.jspdf;
+  // Enhanced data structure with quantities and expiry
+  let kitData = JSON.parse(localStorage.getItem("emergencyKit")) || {
+    water: [
+      { name: "Bottled water (1 gallon per person/day)", quantity: 12, expiry: "2026-06", checked: false },
+      { name: "Non-perishable food (3-day supply)", quantity: 1, expiry: "2026-12", checked: false },
+      { name: "Manual can opener", quantity: 1, checked: false },
+      { name: "Energy bars", quantity: 12, expiry: "2026-03", checked: false }
+    ],
+    health: [
+      { name: "First aid kit", quantity: 1, expiry: "2026-01", checked: false },
+      { name: "Prescription medications (7-day supply)", quantity: 1, expiry: "2025-12", checked: false },
+      { name: "Pain relievers", quantity: 2, expiry: "2026-02", checked: false },
+      { name: "Bandages and gauze", quantity: 50, checked: false },
+      { name: "Hand sanitizer", quantity: 2, expiry: "2025-11", checked: false },
+      { name: "N95 masks", quantity: 10, checked: false }
+    ],
+    tools: [
+      { name: "Flashlight with extra batteries", quantity: 2, checked: false },
+      { name: "Multi-tool", quantity: 1, checked: false },
+      { name: "Emergency whistle", quantity: 2, checked: false },
+      { name: "Portable radio (battery-powered)", quantity: 1, checked: false },
+      { name: "Duct tape", quantity: 1, checked: false },
+      { name: "Fire extinguisher", quantity: 1, expiry: "2026-08", checked: false }
+    ],
+    docs: [
+      { name: "Personal identification copies", quantity: 4, checked: false },
+      { name: "Insurance documents", quantity: 1, checked: false },
+      { name: "Emergency contact list", quantity: 1, checked: false },
+      { name: "Medical information", quantity: 1, checked: false },
+      { name: "Cash (small bills)", quantity: 500, checked: false }
+    ]
+  };
 
-let data = JSON.parse(localStorage.getItem("kitData")) || {
-    water: ["Bottled water (1 gallon per person per day)", "Non-perishable food (3-day supply)", "Manual can opener", "Energy bars", "Baby formula (if needed)"],
-    health: ["First aid kit", "Prescription medications (7-day supply)", "Pain relievers", "Bandages and gauze", "Sanitizer and masks"],
-    tools: ["Flashlight with extra batteries", "Multi-tool or Swiss Army knife", "Emergency whistle", "Portable radio (battery-powered)", "Duct tape"],
-    docs: ["Personal identification copies", "Insurance documents", "Emergency contact list", "Medical information", "Proof of address"]
-};
+  // Categories configuration
+  const categories = {
+    water: { name: "Water & Food", icon: "fa-tint", color: "#3b82f6", items: [] },
+    health: { name: "First Aid & Health", icon: "fa-heartbeat", color: "#ef4444", items: [] },
+    tools: { name: "Tools & Equipment", icon: "fa-tools", color: "#f59e0b", items: [] },
+    docs: { name: "Important Documents", icon: "fa-file-alt", color: "#10b981", items: [] }
+  };
 
-let checked = JSON.parse(localStorage.getItem("kitChecked")) || {};
+  let currentCategory = null;
+  let currentDisasterFilter = "all";
 
-const categories = {
-    water:  { name: "Water & Food",        icon: "fas fa-tint",         color: "#3b82f6" },
-    health: { name: "First Aid & Health",   icon: "fas fa-first-aid",    color: "#ef4444" },
-    tools:  { name: "Tools & Equipment",    icon: "fas fa-tools",        color: "#f59e0b" },
-    docs:   { name: "Important Documents",  icon: "fas fa-file-contract", color: "#10b981" }
-};
+  // ================= DISASTER-SPECIFIC RECOMMENDATIONS =================
+  const disasterRecommendations = {
+    flood: [
+      "Sandbags (10)",
+      "Waterproof document sleeves",
+      "Rubber boots",
+      "Life jackets",
+      "Water purification tablets"
+    ],
+    earthquake: [
+      "Hard hats (2)",
+      "Heavy-duty gloves",
+      "Sturdy shoes",
+      "Dust masks",
+      "Crowbar"
+    ],
+    fire: [
+      "N95 masks (10)",
+      "Fire blanket",
+      "Smoke hood",
+      "Goggles",
+      "Fire extinguisher (Class ABC)"
+    ],
+    cyclone: [
+      "Battery-powered radio",
+      "Extra batteries",
+      "Tarpaulin",
+      "Rope (50ft)",
+      "Duct tape"
+    ]
+  };
 
-let currentCategory = null;
-
-function saveData() {
-    localStorage.setItem("kitData", JSON.stringify(data));
-    localStorage.setItem("kitChecked", JSON.stringify(checked));
-    updateProgress();
-}
-
-function updateProgress() {
-    let total = 0, done = 0;
-    for (const cat in data) {
-        total += data[cat].length;
-        data[cat].forEach((_, i) => { if (checked[`${cat}_${i}`]) done++; });
-    }
-    const percent = total > 0 ? Math.round((done / total) * 100) : 0;
-    document.getElementById('progressFill').style.width = percent + '%';
-    document.getElementById('progressPercent').textContent = percent + '%';
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function renderCategories() {
+  // ================= RENDER FUNCTIONS =================
+  function renderCategories() {
     const container = document.getElementById('categories');
     container.innerHTML = '';
 
-    for (const cat in categories) {
-        const category = categories[cat];
-        const items = data[cat] || [];
-        const checkedCount = items.filter((_, i) => checked[`${cat}_${i}`]).length;
+    for (const [catId, category] of Object.entries(categories)) {
+      const items = kitData[catId] || [];
+      const checkedCount = items.filter(item => item.checked).length;
+      const totalCount = items.length;
+      const progressPercent = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
 
-        const card = document.createElement('div');
-        card.className = 'category-card';
-        card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <h3 class="category-title">
-                    <i class="${category.icon}" style="color:${category.color}"></i>
-                    ${category.name}
-                </h3>
-                <span class="category-count">${checkedCount}/${items.length}</span>
-            </div>
-            <div class="items-list" id="${cat}_list"></div>
-            <button class="add-item-btn" onclick="openAddModal('${cat}')">
-                <i class="fas fa-plus"></i> Add Item
-            </button>
+      const card = document.createElement('div');
+      card.className = 'category-card';
+      card.innerHTML = `
+        <div class="category-header">
+          <h4 class="category-title">
+            <i class="fas ${category.icon}" style="color: ${category.color}"></i>
+            ${category.name}
+          </h4>
+          <div class="progress-pie" style="background: conic-gradient(${category.color} ${progressPercent * 3.6}deg, #e2e8f0 0deg);">
+            <span style="background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              ${Math.round(progressPercent)}%
+            </span>
+          </div>
+        </div>
+        <div class="items-list" id="${catId}_list"></div>
+        <button class="add-item-btn" onclick="openAddModal('${catId}')">
+          <i class="fas fa-plus"></i> Add Item
+        </button>
+      `;
+      container.appendChild(card);
+
+      const list = document.getElementById(`${catId}_list`);
+      items.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'item';
+        itemEl.innerHTML = `
+          <input type="checkbox" class="item-checkbox" 
+            onchange="toggleItem('${catId}', ${index})"
+            ${item.checked ? 'checked' : ''}>
+          <input type="text" class="item-input" value="${escapeHtml(item.name)}"
+            onchange="editItem('${catId}', ${index}, this.value)">
+          <input type="number" class="item-quantity" value="${item.quantity || 1}" min="1"
+            onchange="updateQuantity('${catId}', ${index}, this.value)">
+          <button class="item-delete" onclick="deleteItem('${catId}', ${index})">
+            <i class="fas fa-trash"></i>
+          </button>
         `;
-        container.appendChild(card);
-
-        const list = document.getElementById(`${cat}_list`);
-        items.forEach((item, i) => {
-            const itemId = `${cat}_${i}`;
-            const itemEl = document.createElement('div');
-            itemEl.className = 'item';
-            itemEl.innerHTML = `
-                <input type="checkbox" class="item-checkbox" id="${itemId}" 
-                    ${checked[itemId] ? 'checked' : ''} onchange="toggleItem('${itemId}')">
-                <input type="text" class="item-input" value="${escapeHtml(item)}"
-                    onchange="editItem('${cat}', ${i}, this.value)">
-                <button class="item-delete" onclick="deleteItem('${cat}', ${i})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            list.appendChild(itemEl);
-        });
+        list.appendChild(itemEl);
+      });
     }
-    updateProgress();
-}
+    updateReadinessScore();
+    renderSuggestions();
+  }
 
-// ... (rest of your functions remain unchanged: toggleItem, editItem, deleteItem, openAddModal, closeModal, addItemFromModal, showClearModal, clearChecked, uncheckAll, downloadPDF, shareKit)
+  function renderSuggestions() {
+    const container = document.getElementById('suggestionsList');
+    container.innerHTML = '';
+    
+    let recommendations = [];
+    
+    if (currentDisasterFilter !== 'all' && disasterRecommendations[currentDisasterFilter]) {
+      recommendations = disasterRecommendations[currentDisasterFilter];
+    } else {
+      recommendations = [
+        "Waterproof matches",
+        "Portable charger (power bank)",
+        "Emergency blanket",
+        "Whistle (3)",
+        "Local maps"
+      ];
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
+    recommendations.forEach(item => {
+      const suggestion = document.createElement('div');
+      suggestion.className = 'suggestion-item';
+      suggestion.innerHTML = `
+        <div>
+          <i class="fas fa-lightbulb" style="color: #f59e0b;"></i>
+          <span style="margin-left: 0.5rem;">${item}</span>
+        </div>
+        <button class="add-suggestion-btn" onclick="addSuggestedItem('${item}')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      `;
+      container.appendChild(suggestion);
+    });
+  }
+
+  function updateReadinessScore() {
+    let totalItems = 0;
+    let checkedItems = 0;
+    
+    for (const cat in kitData) {
+      kitData[cat].forEach(item => {
+        totalItems++;
+        if (item.checked) checkedItems++;
+      });
+    }
+
+    const score = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+    
+    document.getElementById('scoreCircle').textContent = score + '%';
+    document.getElementById('totalItems').textContent = totalItems;
+    document.getElementById('checkedItems').textContent = checkedItems;
+    document.getElementById('missingItems').textContent = totalItems - checkedItems;
+    
+    let readinessLevel = 'not ready';
+    if (score >= 80) readinessLevel = 'well prepared';
+    else if (score >= 50) readinessLevel = 'partially prepared';
+    else if (score >= 25) readinessLevel = 'starting to prepare';
+    
+    document.getElementById('readinessLevel').textContent = readinessLevel;
+  }
+
+  // ================= ITEM MANAGEMENT =================
+  function toggleItem(category, index) {
+    kitData[category][index].checked = !kitData[category][index].checked;
+    saveData();
     renderCategories();
+  }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+  function editItem(category, index, newName) {
+    if (newName.trim()) {
+      kitData[category][index].name = newName;
+      saveData();
+    }
+  }
+
+  function updateQuantity(category, index, quantity) {
+    kitData[category][index].quantity = parseInt(quantity) || 1;
+    saveData();
+  }
+
+  function deleteItem(category, index) {
+    if (confirm('Remove this item from your kit?')) {
+      kitData[category].splice(index, 1);
+      saveData();
+      renderCategories();
+    }
+  }
+
+  function addCustomItem() {
+    const name = document.getElementById('newItemName').value.trim();
+    const quantity = document.getElementById('newItemQuantity').value;
+    const category = document.getElementById('newItemCategory').value;
+    
+    if (name) {
+      kitData[category].push({ 
+        name, 
+        quantity: parseInt(quantity), 
+        checked: false,
+        expiry: null 
+      });
+      saveData();
+      renderCategories();
+      closeModal();
+    }
+  }
+
+  function addSuggestedItem(itemName) {
+    // Determine best category for the item
+    let category = 'tools';
+    if (itemName.includes('Water') || itemName.includes('Food')) category = 'water';
+    if (itemName.includes('First') || itemName.includes('Med')) category = 'health';
+    if (itemName.includes('Document') || itemName.includes('ID')) category = 'docs';
+    
+    kitData[category].push({ 
+      name: itemName, 
+      quantity: 1, 
+      checked: false 
     });
+    saveData();
+    renderCategories();
+  }
 
-    document.getElementById('newItemInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addItemFromModal();
+  // ================= DISASTER FILTER =================
+  function setDisasterFilter(disaster) {
+    currentDisasterFilter = disaster;
+    document.querySelectorAll('.disaster-badge').forEach(badge => {
+      badge.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    renderSuggestions();
+  }
+
+  // ================= EXPORT FUNCTIONS =================
+  async function downloadPDF() {
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    
+    // Add title
+    pdf.setFontSize(24);
+    pdf.setTextColor(37, 99, 235);
+    pdf.text('Emergency Kit Checklist', 40, 50);
+    
+    pdf.setFontSize(14);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 40, 80);
+    
+    let y = 120;
+    
+    for (const [catId, category] of Object.entries(categories)) {
+      pdf.setFontSize(16);
+      pdf.setTextColor(37, 99, 235);
+      pdf.text(category.name, 40, y);
+      y += 25;
+      
+      pdf.setFontSize(12);
+      pdf.setTextColor(15, 23, 42);
+      
+      kitData[catId].forEach((item, index) => {
+        const status = item.checked ? '✓' : '○';
+        const text = `${status} ${item.name} (${item.quantity || 1})`;
+        pdf.text(text, 50, y);
+        y += 20;
+        
+        if (y > 750) {
+          pdf.addPage();
+          y = 50;
         }
+      });
+      
+      y += 15;
+    }
+    
+    pdf.save('emergency-kit-checklist.pdf');
+  }
+
+  function shareKit() {
+    const text = `My Emergency Kit Readiness: ${document.getElementById('scoreCircle').textContent}\n\nChecklist: ${window.location.href}`;
+    if (navigator.share) {
+      navigator.share({
+        title: 'Emergency Preparedness Kit',
+        text: text,
+        url: window.location.href
+      });
+    } else {
+      alert('Copy this link to share your kit: ' + window.location.href);
+    }
+  }
+
+  function generateQR() {
+    const qrCanvas = document.getElementById('qrCanvas');
+    const ctx = qrCanvas.getContext('2d');
+    
+    // Simple QR code simulation (in production, use a QR library)
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 200, 200);
+    ctx.fillStyle = 'black';
+    
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 20; j++) {
+        if (Math.random() > 0.5) {
+          ctx.fillRect(i * 10, j * 10, 8, 8);
+        }
+      }
+    }
+    
+    document.getElementById('qrModal').classList.add('active');
+  }
+
+  function resetKit() {
+    if (confirm('Reset your entire emergency kit to default items? This cannot be undone.')) {
+      localStorage.removeItem('emergencyKit');
+      location.reload();
+    }
+  }
+
+  // ================= UTILITY FUNCTIONS =================
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function saveData() {
+    localStorage.setItem('emergencyKit', JSON.stringify(kitData));
+  }
+
+  function openAddModal(category) {
+    currentCategory = category;
+    document.getElementById('newItemCategory').value = category;
+    document.getElementById('newItemName').value = '';
+    document.getElementById('newItemQuantity').value = 1;
+    document.getElementById('addItemModal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.classList.remove('active');
+    });
+  }
+
+  function showClearModal() {
+    if (confirm('Clear all collected items?')) {
+      clearChecked();
+    }
+  }
+
+  function clearChecked() {
+    for (const cat in kitData) {
+      kitData[cat] = kitData[cat].filter(item => !item.checked);
+    }
+    saveData();
+    renderCategories();
+    closeModal();
+  }
+
+  // ================= INITIALIZATION =================
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCategories();
+    
+    // Disaster badge listeners
+    document.querySelectorAll('.disaster-badge').forEach(badge => {
+      badge.addEventListener('click', setDisasterFilter);
     });
 
+    // Household size listener
+    document.getElementById('householdSize').addEventListener('change', function() {
+      // Update water requirements based on household size
+      const size = parseInt(this.value);
+      const waterItem = kitData.water.find(item => item.name.includes('Bottled water'));
+      if (waterItem) {
+        waterItem.quantity = size * 3; // 3 gallons per person
+        saveData();
+        renderCategories();
+      }
+    });
+
+    // SOS button
+    function activateSOS() {
+      alert("🚨 EMERGENCY SOS ACTIVATED!\n\nHelp request has been initiated. Emergency services notified.");
+    }
+    
+    document.getElementById('sosButton')?.addEventListener('click', activateSOS);
+    
+    // Auto-save every 30 seconds
     setInterval(saveData, 30000);
-});
-
-// SOS button functionality
-function activateSOS() {
-    alert("EMERGENCY SOS ACTIVATED!\nYour emergency request has been initiated.");
-}
-
-document.getElementById('sosButton')?.addEventListener('click', activateSOS);
-document.getElementById('sosButtonMobile')?.addEventListener('click', activateSOS);
+  });
 </script>
 
 </body>

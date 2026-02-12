@@ -2,205 +2,942 @@
 
 {% block content %}
 
-<div class="dashboard-header bg-white border-bottom py-3 mb-4">
-  <div class="container d-flex justify-content-between align-items-center">
-    <div>
-      <h2 class="mb-0">
-        <i class="bi bi-shield-exclamation text-danger"></i>
-        Admin Dashboard
-      </h2>
-      <small class="text-muted">Manage alerts & users</small>
+<style>
+  /* ===== GLOBAL VARIABLES ===== */
+  :root {
+    --primary: #ef4444;
+    --primary-dark: #dc2626;
+    --primary-gradient: linear-gradient(145deg, #ef4444, #f87171, #fca5a5);
+    --secondary: #2563eb;
+    --secondary-gradient: linear-gradient(145deg, #2563eb, #3b82f6, #60a5fa);
+    --success: #22c55e;
+    --success-gradient: linear-gradient(145deg, #22c55e, #4ade80, #86efac);
+    --warning: #f59e0b;
+    --dark: #030712;
+    --dark-light: #111827;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-dark: rgba(3, 7, 18, 0.85);
+    --glass-card: rgba(17, 24, 39, 0.75);
+    --blur: blur(20px);
+    --radius: 24px;
+    --radius-lg: 32px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 35px 70px -15px rgba(0, 0, 0, 0.6);
+  }
+
+  /* ===== FULL SCREEN WRAPPER ===== */
+  .admin-command-center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #030712;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== CINEMATIC BACKGROUND ===== */
+  .cinema-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-layer {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(135deg, rgba(3,7,18,0.97) 0%, rgba(3,7,18,0.85) 50%, rgba(3,7,18,0.97) 100%),
+      url('https://images.pexels.com/photos/9121108/pexels-photo-9121108.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;
+    filter: saturate(1.1) contrast(1.2);
+    animation: slowZoom 30s infinite alternate;
+  }
+
+  @keyframes slowZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particle-field {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    backdrop-filter: blur(1px);
+    animation: floatParticle 20s infinite ease-in-out;
+  }
+
+  @keyframes floatParticle {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+    50% { transform: translate(var(--tx), var(--ty)) scale(1.3); opacity: 0.4; }
+  }
+
+  /* ===== MAIN DASHBOARD ===== */
+  .dashboard-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  /* ===== COMMAND HEADER ===== */
+  .command-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding: 1.5rem 2rem;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    box-shadow: var(--shadow);
+    animation: slideInDown 0.8s ease;
+  }
+
+  @keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .header-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: 0 15px 30px rgba(239, 68, 68, 0.3);
+    animation: pulseGlow 2s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 15px 30px rgba(239, 68, 68, 0.3); }
+    50% { box-shadow: 0 20px 45px rgba(239, 68, 68, 0.5); }
+  }
+
+  .header-title h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, #ffffff, #fecaca);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-title p {
+    color: #94a3b8;
+    margin: 0.3rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(34, 197, 94, 0.15);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    color: #86efac;
+    font-size: 0.8rem;
+  }
+
+  .logout-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 100px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* ===== STATS OVERVIEW ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.8s ease 0.1s backwards;
+  }
+
+  .stat-card {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 1.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: var(--shadow-hover);
+    background: rgba(17, 24, 39, 0.8);
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(239, 68, 68, 0.15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: #fecaca;
+  }
+
+  .stat-info h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    color: white;
+    line-height: 1;
+  }
+
+  .stat-info p {
+    color: #94a3b8;
+    margin: 0.3rem 0 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== DASHBOARD GRID ===== */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 1200px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ===== COMMAND CARDS ===== */
+  .command-card {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    animation: fadeInUp 0.8s ease 0.2s backwards;
+  }
+
+  .command-card:hover {
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-5px);
+  }
+
+  .card-header {
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .card-header i {
+    color: #ef4444;
+  }
+
+  .badge {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .card-body {
+    padding: 2rem;
+  }
+
+  /* ===== ALERT FORM ===== */
+  .alert-form .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 1rem 1.3rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #ef4444;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  }
+
+  .form-control::placeholder {
+    color: #475569;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .emergency-btn {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .emergency-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(30deg);
+    transition: transform 0.6s;
+  }
+
+  .emergency-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.4);
+  }
+
+  .emergency-btn:hover::before {
+    transform: rotate(30deg) translateX(100%);
+  }
+
+  /* ===== DATA TABLES ===== */
+  .data-table-container {
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table thead {
+    position: sticky;
+    top: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: var(--blur);
+  }
+
+  .data-table th {
+    padding: 1.2rem 1rem;
+    text-align: left;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .data-table td {
+    padding: 1rem;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .data-table tbody tr {
+    transition: all 0.2s ease;
+  }
+
+  .data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .delete-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .delete-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* ===== ALERT HISTORY ===== */
+  .history-card {
+    grid-column: 1 / -1;
+  }
+
+  .alert-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .alert-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .alert-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(239, 68, 68, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+  }
+
+  .alert-content {
+    flex: 1;
+  }
+
+  .alert-title {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.2rem;
+  }
+
+  .alert-message {
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+
+  .alert-time {
+    color: #64748b;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  /* ===== EMPTY STATES ===== */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #94a3b8;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(239, 68, 68, 0.5);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+
+    .command-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .header-title h1 {
+      font-size: 1.8rem;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+  }
+</style>
+
+<!-- Full Screen Admin Command Center -->
+<div class="admin-command-center">
+  
+  <!-- Cinematic Background -->
+  <div class="cinema-bg">
+    <div class="hero-layer"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Floating Particles -->
+  <div class="particle-field" id="particleField"></div>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-container">
+
+    <!-- Command Header -->
+    <div class="command-header">
+      <div class="header-brand">
+        <div class="header-icon">
+          <i class="fas fa-shield-halved"></i>
+        </div>
+        <div class="header-title">
+          <h1>Command Center</h1>
+          <p>
+            <span class="status-badge">
+              <i class="fas fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i>
+              ACTIVE
+            </span>
+            <span style="color: #64748b;">•</span>
+            <span style="color: #94a3b8;">Emergency Response System</span>
+          </p>
+        </div>
+      </div>
+
+      <a href="{{ url_for('admin_logout') }}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Secure Logout</span>
+      </a>
     </div>
 
-    <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-secondary">
-      Logout
-    </a>
-  </div>
-</div>
-
-
-<div class="container">
-
-  <!-- ================= ALERT FORM ================= -->
-  <div class="row g-4">
-
-    <div class="col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light fw-bold">
-          🚨 Send Emergency Alert
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
         </div>
-
-        <div class="card-body">
-
-          <form method="POST" action="{{ url_for('add_alert') }}">
-
-            <div class="mb-3">
-              <label class="form-label">Title</label>
-              <input name="title" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Message</label>
-              <textarea name="message" rows="3" class="form-control" required></textarea>
-            </div>
-
-            <!-- LOCATION FILTER -->
-            <div class="mb-3">
-              <label class="form-label">Send only to location (optional)</label>
-              <input name="location" class="form-control" placeholder="Leave empty = all users">
-            </div>
-
-            <button class="btn btn-danger w-100">
-              Send Alert (SMS + Email)
-            </button>
-
-          </form>
-
+        <div class="stat-info">
+          <h3>{{ users|length }}</h3>
+          <p>Registered Users</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-hand-holding-heart"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ volunteers|length }}</h3>
+          <p>Active Volunteers</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ alerts|length }}</h3>
+          <p>Total Alerts</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-shield"></i>
+        </div>
+        <div class="stat-info">
+          <h3>24/7</h3>
+          <p>System Status</p>
         </div>
       </div>
     </div>
 
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
 
-    <!-- ================= USERS TABLE ================= -->
-
-    <div class="col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light fw-bold">
-          👥 Registered Users ({{ users|length }})
+      <!-- Alert Command Card -->
+      <div class="command-card">
+        <div class="card-header">
+          <h3>
+            <i class="fas fa-bolt"></i>
+            Emergency Alert System
+          </h3>
+          <span class="badge">
+            <i class="fas fa-lock"></i> CRITICAL
+          </span>
         </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('add_alert') }}" class="alert-form">
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-tag"></i> Alert Title
+              </label>
+              <input type="text" name="title" class="form-control" 
+                     placeholder="e.g., Flood Warning, Earthquake Alert" required>
+            </div>
 
-        <div class="table-responsive">
-          <table class="table table-hover mb-0">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-align-left"></i> Alert Message
+              </label>
+              <textarea name="message" class="form-control" 
+                        placeholder="Detailed description, instructions, safety measures..." required></textarea>
+            </div>
 
-            <thead class="table-light">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Target Location
+              </label>
+              <input type="text" name="location" class="form-control" 
+                     placeholder="Specific city/region (leave empty for all users)">
+            </div>
+
+            <button type="submit" class="emergency-btn">
+              <i class="fas fa-paper-plane"></i>
+              <span>BROADCAST EMERGENCY ALERT</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between; color: #64748b; font-size: 0.8rem;">
+              <span><i class="fas fa-sms"></i> SMS Alert</span>
+              <span><i class="fas fa-envelope"></i> Email Broadcast</span>
+              <span><i class="fas fa-bell"></i> Push Notification</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Users Card -->
+      <div class="command-card">
+        <div class="card-header">
+          <h3>
+            <i class="fas fa-users"></i>
+            Registered Users
+          </h3>
+          <span class="badge">{{ users|length }} total</span>
+        </div>
+        <div class="data-table-container">
+          {% if users %}
+          <table class="data-table">
+            <thead>
               <tr>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Location</th>
-                <th></th>
+                <th>Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {% for user in users %}
               <tr>
-                <td>{{ user.email }}</td>
+                <td>
+                  <i class="fas fa-user-circle" style="color: #60a5fa; margin-right: 0.5rem;"></i>
+                  {{ user.email }}
+                </td>
                 <td>{{ user.phone }}</td>
                 <td>{{ user.location }}</td>
                 <td>
-
-                  <form action="{{ url_for('admin_delete_user', user_id=user.id) }}"
-                        method="POST"
-                        onsubmit="return confirm('Delete this user?')">
-
-                    <button class="btn btn-sm btn-outline-danger">
-                      Delete
+                  <form action="{{ url_for('admin_delete_user', user_id=user.id) }}" 
+                        method="POST" 
+                        onsubmit="return confirm('⚠️ Are you sure you want to delete {{ user.email }}?');"
+                        style="margin: 0;">
+                    <button type="submit" class="delete-btn">
+                      <i class="fas fa-trash-alt"></i>
+                      Remove
                     </button>
-
                   </form>
-
                 </td>
               </tr>
               {% endfor %}
             </tbody>
-
           </table>
+          {% else %}
+          <div class="empty-state">
+            <i class="fas fa-user-slash"></i>
+            <h4 style="color: white; margin-bottom: 0.5rem;">No Users Registered</h4>
+            <p>Users will appear here once they register for alerts.</p>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
 
-
-    <!-- ================= ALERT HISTORY ================= -->
-
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light fw-bold">
-          🕒 Alert History
+    <!-- Alert History Card -->
+    <div class="command-card" style="margin-top: 2rem;">
+      <div class="card-header">
+        <h3>
+          <i class="fas fa-history"></i>
+          Alert History
+        </h3>
+        <span class="badge">Last 10 alerts</span>
+      </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+        {% if alerts %}
+          {% for alert in alerts %}
+          <div class="alert-item">
+            <div class="alert-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-content">
+              <div class="alert-title">{{ alert.title }}</div>
+              <div class="alert-message">{{ alert.message|truncate(80) }}</div>
+            </div>
+            <div class="alert-time">
+              <i class="fas fa-clock"></i>
+              <span>{{ alert.created_at|default('Just now') }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="empty-state">
+          <i class="fas fa-check-circle" style="color: #22c55e;"></i>
+          <h4 style="color: white; margin-bottom: 0.5rem;">No Alerts Sent</h4>
+          <p>Alert history will appear here after broadcasting.</p>
         </div>
-
-        <div class="table-responsive">
-
-          <table class="table table-bordered mb-0">
-
-            <thead class="table-light">
-              <tr>
-                <th>Title</th>
-                <th>Message</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% for alert in alerts %}
-              <tr>
-                <td>{{ alert.title }}</td>
-                <td>{{ alert.message }}</td>
-                <td>{{ alert.created_at }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-
-          </table>
-
-        </div>
+        {% endif %}
       </div>
     </div>
 
-
-    <!-- ================= VOLUNTEERS ================= -->
-
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light fw-bold">
-          ❤️ Volunteers ({{ volunteers|length }})
+    <!-- Volunteers Card -->
+    <div class="command-card" style="margin-top: 2rem;">
+      <div class="card-header">
+        <h3>
+          <i class="fas fa-hand-holding-heart"></i>
+          Volunteer Network
+        </h3>
+        <span class="badge">{{ volunteers|length }} active</span>
+      </div>
+      <div class="data-table-container">
+        {% if volunteers %}
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in volunteers %}
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="width: 32px; height: 32px; background: linear-gradient(145deg, #ef4444, #2563eb); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                    {{ v.name[0]|upper }}
+                  </div>
+                  {{ v.name }}
+                </div>
+              </td>
+              <td>{{ v.age }}</td>
+              <td>{{ v.email }}</td>
+              <td>{{ v.phone }}</td>
+              <td>
+                <form action="{{ url_for('admin_delete_volunteer', vol_id=v.id) }}" 
+                      method="POST" 
+                      onsubmit="return confirm('⚠️ Remove {{ v.name }} from volunteer network?');"
+                      style="margin: 0;">
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-user-minus"></i>
+                    Remove
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+          <i class="fas fa-hands-helping"></i>
+          <h4 style="color: white; margin-bottom: 0.5rem;">No Volunteers Yet</h4>
+          <p>Volunteers will appear here once they register.</p>
         </div>
+        {% endif %}
+      </div>
+    </div>
 
-        <div class="table-responsive">
-
-          <table class="table table-hover mb-0">
-
-            <thead class="table-light">
-              <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% for v in volunteers %}
-              <tr>
-                <td>{{ v.name }}</td>
-                <td>{{ v.age }}</td>
-                <td>{{ v.email }}</td>
-                <td>{{ v.phone }}</td>
-                <td>
-
-                  <form action="{{ url_for('admin_delete_volunteer', vol_id=v.id) }}"
-                        method="POST"
-                        onsubmit="return confirm('Delete volunteer?')">
-
-                    <button class="btn btn-sm btn-outline-danger">
-                      Delete
-                    </button>
-
-                  </form>
-
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-
-          </table>
-
-        </div>
+    <!-- System Footer -->
+    <div style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.8rem; padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: flex; gap: 2rem;">
+        <span><i class="fas fa-shield-alt"></i> Secure Connection</span>
+        <span><i class="fas fa-database"></i> Real-time Sync</span>
+        <span><i class="fas fa-clock"></i> Last Sync: Just now</span>
+      </div>
+      <div>
+        <span>Safety Bridge • Emergency Management System</span>
       </div>
     </div>
 
   </div>
-
 </div>
+
+<script>
+  // Create floating particles
+  function createParticles() {
+    const container = document.getElementById('particleField');
+    for (let i = 0; i < 40; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      const size = Math.random() * 6 + 2;
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      const tx = (Math.random() - 0.5) * 200;
+      const ty = (Math.random() - 0.5) * 200;
+      const duration = Math.random() * 15 + 15;
+      const delay = Math.random() * 8;
+      
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.left = `${left}%`;
+      particle.style.top = `${top}%`;
+      particle.style.setProperty('--tx', `${tx}px`);
+      particle.style.setProperty('--ty', `${ty}px`);
+      particle.style.animationDuration = `${duration}s`;
+      particle.style.animationDelay = `${delay}s`;
+      
+      container.appendChild(particle);
+    }
+  }
+
+  // Confirm delete with custom styling
+  window.confirmDelete = function(message) {
+    return confirm(message);
+  };
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    
+    // Add animation delays to stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      card.style.animation = `fadeInUp 0.8s ease ${0.2 + index * 0.1}s backwards`;
+    });
+  });
+</script>
 
 {% endblock %}

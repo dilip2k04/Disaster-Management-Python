@@ -4,414 +4,1199 @@
 {% block content %}
 
 <style>
-:root {
-    --primary: #1e293b;
+  /* ===== GLOBAL VARIABLES ===== */
+  :root {
+    --primary: #0a1929;
+    --primary-light: #1e2f47;
     --accent: #2563eb;
-    --accent-hover: #1d4ed8;
+    --accent-gradient: linear-gradient(145deg, #2563eb, #3b82f6, #60a5fa);
+    --warning: #ea580c;
+    --warning-gradient: linear-gradient(145deg, #ea580c, #f97316, #fb923c);
     --danger: #dc2626;
+    --danger-gradient: linear-gradient(145deg, #dc2626, #ef4444, #f87171);
     --success: #16a34a;
-    --bg: #f8fafc;
-    --card-bg: white;
-    --text: #0f172a;
-    --text-light: #475569;
-    --border: #e2e8f0;
-    --radius: 16px;
-    --shadow: 0 10px 30px rgba(0,0,0,0.08);
-    --shadow-hover: 0 16px 40px rgba(0,0,0,0.12);
-}
+    --success-gradient: linear-gradient(145deg, #16a34a, #22c55e, #4ade80);
+    --dark: #030712;
+    --dark-light: #111827;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-dark: rgba(3, 7, 18, 0.85);
+    --glass-card: rgba(17, 24, 39, 0.75);
+    --blur: blur(20px);
+    --radius: 24px;
+    --radius-lg: 32px;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 35px 70px -15px rgba(0, 0, 0, 0.6);
+  }
 
-.container {
-    max-width: 1280px;
+  /* ===== FULL SCREEN WRAPPER ===== */
+  .forensic-hq {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #030712;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== CINEMATIC BACKGROUND ===== */
+  .cinema-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-layer {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(135deg, rgba(3,7,18,0.97) 0%, rgba(3,7,18,0.9) 50%, rgba(3,7,18,0.97) 100%),
+      url('https://images.pexels.com/photos/5732389/pexels-photo-5732389.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;
+    filter: saturate(0.8) contrast(1.2);
+    animation: slowZoom 35s infinite alternate;
+  }
+
+  @keyframes slowZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  .evidence-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(3,7,18,0.3) 100%);
+    pointer-events: none;
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particle-field {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .particle {
+    position: absolute;
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 50%;
+    backdrop-filter: blur(1px);
+    animation: floatParticle 25s infinite ease-in-out;
+  }
+
+  @keyframes floatParticle {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+    50% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0.2; }
+  }
+
+  /* ===== MAIN CONTAINER ===== */
+  .registry-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1800px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem;
-}
+    padding: 2rem;
+    min-height: 100vh;
+  }
 
-.page-title {
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 2rem;
+  /* ===== HEADER SECTION ===== */
+  .forensic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding: 1.5rem 2rem;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    box-shadow: var(--shadow);
+    animation: slideInDown 0.8s ease;
+  }
+
+  @keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
+    gap: 1.5rem;
+  }
 
-/* Tabs */
-.tabs {
+  .header-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #2563eb, #1e40af);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
+    position: relative;
+  }
+
+  .header-icon::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 24px;
+    background: var(--accent-gradient);
+    opacity: 0.3;
+    z-index: -1;
+    filter: blur(8px);
+    animation: pulseGlow 2s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.05); }
+  }
+
+  .header-title h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, #ffffff, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-title p {
+    color: #94a3b8;
+    margin: 0.3rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .case-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(37, 99, 235, 0.15);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    color: #93c5fd;
+    font-size: 0.85rem;
+    border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+
+  .stats-badge {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
+    color: #e2e8f0;
+  }
+
+  /* ===== COMMAND CENTER TABS ===== */
+  .command-tabs {
     display: flex;
     gap: 1rem;
     margin-bottom: 2.5rem;
-    border-bottom: 2px solid var(--border);
-    padding-bottom: 0.5rem;
-    flex-wrap: wrap;
-}
+    padding: 0.5rem;
+    background: rgba(17, 24, 39, 0.5);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    width: fit-content;
+    animation: fadeInUp 0.8s ease 0.1s backwards;
+  }
 
-.tab {
-    padding: 0.75rem 1.6rem;
-    background: #e5e7eb;
-    color: #334155;
-    border-radius: 10px 10px 0 0;
+  .command-tab {
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: #94a3b8;
+    border-radius: 100px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.25s ease;
-    user-select: none;
-}
-
-.tab:hover {
-    background: #d1d5db;
-}
-
-.tab.active {
-    background: var(--accent);
-    color: white;
-    position: relative;
-    top: 2px;
-}
-
-/* Grid */
-.missing-persons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.8rem;
-}
-
-/* Person Card */
-.person-card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: all 0.28s ease;
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
-}
+    align-items: center;
+    gap: 0.8rem;
+    border: none;
+  }
 
-.person-card:hover {
-    transform: translateY(-8px);
+  .command-tab i {
+    font-size: 1.1rem;
+  }
+
+  .command-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  .command-tab.active {
+    background: var(--accent-gradient);
+    color: white;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+  }
+
+  /* ===== STATS OVERVIEW ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.8s ease 0.2s backwards;
+  }
+
+  .stat-card {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(37, 99, 235, 0.3);
     box-shadow: var(--shadow-hover);
-}
+  }
 
-.person-image {
-    height: 260px;
+  .stat-card-icon {
+    width: 54px;
+    height: 54px;
+    background: rgba(37, 99, 235, 0.15);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #93c5fd;
+  }
+
+  .stat-card-content h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+    color: white;
+    line-height: 1;
+  }
+
+  .stat-card-content p {
+    color: #94a3b8;
+    margin: 0.3rem 0 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== EVIDENCE GRID ===== */
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+    animation: fadeInUp 0.8s ease 0.3s backwards;
+  }
+
+  /* ===== PERSON CARD - FORENSIC STYLE ===== */
+  .evidence-card {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+  }
+
+  .evidence-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .evidence-media {
+    height: 280px;
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
     position: relative;
-}
+  }
 
-.badges {
+  .evidence-overlay-badges {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 1rem;
+    left: 1rem;
     display: flex;
-    gap: 8px;
-}
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
 
-.badge {
-    background: rgba(0,0,0,0.75);
+  .evidence-badge {
+    background: rgba(3, 7, 18, 0.8);
+    backdrop-filter: var(--blur);
     color: white;
-    font-size: 0.82rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 6px;
-    font-weight: 500;
-}
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
 
-.person-details {
-    padding: 1.4rem 1.5rem 1.6rem;
-    flex: 1;
+  .evidence-badge i {
+    font-size: 0.7rem;
+  }
+
+  .evidence-badge.found {
+    background: rgba(22, 163, 74, 0.9);
+    border-color: rgba(74, 222, 128, 0.5);
+  }
+
+  .case-file {
+    padding: 1.8rem;
+  }
+
+  .case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+  }
+
+  .case-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .case-id {
+    background: rgba(37, 99, 235, 0.15);
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    color: #93c5fd;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: monospace;
+  }
+
+  .case-details {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
-}
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
 
-.person-details h4 {
-    font-size: 1.38rem;
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+  }
+
+  .detail-item i {
+    width: 20px;
+    color: #60a5fa;
+    margin-top: 0.2rem;
+  }
+
+  .detail-label {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+  }
+
+  .description-box {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 4px solid #2563eb;
+    padding: 1.2rem;
+    border-radius: 0 12px 12px 0;
+    margin: 1rem 0;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .reporter-info {
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 20px;
+    padding: 1.2rem;
+    margin-top: 1rem;
+  }
+
+  .reporter-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #93c5fd;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  .reporter-details {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* ===== FORENSIC REPORT FORM ===== */
+  .forensic-lab {
+    background: rgba(17, 24, 39, 0.8);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    animation: fadeInUp 0.8s ease;
+  }
+
+  .lab-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .lab-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(145deg, #2563eb, #1e40af);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: white;
+  }
+
+  .lab-title h3 {
+    font-size: 1.6rem;
     font-weight: 700;
     margin: 0;
-    color: var(--text);
-}
+    color: white;
+  }
 
-.info-row {
-    font-size: 0.95rem;
-    color: var(--text-light);
-    line-height: 1.45;
-}
+  .lab-title p {
+    color: #94a3b8;
+    margin: 0.3rem 0 0;
+  }
 
-.section-label {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #334155;
-    margin-top: 0.6rem;
-}
-
-.contact-info {
-    margin-top: auto;
-    padding: 1rem;
-    background: #e0f2fe;
-    border-radius: 10px;
-    font-size: 0.94rem;
-    color: #0369a1;
-    line-height: 1.5;
-}
-
-/* Report Form */
-.report-section {
-    background: white;
-    border-radius: var(--radius);
-    padding: 2.2rem;
-    box-shadow: var(--shadow);
-    margin-top: 1rem;
-}
-
-.report-section h3 {
-    margin: 0 0 1.8rem;
-    color: var(--primary);
-}
-
-form {
+  .forensic-form {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.4rem;
-}
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
 
-input, select, textarea {
-    width: 100%;
-    padding: 0.9rem 1.1rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 0.97rem;
-    transition: border-color 0.2s;
-}
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-}
+  .form-group.full-width {
+    grid-column: span 2;
+  }
 
-textarea {
-    grid-column: 1 / -1;
-    min-height: 110px;
-    resize: vertical;
-}
-
-.btn {
-    padding: 0.95rem 1.8rem;
-    border: none;
-    border-radius: 10px;
+  .form-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #cbd5e1;
+    font-size: 0.8rem;
     font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.25s;
-}
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-.btn-primary {
-    background: var(--accent);
+  .form-control {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 0.9rem 1.2rem;
     color: white;
-}
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
 
-.btn-primary:hover {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
-}
+  .form-control:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  }
 
-.btn-danger {
-    background: var(--danger);
+  .form-control::placeholder {
+    color: #475569;
+  }
+
+  select.form-control option {
+    background: #0f172a;
     color: white;
-}
+  }
 
-.submit-btn {
-    grid-column: 1 / -1;
-    justify-self: start;
-}
-
-.flash {
-    background: #dcfce7;
-    color: #065f46;
-    padding: 1rem 1.4rem;
-    border-radius: 10px;
-    margin-bottom: 1.8rem;
-    font-weight: 500;
-}
-
-.empty-state {
+  .file-upload {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
     text-align: center;
-    padding: 5rem 1rem;
-    color: #64748b;
-    font-size: 1.15rem;
-}
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-@media (max-width: 768px) {
-    .tabs { gap: 0.8rem; flex-wrap: wrap; }
-    .tab { padding: 0.7rem 1.3rem; font-size: 0.95rem; }
-    .missing-persons-grid { grid-template-columns: 1fr; }
-}
+  .file-upload:hover {
+    border-color: #2563eb;
+    background: rgba(37, 99, 235, 0.1);
+  }
+
+  .file-upload i {
+    font-size: 2rem;
+    color: #60a5fa;
+    margin-bottom: 0.5rem;
+  }
+
+  .file-upload p {
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  .submit-evidence {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  .btn-forensic {
+    padding: 1rem 2.5rem;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-forensic::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(30deg);
+    transition: transform 0.6s;
+  }
+
+  .btn-forensic:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.4);
+  }
+
+  .btn-forensic:hover::before {
+    transform: rotate(30deg) translateX(100%);
+  }
+
+  /* ===== FLASH MESSAGES ===== */
+  .flash-message {
+    position: relative;
+    z-index: 20;
+    padding: 1rem 1.5rem;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 16px;
+    color: #86efac;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    backdrop-filter: var(--blur);
+  }
+
+  .flash-message.error {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fecaca;
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-forensic {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: var(--blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+  }
+
+  .empty-forensic i {
+    font-size: 4rem;
+    color: #2563eb;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+  }
+
+  .empty-forensic h3 {
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-forensic p {
+    color: #94a3b8;
+    font-size: 1.1rem;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1200px) {
+    .forensic-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .stats-badge {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .registry-container {
+      padding: 1rem;
+    }
+    
+    .header-title h1 {
+      font-size: 1.8rem;
+    }
+    
+    .command-tabs {
+      width: 100%;
+      border-radius: 16px;
+      overflow-x: auto;
+    }
+    
+    .forensic-form {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-group.full-width {
+      grid-column: span 1;
+    }
+    
+    .submit-evidence {
+      grid-column: span 1;
+    }
+    
+    .evidence-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== CUSTOM SCROLLBAR ===== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(37, 99, 235, 0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(37, 99, 235, 0.5);
+  }
 </style>
 
-<div class="container">
+<!-- Full Screen Forensic HQ -->
+<div class="forensic-hq">
+  
+  <!-- Cinematic Background -->
+  <div class="cinema-bg">
+    <div class="hero-layer"></div>
+    <div class="grid-overlay"></div>
+    <div class="evidence-overlay"></div>
+  </div>
 
-    <h2 class="page-title">
-        <i class="fas fa-search"></i> Missing Persons Registry
-    </h2>
+  <!-- Floating Particles -->
+  <div class="particle-field" id="particleField"></div>
 
+  <!-- Main Container -->
+  <div style="margin-top: 100px;" class="registry-container">
+
+    <!-- Forensic Header -->
+    <!-- <div class="forensic-header">
+      <div class="header-brand">
+        <div class="header-icon">
+          <i class="fas fa-fingerprint"></i>
+        </div>
+        <div class="header-title">
+          <h1>Missing Persons Registry</h1>
+          <p>
+            <span class="case-badge">
+              <i class="fas fa-shield"></i> FORENSIC DATABASE
+            </span>
+            <span style="color: #64748b;">•</span>
+            <span style="color: #94a3b8;">National Investigation Portal</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="stats-badge">
+        <div class="stat-pill">
+          <i class="fas fa-clock"></i>
+          <span>Last Sync: Just now</span>
+        </div>
+        <div class="stat-pill">
+          <i class="fas fa-shield-alt"></i>
+          <span>Secure Access</span>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash {% if category == 'error' %}alert-danger{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {% if category == 'error' %}error{% endif %}">
+            <i class="fas {% if category == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+            <div>{{ message }}</div>
+            <i class="fas fa-times" style="margin-left: auto; cursor: pointer; opacity: 0.7;" onclick="this.parentElement.remove()"></i>
+          </div>
+        {% endfor %}
+      {% endif %}
     {% endwith %}
 
-    <div class="tabs">
-        <div class="tab active" data-tab="list">Search / View Reports</div>
-        <div class="tab" data-tab="report">Report Missing Person</div>
-    </div>
-
-    <!-- ================= LIST TAB ================= -->
-    <div class="tab-content active" id="list">
-        {% if persons %}
-            <div class="missing-persons-grid">
-                {% for p in persons %}
-                <div class="person-card">
-                    <div class="person-image" 
-                         style="background-image: url('{{ p.photo_url or url_for('static', filename='images/no-image-person.jpg') }}')">
-                        <div class="badges">
-                            <span class="badge">{{ p.age or '?' }} yrs</span>
-                            <span class="badge">{{ p.gender or 'Unknown' }}</span>
-                            {% if p.status == 'found' %}
-                            <span class="badge" style="background:#16a34a;">FOUND</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="person-details">
-                        <h4>{{ p.name }}</h4>
-
-                        <div class="info-row"><b>Last seen:</b> {{ p.location or '—' }}</div>
-                        <div class="info-row"><b>Date:</b> {{ p.date_seen or '—' }}</div>
-
-                        <div class="section-label">Description</div>
-                        <div class="info-row">{{ p.description or 'No description provided.' }}</div>
-
-                        {% if p.notes %}
-                        <div class="section-label">Additional Notes</div>
-                        <div class="info-row">{{ p.notes }}</div>
-                        {% endif %}
-
-                        <div class="contact-info">
-                            Reported by: <strong>{{ p.reporter_name }}</strong><br>
-                            Contact: {{ p.reporter_contact }}<br>
-                            Relation: {{ p.reporter_relation or 'Not specified' }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <i class="fas fa-exclamation-circle" style="font-size:3.5rem;color:#94a3b8;margin-bottom:1rem;"></i>
-                <p>No missing persons reports have been submitted yet.</p>
-                <p>Be the first to help — use the "Report Missing" tab above.</p>
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- ================= REPORT TAB ================= -->
-    <div class="tab-content" id="report">
-
-        <div class="report-section">
-            <h3><i class="fas fa-user-plus"></i> Report a Missing Person</h3>
-
-            <form method="POST" action="{{ url_for('report_missing') }}" enctype="multipart/form-data">
-                <div>
-                    <label>Full Name <span style="color:#ef4444;">*</span></label>
-                    <input name="name" type="text" placeholder="e.g. Ramesh Kumar" required>
-                </div>
-
-                <div>
-                    <label>Age <span style="color:#ef4444;">*</span></label>
-                    <input name="age" type="number" min="0" max="120" placeholder="Age in years" required>
-                </div>
-
-                <div>
-                    <label>Gender <span style="color:#ef4444;">*</span></label>
-                    <select name="gender" required>
-                        <option value="">Select gender</option>
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Other</option>
-                        <option>Prefer not to say</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Last Known Location <span style="color:#ef4444;">*</span></label>
-                    <input name="location" type="text" placeholder="City, area or landmark" required>
-                </div>
-
-                <div>
-                    <label>Date Last Seen <span style="color:#ef4444;">*</span></label>
-                    <input name="date_seen" type="date" required>
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <label>Physical Description <span style="color:#ef4444;">*</span></label>
-                    <textarea name="description" rows="4" placeholder="Height, build, clothing last worn, distinguishing features..." required></textarea>
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <label>Additional Notes / Circumstances</label>
-                    <textarea name="notes" rows="3" placeholder="Any other helpful information..."></textarea>
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <label>Photo (if available)</label>
-                    <input type="file" name="photo" accept="image/*">
-                </div>
-
-                <hr style="grid-column:1/-1; border:none; border-top:1px solid #e2e8f0; margin:1.5rem 0;">
-
-                <div>
-                    <label>Your Name <span style="color:#ef4444;">*</span></label>
-                    <input name="reporter_name" type="text" placeholder="Your full name" required>
-                </div>
-
-                <div>
-                    <label>Your Contact Number / Email <span style="color:#ef4444;">*</span></label>
-                    <input name="reporter_contact" type="text" placeholder="Phone or email" required>
-                </div>
-
-                <div>
-                    <label>Relationship to Missing Person <span style="color:#ef4444;">*</span></label>
-                    <input name="reporter_relation" type="text" placeholder="e.g. Father, Friend, Colleague" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary submit-btn">
-                    <i class="fas fa-paper-plane"></i> Submit Report
-                </button>
-            </form>
+    <!-- Statistics Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-icon">
+          <i class="fas fa-user-clock"></i>
         </div>
+        <div class="stat-card-content">
+          <h3>{{ persons|length }}</h3>
+          <p>Active Cases</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="stat-card-content">
+          <h3>{{ persons|map(attribute='location')|unique|list|length }}</h3>
+          <p>Locations</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">
+          <i class="fas fa-flag"></i>
+        </div>
+        <div class="stat-card-content">
+          <h3>24/7</h3>
+          <p>Response Team</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-card-content">
+          <h3>0</h3>
+          <p>Resolved Cases</p>
+        </div>
+      </div>
     </div>
 
+    <!-- Command Tabs -->
+    <div class="command-tabs">
+      <button class="command-tab active" data-tab="list">
+        <i class="fas fa-search"></i>
+        Evidence Database
+      </button>
+      <button class="command-tab" data-tab="report">
+        <i class="fas fa-plus-circle"></i>
+        Submit New Case
+      </button>
+    </div>
+
+    <!-- ===== EVIDENCE DATABASE TAB ===== -->
+    <div class="tab-content active" id="list">
+      {% if persons %}
+        <div class="evidence-grid">
+          {% for p in persons %}
+          <div class="evidence-card">
+            <div class="evidence-media" style="background-image: url('{{ p.photo_url or 'https://images.pexels.com/photos/5732389/pexels-photo-5732389.jpeg?auto=compress&cs=tinysrgb&w=600' }}')">
+              <div class="evidence-overlay-badges">
+                <span class="evidence-badge">
+                  <i class="fas fa-calendar"></i> {{ p.age or '?' }} yrs
+                </span>
+                <span class="evidence-badge">
+                  <i class="fas fa-venus-mars"></i> {{ p.gender or 'Unknown' }}
+                </span>
+                {% if p.status == 'found' %}
+                <span class="evidence-badge found">
+                  <i class="fas fa-check-circle"></i> FOUND
+                </span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="case-file">
+              <div class="case-header">
+                <h3 class="case-title">{{ p.name }}</h3>
+                <span class="case-id">#{{ p.id }}</span>
+              </div>
+
+              <div class="case-details">
+                <div class="detail-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span><strong>Last seen:</strong> {{ p.location or 'Unknown' }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-clock"></i>
+                  <span><strong>Date:</strong> {{ p.date_seen or 'Not specified' }}</span>
+                </div>
+              </div>
+
+              <div class="detail-label">
+                <i class="fas fa-align-left"></i> Physical Description
+              </div>
+              <div class="description-box">
+                {{ p.description or 'No description provided.' }}
+              </div>
+
+              {% if p.notes %}
+              <div style="margin: 1rem 0;">
+                <div class="detail-label">
+                  <i class="fas fa-sticky-note"></i> Investigation Notes
+                </div>
+                <div style="color: #cbd5e1; font-size: 0.9rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px;">
+                  {{ p.notes }}
+                </div>
+              </div>
+              {% endif %}
+
+              <div class="reporter-info">
+                <div class="reporter-header">
+                  <i class="fas fa-user-shield"></i>
+                  <span>Reporting Officer</span>
+                </div>
+                <div class="reporter-details">
+                  <div><strong>{{ p.reporter_name }}</strong></div>
+                  <div style="color: #94a3b8; margin-top: 0.3rem;">
+                    <i class="fas fa-phone"></i> {{ p.reporter_contact }}<br>
+                    <i class="fas fa-tag"></i> {{ p.reporter_relation or 'Not specified' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-forensic">
+          <i class="fas fa-folder-open"></i>
+          <h3>No Active Cases</h3>
+          <p>The forensic database is currently empty. Submit a new case to begin investigation.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- ===== SUBMIT NEW CASE TAB ===== -->
+    <div class="tab-content" id="report" style="display: none;">
+      <div class="forensic-lab">
+        <div class="lab-header">
+          <div class="lab-icon">
+            <i class="fas fa-microscope"></i>
+          </div>
+          <div class="lab-title">
+            <h3>Forensic Evidence Submission</h3>
+            <p>Complete all required fields to register a missing person case</p>
+          </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('report_missing') }}" enctype="multipart/form-data" class="forensic-form">
+          
+          <!-- Personal Information -->
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-user"></i> Full Name</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-cake"></i> Age</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="number" name="age" min="0" max="120" class="form-control" placeholder="Age in years" required>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-venus-mars"></i> Gender</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <select name="gender" class="form-control" required>
+              <option value="">Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-map-marker-alt"></i> Last Location</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="text" name="location" class="form-control" placeholder="City, area or landmark" required>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-calendar"></i> Date Last Seen</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="date" name="date_seen" class="form-control" required>
+          </div>
+
+          <div class="form-group full-width">
+            <span class="form-label">
+              <span><i class="fas fa-align-left"></i> Physical Description</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <textarea name="description" rows="4" class="form-control" placeholder="Height, build, clothing last worn, distinguishing features, identifying marks..." required></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <span class="form-label">
+              <span><i class="fas fa-sticky-note"></i> Circumstances & Additional Notes</span>
+              <span style="color: #94a3b8;">optional</span>
+            </span>
+            <textarea name="notes" rows="3" class="form-control" placeholder="Any other helpful information about the disappearance..."></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <span class="form-label">
+              <span><i class="fas fa-camera"></i> Photograph Evidence</span>
+              <span style="color: #94a3b8;">optional</span>
+            </span>
+            <div class="file-upload" onclick="document.getElementById('photoInput').click()">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click or drag photo to upload</p>
+              <p style="font-size: 0.8rem; color: #64748b;">PNG, JPG up to 5MB</p>
+            </div>
+            <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none;">
+          </div>
+
+          <div style="grid-column: span 2; border-bottom: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"></div>
+
+          <!-- Reporter Information -->
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-user-shield"></i> Your Name</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="text" name="reporter_name" class="form-control" placeholder="Full name" required>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-phone"></i> Contact Information</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="text" name="reporter_contact" class="form-control" placeholder="Phone or email" required>
+          </div>
+
+          <div class="form-group">
+            <span class="form-label">
+              <span><i class="fas fa-link"></i> Relationship</span>
+              <span style="color: #ef4444;">*required</span>
+            </span>
+            <input type="text" name="reporter_relation" class="form-control" placeholder="e.g. Father, Friend, Colleague" required>
+          </div>
+
+          <div class="submit-evidence">
+            <button type="submit" class="btn-forensic">
+              <i class="fas fa-fingerprint"></i>
+              <span>SUBMIT TO FORENSIC DATABASE</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- System Footer -->
+    <div style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.8rem; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: flex; gap: 2rem;">
+        <span><i class="fas fa-shield-alt"></i> Classified Database</span>
+        <span><i class="fas fa-database"></i> Real-time Sync</span>
+        <span><i class="fas fa-clock"></i> Last Sync: Just now</span>
+      </div>
+      <div>
+        <span>Safety Bridge • National Missing Persons Registry</span>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.tab-content');
+  // Create floating particles
+  function createParticles() {
+    const container = document.getElementById('particleField');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      const size = Math.random() * 4 + 1;
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      const tx = (Math.random() - 0.5) * 200;
+      const ty = (Math.random() - 0.5) * 200;
+      const duration = Math.random() * 20 + 20;
+      const delay = Math.random() * 10;
+      
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.left = `${left}%`;
+      particle.style.top = `${top}%`;
+      particle.style.setProperty('--tx', `${tx}px`);
+      particle.style.setProperty('--ty', `${ty}px`);
+      particle.style.animationDuration = `${duration}s`;
+      particle.style.animationDelay = `${delay}s`;
+      particle.style.background = `rgba(37, 99, 235, ${Math.random() * 0.1})`;
+      
+      container.appendChild(particle);
+    }
+  }
+
+  // Tab switching
+  document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    
+    const tabs = document.querySelectorAll('.command-tab');
+    const contents = {
+      'list': document.getElementById('list'),
+      'report': document.getElementById('report')
+    };
 
     tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.tab).classList.add('active');
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+        
+        // Hide all contents
+        Object.values(contents).forEach(content => {
+          if (content) content.style.display = 'none';
         });
+        
+        // Show selected content
+        const tabId = this.dataset.tab;
+        if (contents[tabId]) {
+          contents[tabId].style.display = 'block';
+        }
+      });
     });
-});
+
+    // File upload preview
+    const photoInput = document.getElementById('photoInput');
+    const fileUploadDiv = document.querySelector('.file-upload');
+    
+    if (photoInput && fileUploadDiv) {
+      photoInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+          const fileName = this.files[0].name;
+          fileUploadDiv.innerHTML = `
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i>
+            <p style="color: white;">${fileName}</p>
+            <p style="font-size: 0.8rem; color: #86efac;">Ready to upload</p>
+          `;
+        }
+      });
+    }
+
+    // Set default date to today
+    const dateInput = document.querySelector('input[name="date_seen"]');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.max = today;
+    }
+
+    // Animation for stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      card.style.animation = `fadeInUp 0.8s ease ${0.3 + index * 0.1}s backwards`;
+    });
+  });
 </script>
 
 {% endblock %}

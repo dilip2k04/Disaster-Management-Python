@@ -12,521 +12,1138 @@
     --secondary: #2563eb;
     --secondary-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
     --accent: #22c55e;
+    --accent-gradient: linear-gradient(135deg, #22c55e, #4ade80);
     --dark: #0f172a;
     --light: #f8fafc;
     --glass: rgba(255, 255, 255, 0.09);
-    --glass-dark: rgba(15, 23, 42, 0.78);
+    --glass-dark: rgba(15, 23, 42, 0.85);
     --blur: blur(20px);
+    --radius-sm: 12px;
     --radius: 20px;
-    --radius-lg: 28px;
-    --shadow: 0 20px 40px -10px rgba(0,0,0,0.22);
-    --shadow-hover: 0 30px 60px -15px rgba(0,0,0,0.3);
+    --radius-lg: 32px;
+    --shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    --shadow-hover: 0 35px 70px -15px rgba(0,0,0,0.35);
   }
 
-  .volunteer-wrapper {
-    min-height: calc(100vh - 80px);
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0b1120 0%, #1a1f2e 100%);
+    color: white;
+  }
+
+  .volunteer-journey {
+    position: relative;
+    min-height: 100vh;
+    padding: 6rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ===== ANIMATED BACKGROUND ===== */
+  .journey-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .gradient-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.2;
+    animation: pulseSphere 15s infinite alternate;
+  }
+
+  .sphere1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at 30% 30%, #ef4444, #2563eb);
+    top: -200px;
+    left: -200px;
+    animation-delay: 0s;
+  }
+
+  .sphere2 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at 70% 70%, #22c55e, #3b82f6);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 2s;
+  }
+
+  @keyframes pulseSphere {
+    0% { opacity: 0.1; transform: scale(1); }
+    100% { opacity: 0.25; transform: scale(1.2); }
+  }
+
+  /* ===== JOURNEY HEADER ===== */
+  .journey-header {
+    text-align: center;
+    margin-bottom: 5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .journey-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 0.8rem 2rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+    backdrop-filter: var(--blur);
+    color: #fca5a5;
+    font-weight: 500;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  .journey-title {
+    font-size: 3.8rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ffffff, #fca5a5, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 0.8s ease;
+  }
+
+  .journey-subtitle {
+    font-size: 1.3rem;
+    color: #cbd5e1;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+    animation: fadeInUp 0.8s ease 0.1s backwards;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== PROGRESS TRACKER ===== */
+  .progress-tracker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 4rem;
+    position: relative;
+    z-index: 2;
+    padding: 0 1rem;
+  }
+
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 3;
+  }
+
+  .step-number {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 3rem 1.5rem 5rem;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: white;
+    transition: all 0.3s ease;
+    backdrop-filter: var(--blur);
+  }
+
+  .progress-step.active .step-number {
+    background: var(--primary-gradient);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+    transform: scale(1.1);
+  }
+
+  .progress-step.completed .step-number {
+    background: var(--accent-gradient);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .step-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .progress-step.active .step-label {
+    color: white;
+  }
+
+  .progress-line {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 1rem;
     position: relative;
-    overflow: hidden;
+    top: -20px;
   }
 
-  /* Floating background elements */
-  .volunteer-bg-shapes {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary-gradient);
+    transition: width 0.5s ease;
   }
 
-  .shape {
-    position: absolute;
-    background: rgba(239, 68, 68, 0.06);
-    border-radius: 50%;
-    animation: floatShape 18s infinite ease-in-out;
-  }
-
-  @keyframes floatShape {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    50% { transform: translate(var(--dx), var(--dy)) rotate(180deg); }
-  }
-
-  .volunteer-card {
-    width: 100%;
-    max-width: 1100px;
+  /* ===== MAIN CARD CONTAINER ===== */
+  .journey-card {
     background: var(--glass-dark);
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: var(--shadow);
     overflow: hidden;
+    position: relative;
+    z-index: 2;
+    transition: all 0.5s ease;
+  }
+
+  .card-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    transition: all 0.4s ease;
+    grid-template-columns: 0.9fr 1.1fr;
+    min-height: 700px;
   }
 
-  .volunteer-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-hover);
-  }
-
-  /* Left - Visual / Benefits */
-  .visual-side {
-    background: var(--primary-gradient);
-    padding: 5rem 3.5rem;
-    color: white;
+  /* ===== LEFT PANEL - INTERACTIVE STORY ===== */
+  .story-panel {
+    background: linear-gradient(145deg, rgba(239,68,68,0.95), rgba(37,99,235,0.95));
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
     position: relative;
     overflow: hidden;
   }
 
-  .visual-side::before {
+  .story-panel::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.15) 0%, transparent 60%);
-    pointer-events: none;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="4" fill="white" opacity="0.1"/><circle cx="40" cy="80" r="2" fill="white" opacity="0.1"/><circle cx="70" cy="70" r="5" fill="white" opacity="0.1"/></svg>');
+    opacity: 0.3;
   }
 
-  .visual-icon {
-    font-size: 6.5rem;
-    margin-bottom: 2.5rem;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+  .story-header {
+    position: relative;
+    z-index: 2;
   }
 
-  .visual-title {
-    font-size: 2.6rem;
+  .story-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 2rem;
+    backdrop-filter: var(--blur);
+  }
+
+  .story-title {
+    font-size: 2.2rem;
     font-weight: 800;
-    margin-bottom: 1.2rem;
-    line-height: 1.15;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
   }
 
-  .visual-subtitle {
-    font-size: 1.15rem;
-    opacity: 0.92;
-    margin-bottom: 3rem;
+  .story-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
     line-height: 1.6;
   }
 
-  .benefits {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  /* ===== IMPACT METER ===== */
+  .impact-meter {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-top: auto;
+    backdrop-filter: var(--blur);
+    position: relative;
+    z-index: 2;
   }
 
-  .benefit {
+  .impact-label {
     display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    margin-bottom: 1.6rem;
-    font-size: 1.05rem;
-  }
-
-  .benefit-icon {
-    width: 44px;
-    height: 44px;
-    background: rgba(255,255,255,0.22);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    flex-shrink: 0;
-  }
-
-  /* Right - Form */
-  .form-side {
-    padding: 5rem 3.5rem;
-    background: white;
-  }
-
-  .form-title {
-    font-size: 2.1rem;
-    font-weight: 700;
+    justify-content: space-between;
     margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+  }
+
+  .meter-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .meter-fill {
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(90deg, #fbbf24, #22c55e);
+    border-radius: 999px;
+    animation: fillMeter 1.5s ease;
+  }
+
+  @keyframes fillMeter {
+    from { width: 0%; }
+    to { width: 75%; }
+  }
+
+  .impact-stats {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .impact-stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+  }
+
+  /* ===== RIGHT PANEL - FORM SECTIONS ===== */
+  .form-panel {
+    padding: 3.5rem;
+    background: white;
+    position: relative;
+  }
+
+  .section-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-name {
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--dark);
   }
 
-  .form-subtitle {
-    color: #64748b;
-    margin-bottom: 2.5rem;
+  .section-counter {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* ===== FORM SECTIONS ===== */
+  .form-section {
+    display: none;
+    animation: fadeSlideIn 0.5s ease;
+  }
+
+  .form-section.active {
+    display: block;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Section 1: Personal Info */
+  .section-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(37,99,235,0.1));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-icon i {
+    font-size: 2.2rem;
+    color: var(--primary);
   }
 
   .form-group {
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.5rem;
   }
 
   .form-label {
     display: block;
-    font-size: 0.92rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
   }
 
-  .form-control,
-  .form-select {
+  .input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    color: #94a3b8;
+    font-size: 1rem;
+  }
+
+  .form-control {
     width: 100%;
-    padding: 1rem 1.3rem;
+    padding: 1rem 1rem 1rem 2.8rem;
     font-size: 1rem;
     background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    transition: all 0.25s ease;
-    color: var(--dark);
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    transition: all 0.3s ease;
   }
 
-  .form-control:focus,
-  .form-select:focus {
+  .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(239,68,68,0.12);
-  }
-
-  .file-area {
-    border: 2px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 2.2rem;
-    text-align: center;
-    transition: all 0.25s;
-    cursor: pointer;
-    background: #f8fafc;
-  }
-
-  .file-area:hover {
-    border-color: var(--primary);
     background: white;
+    box-shadow: 0 0 0 4px rgba(239,68,68,0.1);
+    transform: translateY(-1px);
   }
 
-  .file-area input[type="file"] {
-    display: none;
+  /* Section 2: Contact */
+  .contact-methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
   }
 
-  .file-icon {
-    font-size: 2.8rem;
-    color: var(--primary);
-    margin-bottom: 0.8rem;
-  }
-
-  .file-text {
-    color: #64748b;
-    font-size: 0.95rem;
-  }
-
-  .file-text strong {
-    color: var(--primary);
-  }
-
-  .submit-btn {
-    width: 100%;
-    padding: 1.3rem;
-    margin-top: 1.8rem;
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
+  .contact-method {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
     border-radius: 14px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    padding: 1.5rem 1rem;
+    text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+  }
+
+  .contact-method.selected {
+    border-color: var(--primary);
+    background: rgba(239,68,68,0.05);
+  }
+
+  .contact-method i {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-method span {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-method small {
+    color: #64748b;
+    font-size: 0.8rem;
+  }
+
+  /* Section 3: Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .skill-tag {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .skill-tag i {
+    font-size: 1.3rem;
+    color: #64748b;
+  }
+
+  .skill-tag.selected {
+    background: var(--primary-gradient);
+    border-color: transparent;
+    color: white;
+  }
+
+  .skill-tag.selected i {
+    color: white;
+  }
+
+  /* Section 4: Photo Upload */
+  .creative-upload {
+    text-align: center;
+    padding: 2.5rem;
+    background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+    border-radius: 24px;
+    margin: 1.5rem 0;
+  }
+
+  .upload-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: var(--shadow);
   }
 
-  .submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(239,68,68,0.35);
+  .upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .submit-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  .upload-preview i {
+    font-size: 3rem;
+    color: #94a3b8;
   }
 
-  .form-footer {
-    text-align: center;
-    margin-top: 2.5rem;
-    padding-top: 1.8rem;
-    border-top: 1px solid #e2e8f0;
-    color: #64748b;
-    font-size: 0.95rem;
-  }
-
-  .view-link {
-    color: var(--primary);
+  .file-upload-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 999px;
+    cursor: pointer;
     font-weight: 600;
-    text-decoration: none;
-    transition: all 0.25s;
+    margin-top: 1rem;
+    box-shadow: 0 8px 20px rgba(239,68,68,0.3);
   }
 
-  .view-link:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
+  /* ===== NAVIGATION BUTTONS ===== */
+  .form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
   }
 
-  /* Flash messages */
-  .flash-message {
-    padding: 1rem 1.4rem;
+  .nav-btn {
+    padding: 0.9rem 2rem;
     border-radius: 12px;
-    margin-bottom: 1.8rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  .flash-success {
-    background: rgba(34,197,94,0.15);
-    color: #065f46;
-    border: 1px solid rgba(34,197,94,0.3);
+  .btn-prev {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
   }
 
-  .flash-error {
-    background: rgba(239,68,68,0.15);
-    color: #991b1b;
-    border: 1px solid rgba(239,68,68,0.3);
+  .btn-prev:hover {
+    background: #e2e8f0;
+    transform: translateX(-3px);
   }
 
-  @media (max-width: 992px) {
-    .volunteer-card {
+  .btn-next {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 20px rgba(239,68,68,0.3);
+  }
+
+  .btn-next:hover {
+    transform: translateX(3px);
+    box-shadow: 0 12px 30px rgba(239,68,68,0.5);
+  }
+
+  .btn-submit {
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .card-grid {
       grid-template-columns: 1fr;
-      max-width: 680px;
     }
-
-    .visual-side,
-    .form-side {
-      padding: 4rem 2.5rem;
+    
+    .journey-title {
+      font-size: 3rem;
     }
   }
 
-  @media (max-width: 576px) {
-    .volunteer-wrapper {
-      padding: 2rem 1rem 4rem;
+  @media (max-width: 768px) {
+    .volunteer-journey {
+      padding: 4rem 1rem;
     }
-
-    .visual-side,
-    .form-side {
-      padding: 3rem 1.8rem;
+    
+    .journey-title {
+      font-size: 2.2rem;
     }
-
-    .visual-title {
-      font-size: 2.3rem;
+    
+    .story-panel,
+    .form-panel {
+      padding: 2rem;
+    }
+    
+    .progress-tracker {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .progress-line {
+      display: none;
     }
   }
 </style>
 
-<!-- Floating background shapes -->
-<div class="volunteer-bg-shapes" id="bgShapes"></div>
+<!-- Animated Background -->
+<div class="journey-background">
+  <div class="gradient-sphere sphere1"></div>
+  <div class="gradient-sphere sphere2"></div>
+</div>
 
-<div class="volunteer-wrapper">
-  <div class="volunteer-card">
-
-    <!-- Left: Visual / Motivation -->
-    <div class="visual-side">
-      <div class="hero-icon">
-        <i class="fas fa-hand-holding-heart"></i>
-      </div>
-
-      <h1 class="visual-title">Become a<br>Disaster Response Hero</h1>
-
-      <p class="visual-subtitle">
-        Join thousands of everyday heroes helping communities during emergencies.
-      </p>
-
-      <ul class="benefits">
-        <li class="benefit">
-          <div class="benefit-icon"><i class="fas fa-certificate"></i></div>
-          <span>Official training & certification</span>
-        </li>
-        <li class="benefit">
-          <div class="benefit-icon"><i class="fas fa-users"></i></div>
-          <span>Supportive nationwide network</span>
-        </li>
-        <li class="benefit">
-          <div class="benefit-icon"><i class="fas fa-medal"></i></div>
-          <span>Recognition & impact awards</span>
-        </li>
-        <li class="benefit">
-          <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
-          <span>Insurance & safety coverage</span>
-        </li>
-      </ul>
+<div class="volunteer-journey">
+  
+  <!-- Journey Header -->
+  <div class="journey-header">
+    <div class="journey-badge">
+      <i class="fas fa-bolt"></i>
+      URGENT: Disaster Response Team 2024
     </div>
+    <h1 class="journey-title">Your Journey to<br>Becoming a Hero</h1>
+    <p class="journey-subtitle">
+      Join 2,500+ volunteers saving lives across the nation. Complete the 4-step journey to activate your volunteer profile.
+    </p>
+  </div>
 
-    <!-- Right: Form -->
-    <div class="form-side">
-      <div class="form-header">
-        <h2 class="form-title">Join the Team</h2>
-        <p class="form-subtitle">Help save lives — registration takes under 3 minutes</p>
+  <!-- Progress Tracker -->
+  <div class="progress-tracker">
+    <div class="progress-step active" data-step="1">
+      <div class="step-number">1</div>
+      <span class="step-label">Identity</span>
+    </div>
+    <div class="progress-line">
+      <div class="progress-fill" style="width: 0%;"></div>
+    </div>
+    <div class="progress-step" data-step="2">
+      <div class="step-number">2</div>
+      <span class="step-label">Contact</span>
+    </div>
+    <div class="progress-line">
+      <div class="progress-fill" style="width: 0%;"></div>
+    </div>
+    <div class="progress-step" data-step="3">
+      <div class="step-number">3</div>
+      <span class="step-label">Skills</span>
+    </div>
+    <div class="progress-line">
+      <div class="progress-fill" style="width: 0%;"></div>
+    </div>
+    <div class="progress-step" data-step="4">
+      <div class="step-number">4</div>
+      <span class="step-label">Profile</span>
+    </div>
+  </div>
+
+  <!-- Main Journey Card -->
+  <div class="journey-card">
+    <div class="card-grid">
+      
+      <!-- Left Panel - Dynamic Story -->
+      <div class="story-panel">
+        <div class="story-header">
+          <span class="story-tag">
+            <i class="fas fa-shield-heart"></i> STEP <span id="currentStepDisplay">1</span>/4
+          </span>
+          <h2 class="story-title" id="storyTitle">Tell us who you are</h2>
+          <p class="story-subtitle" id="storySubtitle">
+            Every hero has a story. Let's start with your identity. Your name, your age, your journey begins here.
+          </p>
+        </div>
+
+        <!-- Impact Meter -->
+        <div class="impact-meter">
+          <div class="impact-label">
+            <span>Profile Completion</span>
+            <span id="completionPercentage">25%</span>
+          </div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="completionMeter" style="width: 25%;"></div>
+          </div>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <span class="stat-value" id="volunteerCount">2,547</span>
+              <span class="stat-label">Active Heroes</span>
+            </div>
+            <div class="impact-stat">
+              <span class="stat-value" id="hoursServed">14.2K</span>
+              <span class="stat-label">Hours Saved</span>
+            </div>
+            <div class="impact-stat">
+              <span class="stat-value" id="communitiesHelped">89</span>
+              <span class="stat-label">Communities</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Flash messages -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="flash-message {{ 'flash-success' if category == 'success' else 'flash-error' }}">
-              <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }} fa-lg"></i>
-              {{ message }}
+      <!-- Right Panel - Form Sections -->
+      <div class="form-panel">
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div style="background: {{ '#dcfce7' if category == 'success' else '#fee2e2' }}; color: {{ '#065f46' if category == 'success' else '#991b1b' }}; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }}"></i>
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data" id="volunteerForm">
+
+          <!-- SECTION 1: Personal Information -->
+          <div class="form-section active" id="section1">
+            <div class="section-indicator">
+              <span class="section-name">Personal Identity</span>
+              <span class="section-counter">Step 1 of 4</span>
             </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+            
+            <div class="section-icon">
+              <i class="fas fa-user-circle"></i>
+            </div>
 
-      <form method="POST" enctype="multipart/form-data" class="vol-form" id="volunteerForm">
-
-        <div class="form-group">
-          <label class="form-label">Full Name <span style="color:var(--primary);">*</span></label>
-          <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
-        </div>
-
-        <div class="row g-3">
-          <div class="col-md-6">
             <div class="form-group">
-              <label class="form-label">Age <span style="color:var(--primary);">*</span></label>
-              <input type="number" name="age" min="16" class="form-control" placeholder="18+" required>
+              <label class="form-label">Full Name</label>
+              <div class="input-group-custom">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="form-label">Phone Number <span style="color:var(--primary);">*</span></label>
-              <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required>
-            </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <label class="form-label">Email Address <span style="color:var(--primary);">*</span></label>
-          <input type="email" name="email" class="form-control" placeholder="your.email@example.com" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Profile Photo (optional)</label>
-          <div class="file-area" id="fileArea">
-            <input type="file" name="profile_pic" accept="image/*" id="fileInput">
-            <div class="file-content">
-              <div class="file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-              <div class="file-text">
-                <strong>Click or drag photo here</strong><br>
-                <small>PNG, JPG, max 5MB</small>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-label">Age</label>
+                  <div class="input-group-custom">
+                    <i class="fas fa-cake-candles input-icon"></i>
+                    <input type="number" name="age" min="16" class="form-control" placeholder="Age" required>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <div class="input-group-custom">
+                    <i class="fas fa-venus-mars input-icon"></i>
+                    <select name="gender" class="form-control" style="padding-left: 2.8rem;">
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <i class="fas fa-user-plus"></i>
-          Join as Volunteer
-        </button>
+          <!-- SECTION 2: Contact Information -->
+          <div class="form-section" id="section2">
+            <div class="section-indicator">
+              <span class="section-name">Contact Preferences</span>
+              <span class="section-counter">Step 2 of 4</span>
+            </div>
 
-        <div class="form-footer">
-          Already registered? <a href="{{ url_for('volunteers') }}" class="view-link">View all volunteers →</a>
-        </div>
-      </form>
+            <div class="section-icon">
+              <i class="fas fa-address-card"></i>
+            </div>
+
+            <div class="contact-methods">
+              <div class="contact-method selected" data-method="phone">
+                <i class="fas fa-phone"></i>
+                <span>Phone</span>
+                <small>Quick response</small>
+              </div>
+              <div class="contact-method" data-method="whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+                <small>Instant chat</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <div class="input-group-custom">
+                <i class="fas fa-mobile-alt input-icon"></i>
+                <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <div class="input-group-custom">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" name="email" class="form-control" placeholder="your.email@example.com" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: Skills & Availability -->
+          <div class="form-section" id="section3">
+            <div class="section-indicator">
+              <span class="section-name">Skills & Availability</span>
+              <span class="section-counter">Step 3 of 4</span>
+            </div>
+
+            <div class="section-icon">
+              <i class="fas fa-tools"></i>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Select your skills</label>
+              <div class="skills-grid" id="skillsGrid">
+                <div class="skill-tag" data-skill="first-aid">
+                  <i class="fas fa-kit-medical"></i>
+                  <span>First Aid</span>
+                </div>
+                <div class="skill-tag" data-skill="rescue">
+                  <i class="fas fa-person-swimming"></i>
+                  <span>Water Rescue</span>
+                </div>
+                <div class="skill-tag" data-skill="fire">
+                  <i class="fas fa-fire-extinguisher"></i>
+                  <span>Fire Safety</span>
+                </div>
+                <div class="skill-tag" data-skill="cpr">
+                  <i class="fas fa-heartbeat"></i>
+                  <span>CPR</span>
+                </div>
+                <div class="skill-tag" data-skill="communication">
+                  <i class="fas fa-broadcast-tower"></i>
+                  <span>Comms</span>
+                </div>
+                <div class="skill-tag" data-skill="logistics">
+                  <i class="fas fa-truck"></i>
+                  <span>Logistics</span>
+                </div>
+              </div>
+              <input type="hidden" name="skills" id="selectedSkills">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Availability</label>
+              <select name="availability" class="form-control">
+                <option value="full-time">Full Time - Ready anytime</option>
+                <option value="part-time">Part Time - Weekends only</option>
+                <option value="on-call">On Call - Emergency only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SECTION 4: Profile Photo & Complete -->
+          <div class="form-section" id="section4">
+            <div class="section-indicator">
+              <span class="section-name">Profile Photo</span>
+              <span class="section-counter">Step 4 of 4</span>
+            </div>
+
+            <div class="section-icon">
+              <i class="fas fa-camera"></i>
+            </div>
+
+            <div class="creative-upload">
+              <div class="upload-preview" id="imagePreview">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="file-upload-wrapper">
+                <input type="file" name="profile_pic" accept="image/*" id="profilePhoto" style="display: none;">
+                <label for="profilePhoto" class="file-upload-btn">
+                  <i class="fas fa-cloud-upload-alt"></i> Choose Photo
+                </label>
+              </div>
+              <p style="color: #64748b; margin-top: 1rem; font-size: 0.85rem;">
+                <i class="fas fa-info-circle"></i> Optional — helps your team recognize you
+              </p>
+            </div>
+
+            <div style="background: linear-gradient(145deg, #ecfdf5, #d1fae5); border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem;">
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="width: 48px; height: 48px; background: var(--accent-gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-check-circle" style="color: white; font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                  <h4 style="color: #065f46; font-weight: 700; margin-bottom: 0.2rem;">Ready to make an impact</h4>
+                  <p style="color: #047857; margin: 0; font-size: 0.9rem;">You're just one click away from joining our hero network</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="form-navigation">
+            <button type="button" class="nav-btn btn-prev" id="prevBtn">
+              <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            
+            <button type="button" class="nav-btn btn-next" id="nextBtn">
+              Next <i class="fas fa-arrow-right"></i>
+            </button>
+            
+            <button type="submit" class="btn-submit" id="submitBtn" style="display: none;">
+              <i class="fas fa-hand-holding-heart"></i> Complete Registration
+            </button>
+          </div>
+
+        </form>
+      </div>
     </div>
-
   </div>
 </div>
 
 <script>
-// Create floating background shapes
-function createBackgroundShapes() {
-  const container = document.getElementById('bgShapes');
-  for (let i = 0; i < 12; i++) {
-    const shape = document.createElement('div');
-    shape.className = 'shape';
-    
-    const size = Math.random() * 180 + 40;
-    const left = Math.random() * 100;
-    const top = Math.random() * 100;
-    const dx = (Math.random() - 0.5) * 140;
-    const dy = (Math.random() - 0.5) * 140;
-    
-    shape.style.width = `${size}px`;
-    shape.style.height = `${size}px`;
-    shape.style.left = `${left}%`;
-    shape.style.top = `${top}%`;
-    shape.style.setProperty('--dx', `${dx}px`);
-    shape.style.setProperty('--dy', `${dy}px`);
-    shape.style.animationDuration = `${Math.random() * 20 + 16}s`;
-    shape.style.animationDelay = `${Math.random() * 8}s`;
-    
-    container.appendChild(shape);
-  }
-}
+document.addEventListener('DOMContentLoaded', function() {
+  let currentStep = 1;
+  const totalSteps = 4;
+  
+  const sections = document.querySelectorAll('.form-section');
+  const progressSteps = document.querySelectorAll('.progress-step');
+  const progressFills = document.querySelectorAll('.progress-fill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const storyTitle = document.getElementById('storyTitle');
+  const storySubtitle = document.getElementById('storySubtitle');
+  const completionPercentage = document.getElementById('completionPercentage');
+  const completionMeter = document.getElementById('completionMeter');
+  const currentStepDisplay = document.getElementById('currentStepDisplay');
 
-// File upload preview & feedback
-document.addEventListener('DOMContentLoaded', () => {
-  createBackgroundShapes();
+  // Story content for each step
+  const stories = {
+    1: {
+      title: 'Tell us who you are',
+      subtitle: 'Every hero has a story. Let\'s start with your identity. Your name, your age, your journey begins here.'
+    },
+    2: {
+      title: 'How to reach you',
+      subtitle: 'In emergencies, every second counts. Choose how you\'d like to receive critical alerts and deployment calls.'
+    },
+    3: {
+      title: 'Your superpowers',
+      subtitle: 'Whether you\'re a medical professional, a rescue expert, or just willing to help — every skill makes a difference.'
+    },
+    4: {
+      title: 'Complete your profile',
+      subtitle: 'Last step! Add a photo so your team can recognize you when you arrive at the scene.'
+    }
+  };
 
-  const fileInput = document.getElementById('fileInput');
-  const fileArea = document.getElementById('fileArea');
-  const fileContent = fileArea.querySelector('.file-content');
+  // Update UI based on current step
+  function updateStep(direction = 'next') {
+    // Update sections visibility
+    sections.forEach((section, index) => {
+      section.classList.toggle('active', index + 1 === currentStep);
+    });
 
-  fileInput.addEventListener('change', function() {
-    if (this.files.length > 0) {
-      const fileName = this.files[0].name;
-      fileArea.style.borderColor = '#22c55e';
-      fileArea.style.background = 'rgba(34,197,94,0.08)';
-      fileContent.innerHTML = `
-        <div class="file-icon" style="color:#22c55e">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="file-text">
-          <strong>Selected:</strong> ${fileName}<br>
-          <small style="color:#15803d">Ready to upload</small>
-        </div>
-      `;
+    // Update progress steps
+    progressSteps.forEach((step, index) => {
+      const stepNum = index + 1;
+      step.classList.toggle('active', stepNum === currentStep);
+      step.classList.toggle('completed', stepNum < currentStep);
+    });
+
+    // Update progress bars
+    progressFills.forEach((fill, index) => {
+      if (index === currentStep - 2) {
+        fill.style.width = '100%';
+      }
+    });
+
+    // Update completion percentage
+    const percentage = (currentStep / totalSteps) * 100;
+    completionPercentage.textContent = `${percentage}%`;
+    completionMeter.style.width = `${percentage}%`;
+
+    // Update story content
+    storyTitle.textContent = stories[currentStep].title;
+    storySubtitle.textContent = stories[currentStep].subtitle;
+    currentStepDisplay.textContent = currentStep;
+
+    // Update navigation buttons
+    prevBtn.disabled = currentStep === 1;
+    if (currentStep === totalSteps) {
+      nextBtn.style.display = 'none';
+      submitBtn.style.display = 'flex';
     } else {
-      resetFileArea();
+      nextBtn.style.display = 'flex';
+      submitBtn.style.display = 'none';
+    }
+  }
+
+  // Next button click
+  nextBtn.addEventListener('click', function() {
+    if (currentStep < totalSteps) {
+      // Validate current section
+      if (validateSection(currentStep)) {
+        currentStep++;
+        updateStep('next');
+      }
     }
   });
 
-  // Drag & drop support
-  ['dragenter', 'dragover'].forEach(event => {
-    fileArea.addEventListener(event, e => {
-      e.preventDefault();
-      fileArea.style.borderColor = var(--primary);
-      fileArea.style.background = 'rgba(239,68,68,0.05)';
-    });
+  // Previous button click
+  prevBtn.addEventListener('click', function() {
+    if (currentStep > 1) {
+      currentStep--;
+      updateStep('prev');
+    }
   });
 
-  ['dragleave', 'drop'].forEach(event => {
-    fileArea.addEventListener(event, e => {
-      e.preventDefault();
-      if (event === 'drop' && e.dataTransfer.files.length > 0) {
-        fileInput.files = e.dataTransfer.files;
-        fileInput.dispatchEvent(new Event('change'));
-      } else {
-        resetFileArea();
-      }
-    });
-  });
-
-  function resetFileArea() {
-    fileArea.style.borderColor = '#cbd5e1';
-    fileArea.style.background = '#f8fafc';
-    fileContent.innerHTML = `
-      <div class="file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-      <div class="file-text">
-        <strong>Click or drag photo here</strong><br>
-        <small>PNG, JPG, max 5MB</small>
-      </div>
-    `;
+  // Validate each section
+  function validateSection(step) {
+    switch(step) {
+      case 1:
+        const name = document.querySelector('input[name="name"]').value;
+        const age = document.querySelector('input[name="age"]').value;
+        if (!name || !age) {
+          alert('Please fill in your name and age to continue.');
+          return false;
+        }
+        break;
+      case 2:
+        const phone = document.querySelector('input[name="phone"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        if (!phone || !email) {
+          alert('Please provide your contact information.');
+          return false;
+        }
+        break;
+    }
+    return true;
   }
 
-  // Form submit loading state
-  document.getElementById('volunteerForm').addEventListener('submit', function(e) {
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  // Contact method selection
+  document.querySelectorAll('.contact-method').forEach(method => {
+    method.addEventListener('click', function() {
+      document.querySelectorAll('.contact-method').forEach(m => m.classList.remove('selected'));
+      this.classList.add('selected');
+    });
   });
+
+  // Skills selection
+  const selectedSkills = new Set();
+  document.querySelectorAll('.skill-tag').forEach(skill => {
+    skill.addEventListener('click', function() {
+      this.classList.toggle('selected');
+      const skillName = this.dataset.skill;
+      
+      if (this.classList.contains('selected')) {
+        selectedSkills.add(skillName);
+      } else {
+        selectedSkills.delete(skillName);
+      }
+      
+      document.getElementById('selectedSkills').value = Array.from(selectedSkills).join(',');
+    });
+  });
+
+  // Photo upload preview
+  document.getElementById('profilePhoto').addEventListener('change', function(e) {
+    if (this.files && this.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+
+  // Form submission loading state
+  document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating your hero profile...';
+  });
+
+  // Initialize
+  updateStep();
 });
 </script>
 
