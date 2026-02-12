@@ -8,13 +8,17 @@
   :root {
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
+    --primary-gradient: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
     --secondary: #ef4444;
-    --secondary-dark: #dc2626;
+    --secondary-gradient: linear-gradient(135deg, #ef4444, #f87171, #fca5a5);
+    --success: #10b981;
+    --success-gradient: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
+    --warning: #f59e0b;
     --hospital: #10b981;
     --police: #3b82f6;
     --fire: #ef4444;
-    --success: #10b981;
-    --warning: #f59e0b;
+    --ambulance: #8b5cf6;
+    --shelter: #f59e0b;
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
     --gray-200: #e2e8f0;
@@ -22,155 +26,351 @@
     --gray-700: #334155;
     --gray-800: #1e293b;
     --gray-900: #0f172a;
+    --glass: rgba(255, 255, 255, 0.15);
+    --glass-dark: rgba(15, 23, 42, 0.85);
+    --blur: blur(20px);
     --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
     --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-    --radius: 14px;
-    --radius-lg: 18px;
-    --transition: all 0.3s ease;
+    --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  .main-container {
-    flex: 1;
-    display: flex;
-    height: calc(100vh - var(--header-height, 70px));
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    color: var(--gray-900);
+    font-family: 'Inter', sans-serif;
     overflow: hidden;
   }
 
-  #map {
-    flex: 2;
-    height: 100%;
+  /* ===== MAIN CONTAINER ===== */
+  .main-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    background: var(--gray-900);
   }
 
+  /* ===== MAP SECTION ===== */
+  #map {
+    flex: 2;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  /* ===== SIDEBAR ===== */
   #sidebar {
     flex: 1;
-    max-width: 420px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-left: 1px solid rgba(0,0,0,0.08);
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: -6px 0 20px rgba(0,0,0,0.1);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+    z-index: 2;
+    position: relative;
   }
 
+  /* ===== SIDEBAR HEADER ===== */
   .sidebar-header {
-    padding: 1.6rem 1.8rem;
+    padding: 1.8rem 1.8rem 1.5rem;
     border-bottom: 1px solid rgba(0,0,0,0.08);
-    background: rgba(37, 99, 235, 0.05);
+    background: rgba(37, 99, 235, 0.03);
   }
 
-  .sidebar-header h2 {
-    font-weight: 700;
-    font-size: 1.45rem;
-    margin: 0 0 1.2rem;
-    color: var(--gray-900);
+  .header-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+  }
+
+  .header-title h2 {
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin: 0;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
+  .live-badge {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--secondary);
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--secondary);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .location-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .location-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .location-text {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+
+  .location-text strong {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gray-500);
+  }
+
+  /* ===== FILTER BUTTONS ===== */
   .service-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 
   .filter-btn {
-    padding: 0.55rem 1.1rem;
-    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
     background: white;
-    border: 1px solid var(--gray-300);
-    font-size: 0.88rem;
+    border: 1px solid var(--gray-200);
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--gray-700);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: var(--transition);
     display: flex;
     align-items: center;
     gap: 6px;
+    box-shadow: var(--shadow-sm);
   }
 
   .filter-btn:hover {
-    background: var(--gray-100);
-    transform: translateY(-1px);
+    background: var(--gray-50);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
   }
 
   .filter-btn.active {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: white;
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+    border-color: transparent;
+    box-shadow: 0 6px 15px rgba(37,99,235,0.3);
   }
 
+  .filter-btn.active i {
+    color: white;
+  }
+
+  /* ===== SERVICES LIST ===== */
   .services-list {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--gray-200);
   }
 
-  .empty-state, .loader {
+  .services-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .services-list::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 10px;
+  }
+
+  .services-list::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+  }
+
+  /* ===== LOADER ===== */
+  .loader {
     text-align: center;
-    padding: 4rem 1.5rem;
-    color: var(--gray-500);
+    padding: 3rem 1.5rem;
   }
 
-  .empty-state i, .loader i {
-    font-size: 3.5rem;
-    margin-bottom: 1.2rem;
-    color: var(--gray-300);
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--gray-200);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
   }
 
-  /* Service Card */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* ===== SERVICE CARD - ENHANCED ===== */
   .service-card {
     background: white;
-    border-radius: var(--radius);
-    padding: 1.3rem;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
     margin-bottom: 1.2rem;
-    box-shadow: var(--shadow-sm);
-    border-left: 5px solid transparent;
-    transition: all 0.28s ease;
+    box-shadow: var(--shadow);
+    border-left: 6px solid transparent;
+    transition: var(--transition);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle at 100% 0%, rgba(37,99,235,0.05), transparent 70%);
+    border-radius: 50%;
   }
 
   .service-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--shadow-xl);
   }
 
   .service-card.hospital { border-left-color: var(--hospital); }
   .service-card.police   { border-left-color: var(--police); }
   .service-card.fire     { border-left-color: var(--fire); }
+  .service-card.ambulance { border-left-color: var(--ambulance); }
+  .service-card.shelter   { border-left-color: var(--shelter); }
+
+  .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.8rem;
+  }
 
   .service-type {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 0.35rem 0.9rem;
-    border-radius: 50px;
-    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .type-hospital { background: rgba(16,185,129,0.12); color: var(--hospital); }
-  .type-police   { background: rgba(59,130,246,0.12);  color: var(--police); }
-  .type-fire     { background: rgba(239,68,68,0.12);   color: var(--fire); }
+  .type-police   { background: rgba(59,130,246,0.12); color: var(--police); }
+  .type-fire     { background: rgba(239,68,68,0.12); color: var(--fire); }
+  .type-ambulance { background: rgba(139,92,246,0.12); color: var(--ambulance); }
+  .type-shelter   { background: rgba(245,158,11,0.12); color: var(--shelter); }
+
+  .eta-badge {
+    background: var(--gray-100);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
   .service-name {
-    font-weight: 700;
-    font-size: 1.18rem;
+    font-weight: 800;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
     color: var(--gray-900);
   }
 
-  .service-distance {
+  .service-address {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: flex-start;
+    gap: 8px;
     font-size: 0.9rem;
     color: var(--gray-600);
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .service-stats {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+    padding: 0.8rem 0;
+    border-top: 1px dashed var(--gray-200);
+    border-bottom: 1px dashed var(--gray-200);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
   }
 
   .service-actions {
@@ -179,25 +379,29 @@
   }
 
   .btn {
-    padding: 0.65rem 1.2rem;
-    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: var(--transition);
     flex: 1;
     text-align: center;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
   .btn-primary {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: white;
   }
 
   .btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37,99,235,0.4);
   }
 
   .btn-secondary {
@@ -208,63 +412,183 @@
 
   .btn-secondary:hover {
     background: var(--gray-200);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+  }
+
+  .btn-call {
+    background: var(--success-gradient);
+    color: white;
+  }
+
+  /* ===== EMERGENCY PANEL ===== */
+  .emergency-panel {
+    padding: 1.2rem;
+    border-top: 1px solid var(--gray-200);
+    background: rgba(37,99,235,0.03);
+  }
+
+  .emergency-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .emergency-badge {
+    background: var(--secondary-gradient);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulse-glow 2s infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+    50% { box-shadow: 0 0 20px 5px rgba(239,68,68,0.3); }
   }
 
   .emergency-call {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--secondary);
+    background: var(--secondary-gradient);
     color: white;
-    padding: 0.8rem 1.5rem;
-    border-radius: 50px;
+    padding: 0.8rem 1.8rem;
+    border-radius: 100px;
     font-weight: 700;
     text-decoration: none;
-    margin: 1rem 0;
-    transition: all 0.3s;
+    transition: var(--transition);
+    width: 100%;
+    justify-content: center;
   }
 
   .emergency-call:hover {
-    background: var(--secondary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(220,38,38,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(220,38,38,0.4);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1200px) {
+    .service-stats {
+      flex-wrap: wrap;
+    }
   }
 
   @media (max-width: 992px) {
     .main-container {
       flex-direction: column;
     }
+    
     #sidebar {
       max-width: 100%;
-      max-height: 45vh;
+      max-height: 50vh;
       border-left: none;
       border-top: 1px solid var(--gray-200);
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    }
+    
+    #map {
+      height: 50vh;
     }
   }
 
   @media (max-width: 576px) {
+    .service-actions {
+      flex-direction: column;
+    }
+    
     .service-filters {
       justify-content: center;
     }
-    .service-actions {
-      flex-direction: column;
-      gap: 0.6rem;
-    }
+  }
+
+  /* ===== RADIUS CONTROL ===== */
+  .radius-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: 100px;
+  }
+
+  .radius-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: var(--gray-200);
+    border-radius: 3px;
+  }
+
+  .radius-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(37,99,235,0.3);
+    transition: var(--transition);
+  }
+
+  .radius-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
   }
 </style>
 
 <div class="main-container">
+  <!-- Map Container -->
   <div id="map"></div>
 
+  <!-- Sidebar -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <h2><i class="fas fa-map-marker-alt"></i> Nearby Emergency Services</h2>
+      <div class="header-title">
+        <h2>
+          <i class="fas fa-map-marker-alt"></i>
+          Emergency Locator
+        </h2>
+        <span class="live-badge">
+          <span class="pulse-dot"></span>
+          LIVE
+        </span>
+      </div>
 
+      <!-- Location Display -->
+      <div class="location-info" id="locationInfo">
+        <div class="location-icon">
+          <i class="fas fa-location-dot"></i>
+        </div>
+        <div class="location-text">
+          <strong>CURRENT LOCATION</strong>
+          <span id="locationName">Fetching your location...</span>
+        </div>
+        <button class="btn btn-secondary" style="flex: 0 0 auto; padding: 0.5rem 1rem;" onclick="refreshLocation()">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+
+      <!-- Service Filters -->
       <div class="service-filters">
         <button class="filter-btn active" data-type="all">
-          <i class="fas fa-list"></i> All
+          <i class="fas fa-list"></i> All Services
         </button>
         <button class="filter-btn" data-type="hospital">
           <i class="fas fa-hospital"></i> Hospitals
@@ -275,70 +599,155 @@
         <button class="filter-btn" data-type="fire">
           <i class="fas fa-fire-extinguisher"></i> Fire
         </button>
+        <button class="filter-btn" data-type="ambulance">
+          <i class="fas fa-ambulance"></i> Ambulance
+        </button>
+        <button class="filter-btn" data-type="shelter">
+          <i class="fas fa-house"></i> Shelters
+        </button>
+      </div>
+
+      <!-- Search Radius Control -->
+      <div class="radius-control">
+        <i class="fas fa-circle-dot" style="color: var(--primary);"></i>
+        <input type="range" class="radius-slider" id="radiusSlider" min="1" max="20" value="5" step="0.5">
+        <span id="radiusValue" style="font-weight: 600;">5 km</span>
       </div>
     </div>
 
+    <!-- Loader -->
     <div class="loader" id="loader">
       <div class="spinner"></div>
-      <p>Finding services near you...</p>
+      <p>Scanning for emergency services near you...</p>
     </div>
 
+    <!-- Services List -->
     <div class="services-list" id="services-list">
       <div class="empty-state">
-        <i class="fas fa-map-marker-alt"></i>
-        <h3>Waiting for location</h3>
-        <p>Allow location access to see nearby hospitals, police stations, and fire departments.</p>
+        <i class="fas fa-map-marker-alt empty-icon"></i>
+        <h3>Waiting for location access</h3>
+        <p>Please allow location access to find nearby hospitals, police stations, and fire departments.</p>
+        <button onclick="location.reload()" style="
+          margin-top: 1.5rem;
+          padding: 0.8rem 2rem;
+          background: var(--primary-gradient);
+          color: white;
+          border: none;
+          border-radius: 100px;
+          font-weight: 600;
+          cursor: pointer;
+        ">
+          <i class="fas fa-sync-alt"></i> Retry
+        </button>
       </div>
     </div>
 
-    <div style="padding:1.2rem; border-top:1px solid var(--gray-200); text-align:center;">
+    <!-- Emergency Panel -->
+    <div class="emergency-panel">
+      <div class="emergency-header">
+        <i class="fas fa-exclamation-triangle" style="color: var(--secondary);"></i>
+        <span style="font-weight: 600;">24/7 Emergency Helpline</span>
+      </div>
       <a href="tel:112" class="emergency-call">
-        <i class="fas fa-phone-volume"></i> EMERGENCY: 112
+        <i class="fas fa-phone-volume"></i>
+        <span style="font-size: 1.2rem; font-weight: 800;">112</span>
+        <span style="opacity: 0.9;">(Police | Fire | Ambulance)</span>
       </a>
     </div>
   </div>
 </div>
 
+<!-- Leaflet JS & CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// ────────────────────────────────────────────────
-//  CONFIG
-// ────────────────────────────────────────────────
+// ================================================
+// EMERGENCY SERVICES LOCATOR - ENHANCED VERSION
+// ================================================
+
+// ===== SERVICE CONFIGURATION =====
 const serviceConfig = {
-  hospital: { tag: 'amenity=hospital',        color: '#10b981', icon: 'hospital',       name: 'Hospital' },
-  police:   { tag: 'amenity=police',          color: '#3b82f6',  icon: 'shield-alt',     name: 'Police Station' },
-  fire:     { tag: 'amenity=fire_station',    color: '#ef4444',  icon: 'fire-extinguisher', name: 'Fire Station' }
+  hospital: { 
+    tag: 'amenity=hospital', 
+    color: '#10b981', 
+    icon: 'hospital', 
+    name: 'Hospital',
+    emoji: '🏥',
+    priority: 1
+  },
+  police: { 
+    tag: 'amenity=police', 
+    color: '#3b82f6', 
+    icon: 'shield-alt', 
+    name: 'Police Station',
+    emoji: '👮',
+    priority: 2
+  },
+  fire: { 
+    tag: 'amenity=fire_station', 
+    color: '#ef4444', 
+    icon: 'fire-extinguisher', 
+    name: 'Fire Station',
+    emoji: '🚒',
+    priority: 3
+  },
+  ambulance: { 
+    tag: 'amenity=ambulance_station', 
+    color: '#8b5cf6', 
+    icon: 'ambulance', 
+    name: 'Ambulance Service',
+    emoji: '🚑',
+    priority: 1
+  },
+  shelter: { 
+    tag: 'amenity=shelter', 
+    color: '#f59e0b', 
+    icon: 'house', 
+    name: 'Emergency Shelter',
+    emoji: '🏠',
+    priority: 4
+  }
 };
 
-// ────────────────────────────────────────────────
-//  MAP SETUP
-// ────────────────────────────────────────────────
-const map = L.map('map', {
-  zoomControl: true,
-  zoomSnap: 0.5
-}).setView([20.5937, 78.9629], 5);
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-}).addTo(map);
-
-// User location marker (will be set later)
+// ===== GLOBAL VARIABLES =====
+let map;
 let userMarker = null;
-let userLat, userLon;
+let userLat = null;
+let userLon = null;
+let userAddress = null;
 let allMarkers = [];
+let allServices = [];
+let currentFilter = 'all';
+let searchRadius = 5; // km
+let radiusCircle = null;
 
-// ────────────────────────────────────────────────
-//  DOM ELEMENTS
-// ────────────────────────────────────────────────
+// ===== DOM ELEMENTS =====
 const servicesList = document.getElementById('services-list');
 const loader = document.getElementById('loader');
+const radiusSlider = document.getElementById('radiusSlider');
+const radiusValue = document.getElementById('radiusValue');
+const locationName = document.getElementById('locationName');
 
-// ────────────────────────────────────────────────
-//  DISTANCE CALCULATION
-// ────────────────────────────────────────────────
+// ===== INITIALIZE MAP =====
+function initMap() {
+  map = L.map('map', {
+    zoomControl: true,
+    zoomSnap: 0.5,
+    fadeAnimation: true,
+    zoomAnimation: true
+  }).setView([20.5937, 78.9629], 5);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+}
+
+// ===== DISTANCE CALCULATION =====
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -347,84 +756,364 @@ function getDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   const distance = R * c;
 
-  return distance < 1 ? Math.round(distance * 1000) + ' m' : distance.toFixed(1) + ' km';
+  if (distance < 1) {
+    return { value: Math.round(distance * 1000), unit: 'm', display: Math.round(distance * 1000) + ' m' };
+  }
+  return { value: distance, unit: 'km', display: distance.toFixed(1) + ' km' };
 }
 
-// ────────────────────────────────────────────────
-//  CREATE MARKER & CARD
-// ────────────────────────────────────────────────
-function addService(lat, lon, name, type) {
+// ===== ESTIMATE TRAVEL TIME =====
+function estimateTravelTime(distance) {
+  if (distance.unit === 'm') {
+    return Math.ceil(distance.value / 100) + ' min';
+  } else {
+    return Math.ceil(distance.value * 3) + ' min';
+  }
+}
+
+// ===== REVERSE GEOCODING =====
+async function getLocationName(lat, lon) {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+    const data = await response.json();
+    return data.display_name.split(',')[0] + ', ' + data.address.city || data.address.town || data.address.village || 'Your location';
+  } catch (error) {
+    console.error('Reverse geocoding error:', error);
+    return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  }
+}
+
+// ===== ADD SERVICE MARKER =====
+function addService(lat, lon, name, type, tags = {}) {
   const cfg = serviceConfig[type];
   const distance = getDistance(userLat, userLon, lat, lon);
+  const travelTime = estimateTravelTime(distance);
 
-  // Marker
+  // Create marker
   const marker = L.marker([lat, lon], {
     icon: L.divIcon({
-      html: `<div style="
-        background:${cfg.color};
-        width:32px;height:32px;
-        border-radius:50%;
-        border:3px solid white;
-        box-shadow:0 0 12px ${cfg.color}80;
-        display:flex;align-items:center;justify-content:center;
-        color:white;font-size:16px;
-      ">${cfg.icon === 'hospital' ? '🏥' : cfg.icon === 'shield-alt' ? '👮' : '🚒'}</div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -16],
-      className: ''
+      html: `
+        <div style="
+          background:${cfg.color};
+          width:44px;
+          height:44px;
+          border-radius:50%;
+          border:4px solid white;
+          box-shadow:0 0 20px ${cfg.color}80;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color:white;
+          font-size:20px;
+          transition:all 0.3s ease;
+        ">
+          ${cfg.emoji}
+        </div>
+      `,
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -22],
+      className: 'service-marker'
     })
   }).addTo(map);
 
+  // Popup content
   marker.bindPopup(`
-    <b>${name}</b><br>
-    ${cfg.name}<br>
-    <small>${distance} away</small>
+    <div style="font-family: 'Inter', sans-serif; max-width: 250px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span style="font-size:24px;">${cfg.emoji}</span>
+        <span style="font-weight:800; font-size:16px; color:${cfg.color};">${cfg.name}</span>
+      </div>
+      <div style="font-weight:700; font-size:18px; margin-bottom:8px;">${name}</div>
+      <div style="display:flex; align-items:center; gap:12px; color:#64748b; margin-bottom:12px;">
+        <span>📏 ${distance.display}</span>
+        <span>⏱️ ~${travelTime}</span>
+      </div>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}" 
+         target="_blank" 
+         style="display:block; background:${cfg.color}; color:white; padding:10px; border-radius:8px; text-decoration:none; text-align:center; font-weight:600;">
+        Open in Google Maps
+      </a>
+    </div>
   `);
 
-  allMarkers.push({marker, type});
+  allMarkers.push({ marker, type, lat, lon, name });
 
-  // Card
+  // Create service card
+  const service = {
+    lat, lon, name, type,
+    distance: distance.display,
+    travelTime,
+    address: tags['addr:street'] ? 
+      `${tags['addr:street']} ${tags['addr:housenumber'] || ''}`.trim() : 
+      'Address not available',
+    phone: tags.phone || tags['contact:phone'] || null,
+    website: tags.website || null,
+    emergency: tags.emergency || null,
+    beds: tags.beds || null,
+    capacity: tags.capacity || null
+  };
+
+  allServices.push(service);
+  
+  if (currentFilter === 'all' || currentFilter === type) {
+    renderServiceCard(service);
+  }
+}
+
+// ===== RENDER SERVICE CARD =====
+function renderServiceCard(service) {
+  const cfg = serviceConfig[service.type];
   const card = document.createElement('div');
-  card.className = `service-card ${type}`;
+  card.className = `service-card ${service.type}`;
+  card.dataset.type = service.type;
+  card.dataset.lat = service.lat;
+  card.dataset.lon = service.lon;
+
   card.innerHTML = `
-    <div class="service-type type-${type}">
-      <i class="fas fa-${cfg.icon}"></i> ${cfg.name}
+    <div class="service-header">
+      <span class="service-type type-${service.type}">
+        <i class="fas fa-${cfg.icon}"></i> ${cfg.name}
+      </span>
+      <span class="eta-badge">
+        <i class="fas fa-clock"></i> ${service.travelTime}
+      </span>
     </div>
-    <div class="service-name">${name}</div>
-    <div class="service-distance">
-      <i class="fas fa-map-marker-alt"></i> ${distance} away
+    
+    <div class="service-name">${service.name}</div>
+    
+    <div class="service-address">
+      <i class="fas fa-map-pin"></i>
+      <span>${service.address}</span>
     </div>
+    
+    <div class="service-stats">
+      <div class="stat-item">
+        <span class="stat-value">${service.distance}</span>
+        <span class="stat-label">Distance</span>
+      </div>
+      ${service.phone ? `
+        <div class="stat-item">
+          <span class="stat-value"><i class="fas fa-phone"></i></span>
+          <span class="stat-label">Contact</span>
+        </div>
+      ` : ''}
+      ${service.beds ? `
+        <div class="stat-item">
+          <span class="stat-value">${service.beds}</span>
+          <span class="stat-label">Beds</span>
+        </div>
+      ` : ''}
+    </div>
+    
     <div class="service-actions">
-      <button class="btn btn-secondary" onclick="map.flyTo([${lat},${lon}], 16)">View on Map</button>
-      <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}" target="_blank" class="btn btn-primary">
-        Navigate
+      <button class="btn btn-secondary" onclick="flyToLocation(${service.lat}, ${service.lon})">
+        <i class="fas fa-eye"></i> View
+      </button>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${service.lat},${service.lon}" 
+         target="_blank" class="btn btn-primary">
+        <i class="fas fa-directions"></i> Navigate
       </a>
+      ${service.phone ? `
+        <a href="tel:${service.phone}" class="btn btn-call">
+          <i class="fas fa-phone"></i> Call
+        </a>
+      ` : ''}
     </div>
   `;
 
   card.addEventListener('click', (e) => {
     if (!e.target.closest('a, button')) {
-      map.flyTo([lat, lon], 16);
-      marker.openPopup();
+      flyToLocation(service.lat, service.lon);
     }
   });
 
   servicesList.appendChild(card);
 }
 
-// ────────────────────────────────────────────────
-//  FILTER MARKERS & CARDS
-// ────────────────────────────────────────────────
+// ===== FLY TO LOCATION =====
+function flyToLocation(lat, lon) {
+  map.flyTo([lat, lon], 18, {
+    animate: true,
+    duration: 1.5
+  });
+  
+  // Find and open popup
+  const marker = allMarkers.find(m => m.lat === lat && m.lon === lon);
+  if (marker) {
+    setTimeout(() => marker.marker.openPopup(), 500);
+  }
+}
+
+// ===== FETCH SERVICES FROM OVERPASS =====
+async function fetchServices() {
+  showLoader();
+  servicesList.innerHTML = '';
+
+  if (!userLat || !userLon) return;
+
+  try {
+    // Remove old markers and circle
+    allMarkers.forEach(m => map.removeLayer(m.marker));
+    allMarkers = [];
+    allServices = [];
+    
+    if (radiusCircle) map.removeLayer(radiusCircle);
+
+    // Add radius circle
+    radiusCircle = L.circle([userLat, userLon], {
+      radius: searchRadius * 1000,
+      color: '#2563eb',
+      weight: 2,
+      fillColor: '#3b82f6',
+      fillOpacity: 0.08,
+      dashArray: '5, 5'
+    }).addTo(map);
+
+    // Fetch services for each type
+    for (const [type, cfg] of Object.entries(serviceConfig)) {
+      try {
+        const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cfg.tag}](around:${searchRadius * 1000},${userLat},${userLon});out;`;
+        const response = await fetch(overpassUrl);
+        const data = await response.json();
+
+        data.elements.forEach((el, idx) => {
+          const name = el.tags.name || `${cfg.name} ${idx + 1}`;
+          addService(el.lat, el.lon, name, type, el.tags);
+        });
+      } catch (error) {
+        console.error(`Error fetching ${type}:`, error);
+      }
+    }
+
+    // Sort services by distance
+    allServices.sort((a, b) => {
+      const distA = parseFloat(a.distance);
+      const distB = parseFloat(b.distance);
+      return distA - distB;
+    });
+
+    hideLoader();
+
+    if (allServices.length === 0) {
+      servicesList.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-search empty-icon"></i>
+          <h3>No services found</h3>
+          <p>Try increasing the search radius or moving to a different location.</p>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error fetching services:', error);
+    hideLoader();
+  }
+}
+
+// ===== GET USER LOCATION =====
+async function getUserLocation() {
+  showLoader();
+
+  if (!navigator.geolocation) {
+    servicesList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-exclamation-triangle empty-icon"></i>
+        <h3>Geolocation not supported</h3>
+        <p>Your browser does not support location services.</p>
+      </div>`;
+    hideLoader();
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      userLat = position.coords.latitude;
+      userLon = position.coords.longitude;
+
+      // Get location name
+      userAddress = await getLocationName(userLat, userLon);
+      locationName.textContent = userAddress;
+
+      // Center map on user
+      map.setView([userLat, userLon], 14);
+
+      // Add user marker
+      if (userMarker) map.removeLayer(userMarker);
+      
+      userMarker = L.marker([userLat, userLon], {
+        icon: L.divIcon({
+          html: `
+            <div style="
+              background:linear-gradient(135deg, #2563eb, #3b82f6);
+              width:50px;
+              height:50px;
+              border-radius:50%;
+              border:4px solid white;
+              box-shadow:0 0 30px #2563eb80;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              color:white;
+              font-size:22px;
+              animation: pulse 2s infinite;
+            ">
+              <i class="fas fa-user"></i>
+            </div>
+          `,
+          iconSize: [50, 50],
+          iconAnchor: [25, 25],
+          className: ''
+        })
+      }).addTo(map).bindPopup(`
+        <div style="text-align:center;">
+          <strong>You are here</strong><br>
+          ${userAddress}
+        </div>
+      `).openPopup();
+
+      // Fetch nearby services
+      await fetchServices();
+    },
+    (error) => {
+      console.error('Geolocation error:', error);
+      servicesList.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-exclamation-triangle empty-icon"></i>
+          <h3>Location access denied</h3>
+          <p>Please enable location access to find nearby emergency services.</p>
+          <button onclick="location.reload()" style="
+            margin-top:1.5rem;
+            padding:0.8rem 2rem;
+            background:var(--primary-gradient);
+            color:white;
+            border:none;
+            border-radius:100px;
+            font-weight:600;
+            cursor:pointer;
+          ">
+            <i class="fas fa-sync-alt"></i> Retry
+          </button>
+        </div>`;
+      hideLoader();
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
+}
+
+// ===== FILTER SERVICES =====
 function filterServices(type) {
+  currentFilter = type;
+
+  // Update active button
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.type === type);
   });
 
-  document.querySelectorAll('.service-card').forEach(card => {
-    card.style.display = (type === 'all' || card.classList.contains(type)) ? 'block' : 'none';
-  });
-
+  // Filter markers
   allMarkers.forEach(m => {
     if (type === 'all' || m.type === type) {
       map.addLayer(m.marker);
@@ -432,118 +1121,74 @@ function filterServices(type) {
       map.removeLayer(m.marker);
     }
   });
+
+  // Filter cards
+  const cards = document.querySelectorAll('.service-card');
+  cards.forEach(card => {
+    card.style.display = (type === 'all' || card.classList.contains(type)) ? 'block' : 'none';
+  });
 }
 
-// ────────────────────────────────────────────────
-//  LOCATION HANDLING
-// ────────────────────────────────────────────────
+// ===== REFRESH LOCATION =====
+function refreshLocation() {
+  locationName.textContent = 'Refreshing location...';
+  getUserLocation();
+}
+
+// ===== SHOW/HIDE LOADER =====
 function showLoader() {
   loader.style.display = 'block';
-  servicesList.innerHTML = '';
+  servicesList.style.display = 'none';
 }
 
 function hideLoader() {
   loader.style.display = 'none';
-  if (servicesList.children.length === 0) {
-    servicesList.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>No services found nearby</h3>
-        <p>Try zooming out or enabling location services.</p>
-      </div>`;
+  servicesList.style.display = 'block';
+}
+
+// ===== RADIUS CONTROL =====
+function updateRadius(value) {
+  searchRadius = parseFloat(value);
+  radiusValue.textContent = searchRadius.toFixed(1) + ' km';
+  
+  if (userLat && userLon) {
+    fetchServices();
   }
 }
 
-if (navigator.geolocation) {
-  showLoader();
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  getUserLocation();
 
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      userLat = pos.coords.latitude;
-      userLon = pos.coords.longitude;
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => filterServices(btn.dataset.type));
+  });
 
-      map.setView([userLat, userLon], 13);
+  // Radius slider
+  radiusSlider.addEventListener('input', (e) => {
+    radiusValue.textContent = parseFloat(e.target.value).toFixed(1) + ' km';
+  });
 
-      // User marker
-      userMarker = L.marker([userLat, userLon], {
-        icon: L.divIcon({
-          html: `<div style="
-            background:#2563eb;
-            width:40px;height:40px;
-            border-radius:50%;
-            border:4px solid white;
-            box-shadow:0 0 15px #2563eb80;
-            display:flex;align-items:center;justify-content:center;
-            color:white;font-size:18px;
-          "><i class="fas fa-user"></i></div>`,
-          iconSize: [40, 40],
-          iconAnchor: [20, 20],
-          className: ''
-        })
-      }).addTo(map).bindPopup("You are here").openPopup();
+  radiusSlider.addEventListener('change', (e) => {
+    updateRadius(e.target.value);
+  });
 
-      // Radius circle
-      L.circle([userLat, userLon], {
-        radius: 5000,
-        color: '#2563eb',
-        fillColor: '#3b82f6',
-        fillOpacity: 0.12
-      }).addTo(map);
-
-      // Fetch services
-      for (const [type, cfg] of Object.entries(serviceConfig)) {
-        try {
-          const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cfg.tag}](around:5000,${userLat},${userLon});out;`;
-          const res = await fetch(overpassUrl);
-          const data = await res.json();
-
-          data.elements.forEach((el, idx) => {
-            const name = el.tags.name || `${cfg.name} ${idx + 1}`;
-            addService(el.lat, el.lon, name, type);
-          });
-        } catch (err) {
-          console.error(`Error fetching ${type}:`, err);
-        }
-      }
-
-      hideLoader();
-      filterServices('all');
-    },
-    (err) => {
-      console.error("Geolocation error:", err);
-      servicesList.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>Location access denied</h3>
-          <p>Please allow location access to find nearby emergency services.</p>
-          <button onclick="location.reload()" style="
-            margin-top:1.5rem;
-            padding:0.8rem 1.6rem;
-            background:var(--primary);
-            color:white;
-            border:none;
-            border-radius:10px;
-            font-weight:600;
-            cursor:pointer;
-          ">Retry</button>
-        </div>`;
-      hideLoader();
-    },
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-  );
-} else {
-  servicesList.innerHTML = `
-    <div class="empty-state">
-      <i class="fas fa-exclamation-triangle"></i>
-      <h3>Geolocation not supported</h3>
-      <p>Your browser does not support location services.</p>
-    </div>`;
-}
-
-// Filter buttons
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => filterServices(btn.dataset.type));
+  // Add animation keyframes
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  `;
+  document.head.appendChild(style);
 });
+
+// Make functions global
+window.flyToLocation = flyToLocation;
+window.refreshLocation = refreshLocation;
 </script>
 
 {% endblock %}
