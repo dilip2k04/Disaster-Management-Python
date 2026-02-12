@@ -3,34 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help Us Rebuild - Disaster Relief Fund</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Disaster Relief Fund India | Safety Bridge</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #3498db;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #27ae60;
+            --primary: #ef4444;
+            --primary-gradient: linear-gradient(135deg, #ef4444, #f87171);
+            --secondary: #2563eb;
+            --secondary-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
+            --success: #10b981;
+            --success-gradient: linear-gradient(135deg, #10b981, #34d399);
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --glass: rgba(255,255,255,0.12);
+            --glass-dark: rgba(15,23,42,0.85);
+            --blur: blur(20px);
+            --radius: 20px;
+            --radius-lg: 32px;
+            --shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            --shadow-hover: 0 35px 70px -15px rgba(0,0,0,0.35);
+            
+            /* Navbar height */
+            --navbar-height: 90px;
+            --navbar-height-mobile: 80px;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: #f5f7fa;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             color: var(--dark);
-            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 0;
+            margin: 0;
         }
-        
+
+        /* ================= NAVBAR (from base.html) ================= */
+        header {
+            background: linear-gradient(135deg, rgba(239,68,68,0.95), rgba(37,99,235,0.95));
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            box-shadow: var(--shadow);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            width: 100%;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .brand i {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+
+        nav ul li a,
+        nav ul li button {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav ul li a::after,
+        nav ul li button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after,
+        nav ul li button:hover::after {
+            width: 100%;
+        }
+
+        .sos-nav-button {
+            background: rgba(255,255,255,0.2) !important;
+            border: 1.5px solid rgba(255,255,255,0.6) !important;
+            border-radius: 100px !important;
+            padding: 0.6rem 1.5rem !important;
+            font-weight: 700 !important;
+            transition: all 0.3s ease !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sos-nav-button:hover {
+            background: rgba(239,68,68,0.9) !important;
+            border-color: white !important;
+            transform: translateY(-2px) scale(1.05) !important;
+            box-shadow: 0 10px 30px rgba(239,68,68,0.5) !important;
+        }
+
+        /* Mobile menu toggle */
+        .navbar-toggler {
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            background: transparent;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-toggler:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* ===== CONTENT WRAPPER (Fixes navbar overlap) ===== */
+        .content-wrapper {
+            width: 100%;
+            min-height: calc(100vh - var(--navbar-height));
+            margin-top: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HERO SECTION ===== */
         .hero {
-            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(52, 152, 219, 0.8) 100%), url('https://www.pexels.com/photo/buildings-covered-with-the-water-14823611/') no-repeat center center/cover;
-            height: 60vh;
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(37,99,235,0.9) 100%), 
+                        url('https://images.pexels.com/photos/9121108/pexels-photo-9121108.jpeg?auto=compress&cs=tinysrgb&w=1920') no-repeat center center/cover;
+            min-height: 70vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -41,300 +199,262 @@
             position: relative;
             overflow: hidden;
         }
-        
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: #f5f7fa;
-            transform: skewY(-3deg);
-            z-index: 1;
-        }
-        
+
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
+            font-weight: 900;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1.5s ease-in-out;
+            background: linear-gradient(135deg, #ffffff, #fecaca, #bfdbfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
         }
-        
-        .hero p {
-            font-size: 1.5rem;
-            max-width: 800px;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 2s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
+
+        /* ===== DONATION CARDS ===== */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 2rem auto 4rem;
+            padding: 0 2rem;
             position: relative;
-            z-index: 2;
+            z-index: 10;
         }
-        
+
         .donation-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
         }
-        
+
         .donation-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
         }
-        
+
         .donation-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-hover);
         }
-        
+
         .card-header {
-            background: var(--primary);
+            background: linear-gradient(145deg, var(--dark), #1e293b);
             color: white;
-            padding: 20px;
+            padding: 2rem;
             text-align: center;
             position: relative;
+            overflow: hidden;
         }
-        
+
         .card-header i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            display: block;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
         }
-        
+
         .card-body {
-            padding: 30px;
+            padding: 2.5rem;
+            flex: 1;
         }
-        
-        .amount-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .amount-option {
-            background: var(--light);
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
+
+        /* ===== QR CODE SECTION ===== */
+        .qr-payment-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-bottom: 4rem;
+            box-shadow: var(--shadow);
             text-align: center;
+            border: 1px solid rgba(37,99,235,0.1);
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .qr-container {
+            background: linear-gradient(145deg, #f8fafc, #ffffff);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--secondary);
+        }
+
+        #qrcode {
+            margin: 1.5rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .upi-id {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--dark);
+            background: linear-gradient(145deg, #e6f7e6, #d1fadf);
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .qr-instructions {
+            text-align: left;
+            padding: 2rem;
+        }
+
+        .payment-apps {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payment-app i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        .amount-presets {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .amount-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 100px;
+            border: 2px solid var(--secondary);
+            background: white;
+            color: var(--secondary);
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
-        .amount-option:hover, .amount-option.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        
-        .custom-amount {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            transition: border 0.3s ease;
-        }
-        
-        .custom-amount:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-        
-        .selected-amount-display {
-            background: #e8f5e9;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--success);
-            display: none;
-        }
-        
-        .btn {
-            display: inline-block;
+
+        .amount-btn:hover,
+        .amount-btn.active {
             background: var(--secondary);
             color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .btn:hover {
-            background: #c0392b;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
         }
-        
-        .impact-meter {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 50px;
-            text-align: center;
-        }
-        
-        .meter-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-        
-        .meter-container {
-            height: 30px;
-            background: var(--light);
-            border-radius: 15px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .meter-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
-            border-radius: 15px;
-            width: 65%;
-            transition: width 1s ease;
-        }
-        
-        .meter-labels {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        .impact-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-        
-        .testimonials {
-            background: var(--primary);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        
-        .testimonial-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .testimonial-title {
-            font-size: 2rem;
-            margin-bottom: 40px;
-        }
-        
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .testimonial-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 10px;
-            position: relative;
-        }
-        
-        .testimonial-card::before {
-            content: '"';
-            font-size: 5rem;
-            color: rgba(255, 255, 255, 0.1);
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            line-height: 1;
-        }
-        
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .testimonial-author {
-            font-weight: bold;
-        }
-        
+
+        /* ===== FOOTER (from base.html) ===== */
         footer {
-            background: var(--dark);
+            background: #020617;
             color: white;
             text-align: center;
-            padding: 30px;
-            font-size: 0.9rem;
+            padding: 3rem 2rem;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            margin-top: auto;
+            position: relative;
+            z-index: 10;
         }
-        
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .footer-section h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+            transform: translateX(5px);
+            display: inline-block;
+        }
+
         .payment-methods {
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
-        
+
         .payment-methods i {
             font-size: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-            transition: color 0.3s ease;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s ease;
         }
-        
+
         .payment-methods i:hover {
             color: white;
+            transform: translateY(-3px);
         }
-        
-        /* Modal Styles */
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* ===== MODAL ===== */
         .modal {
             display: none;
             position: fixed;
@@ -342,393 +462,519 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
             align-items: center;
+            justify-content: center;
         }
-        
+
         .modal-content {
             background: white;
-            width: 90%;
+            border-radius: var(--radius-lg);
             max-width: 500px;
-            border-radius: 10px;
-            overflow: hidden;
+            width: 90%;
+            padding: 2.5rem;
+            text-align: center;
             animation: modalFadeIn 0.3s ease;
-            position: relative;
         }
-        
+
         @keyframes modalFadeIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
-        
-        .modal-header {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .modal-body {
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .modal-body p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-        
-        .badge {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #f39c12, #e74c3c);
+
+        .success-badge {
+            width: 100px;
+            height: 100px;
+            background: var(--success-gradient);
             border-radius: 50%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin: 0 auto 20px;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
             color: white;
             font-size: 3rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            animation: badgePulse 2s infinite;
+            animation: pulse 2s infinite;
         }
-        
-        @keyframes badgePulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .modal-btn {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-btn:hover {
-            background: #2980b9;
-        }
-        
-        @media (max-width: 768px) {
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991px) {
+            :root { --navbar-height: 70px; }
+            
+            .nav-container {
+                padding: 0 1.5rem;
+            }
+            
+            .navbar-collapse {
+                position: absolute;
+                top: var(--navbar-height);
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, rgba(239,68,68,0.98), rgba(37,99,235,0.98));
+                backdrop-filter: var(--blur);
+                border-bottom-left-radius: 30px;
+                border-bottom-right-radius: 30px;
+                padding: 1rem 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem 0;
+                gap: 1.2rem;
+            }
+            
+            .qr-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
-            .hero p {
-                font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .donation-cards {
+                grid-template-columns: 1fr;
             }
             
-            .amount-options {
-                grid-template-columns: repeat(2, 1fr);
+            .qr-payment-section {
+                padding: 2rem;
             }
             
-            .modal-content {
-                width: 95%;
+            .upi-id {
+                font-size: 1.1rem;
+                padding: 0.8rem 1.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <section class="hero">
-        <h1>Help Rebuild Lives</h1>
-        <p>Your donation today can provide immediate relief to families affected by natural disasters. Every contribution makes a difference.</p>
-    </section>
-    
-    <div class="container">
-        <div class="donation-cards">
-            <div class="donation-card">
-                <div class="card-header">
-                    <i class="fas fa-home"></i>
-                    <h2>Shelter Support</h2>
-                </div>
-                <div class="card-body">
-                    <p>Provide temporary housing for families who have lost their homes in the disaster.</p>
-                    <div class="selected-amount-display" id="shelter-amount-display"></div>
-                    <div class="amount-options">
-                        <div class="amount-option" data-amount="25">$25</div>
-                        <div class="amount-option" data-amount="50">$50</div>
-                        <div class="amount-option" data-amount="100">$100</div>
-                        <div class="amount-option" data-amount="250">$250</div>
-                        <div class="amount-option" data-amount="500">$500</div>
-                        <div class="amount-option selected" data-amount="1000">$1000</div>
-                    </div>
-                    <input type="text" class="custom-amount" id="shelter-custom-amount" placeholder="Or enter custom amount">
-                    <button class="btn" id="shelter-donate-btn">Donate Now</button>
-                </div>
-            </div>
-            
-            <div class="donation-card">
-                <div class="card-header">
-                    <i class="fas fa-utensils"></i>
-                    <h2>Food Supplies</h2>
-                </div>
-                <div class="card-body">
-                    <p>Help deliver emergency food packages to affected communities.</p>
-                    <div class="selected-amount-display" id="food-amount-display"></div>
-                    <div class="amount-options">
-                        <div class="amount-option" data-amount="15">$15</div>
-                        <div class="amount-option" data-amount="30">$30</div>
-                        <div class="amount-option selected" data-amount="60">$60</div>
-                        <div class="amount-option" data-amount="120">$120</div>
-                        <div class="amount-option" data-amount="250">$250</div>
-                        <div class="amount-option" data-amount="500">$500</div>
-                    </div>
-                    <input type="text" class="custom-amount" id="food-custom-amount" placeholder="Or enter custom amount">
-                    <button class="btn" id="food-donate-btn">Donate Now</button>
-                </div>
-            </div>
-            
-            <div class="donation-card">
-                <div class="card-header">
-                    <i class="fas fa-medkit"></i>
-                    <h2>Medical Aid</h2>
-                </div>
-                <div class="card-body">
-                    <p>Support mobile medical units providing critical care in disaster zones.</p>
-                    <div class="selected-amount-display" id="medical-amount-display"></div>
-                    <div class="amount-options">
-                        <div class="amount-option" data-amount="35">$35</div>
-                        <div class="amount-option" data-amount="75">$75</div>
-                        <div class="amount-option" data-amount="150">$150</div>
-                        <div class="amount-option selected" data-amount="300">$300</div>
-                        <div class="amount-option" data-amount="600">$600</div>
-                        <div class="amount-option" data-amount="1200">$1200</div>
-                    </div>
-                    <input type="text" class="custom-amount" id="medical-custom-amount" placeholder="Or enter custom amount">
-                    <button class="btn" id="medical-donate-btn">Donate Now</button>
-                </div>
-            </div>
+
+<!-- ================= NAVBAR (from base.html) ================= -->
+<header>
+    <div class="nav-container">
+        <a href="/" class="brand">
+            <i class="fas fa-shield-halved"></i>
+            Safety Bridge
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="d-none d-lg-flex">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin/login">Send Alerts</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><a href="/donation" style="color: #ffd700;">Donate</a></li>
+                <li>
+                    <button class="sos-nav-button" id="sosButton">
+                        <i class="fas fa-bell"></i> EMERGENCY SOS
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#mobileNavbar" aria-controls="mobileNavbar" 
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="collapse navbar-collapse d-lg-none" id="mobileNavbar">
+        <div class="nav-container">
+            <nav style="width: 100%;">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/admin/login">Send Alerts</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/donation" style="color: #ffd700;">Donate</a></li>
+                    <li>
+                        <button class="sos-nav-button" id="sosButtonMobile">
+                            <i class="fas fa-bell"></i> EMERGENCY SOS
+                        </button>
+                    </li>
+                </ul>
+            </nav>
         </div>
+    </div>
+</header>
+
+<!-- ================= MAIN CONTENT WRAPPER ================= -->
+<main>
+    <div class="content-wrapper">
         
-        <div class="impact-meter">
-            <h3 class="meter-title">Our Collective Impact</h3>
-            <div class="meter-container">
-                <div class="meter-progress"></div>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div style="max-width: 900px; position: relative; z-index: 2;">
+                <div style="display: inline-flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.15); padding: 0.8rem 2rem; border-radius: 100px; margin-bottom: 2rem; backdrop-filter: blur(10px);">
+                    <i class="fas fa-exclamation-triangle" style="color: #fecaca;"></i>
+                    <span style="font-weight: 600;">URGENT: India Flood Relief 2026</span>
+                </div>
+                <h1>Help Rebuild Lives</h1>
+                <p style="font-size: 1.3rem; max-width: 700px; margin: 0 auto 2rem; opacity: 0.95;">
+                    Your donation through UPI/QR code directly reaches our bank account. 
+                    100% of your contribution goes to disaster relief.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <span style="background: rgba(255,255,255,0.15); padding: 0.8rem 1.8rem; border-radius: 100px; font-size: 0.95rem;">
+                        <i class="fas fa-indian-rupee-sign"></i> 80G Tax Exempted
+                    </span>
+                    <span style="background: rgba(255,255,255,0.15); padding: 0.8rem 1.8rem; border-radius: 100px; font-size: 0.95rem;">
+                        <i class="fas fa-qrcode"></i> Scan & Pay - UPI
+                    </span>
+                </div>
             </div>
-            <div class="meter-labels">
-                <span>$0</span>
-                <span>$250,000</span>
-                <span>$500,000</span>
+        </section>
+
+        <div class="container">
+            <!-- Donation Cards -->
+            <div class="donation-cards">
+                <!-- Shelter Card -->
+                <div class="donation-card">
+                    <div class="card-header">
+                        <i class="fas fa-home"></i>
+                        <h2>Emergency Shelter</h2>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: #64748b; margin-bottom: 1.5rem;">Provide safe, dry shelter for families who have lost their homes in the floods.</p>
+                        <div style="background: #f1f5f9; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                            <span style="font-weight: 700; color: var(--dark);">₹500 = Tent for a family</span>
+                        </div>
+                        <button class="btn btn-primary w-100" style="padding: 1rem; background: var(--primary-gradient);" onclick="showQRPayment('shelter', 1000)">
+                            <i class="fas fa-qrcode"></i> Donate via QR
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Food Card -->
+                <div class="donation-card">
+                    <div class="card-header">
+                        <i class="fas fa-utensils"></i>
+                        <h2>Food & Water</h2>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: #64748b; margin-bottom: 1.5rem;">Deliver emergency food packages and clean drinking water to affected communities.</p>
+                        <div style="background: #f1f5f9; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                            <span style="font-weight: 700; color: var(--dark);">₹250 = One family meal</span>
+                        </div>
+                        <button class="btn btn-primary w-100" style="padding: 1rem; background: var(--primary-gradient);" onclick="showQRPayment('food', 500)">
+                            <i class="fas fa-qrcode"></i> Donate via QR
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Medical Card -->
+                <div class="donation-card">
+                    <div class="card-header">
+                        <i class="fas fa-medkit"></i>
+                        <h2>Medical Relief</h2>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: #64748b; margin-bottom: 1.5rem;">Support mobile medical units providing critical care in disaster zones.</p>
+                        <div style="background: #f1f5f9; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                            <span style="font-weight: 700; color: var(--dark);">₹1,000 = Vaccines for 10</span>
+                        </div>
+                        <button class="btn btn-primary w-100" style="padding: 1rem; background: var(--primary-gradient);" onclick="showQRPayment('medical', 1000)">
+                            <i class="fas fa-qrcode"></i> Donate via QR
+                        </button>
+                    </div>
+                </div>
             </div>
-            
-            <div class="impact-stats">
-                <div class="stat-item">
-                    <div class="stat-number">5,000+</div>
-                    <div class="stat-text">Families Helped</div>
+
+            <!-- ===== QR CODE PAYMENT SECTION ===== -->
+            <div class="qr-payment-section" id="qrPaymentSection" style="display: none;">
+                <button onclick="hideQRPayment()" style="float: right; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                
+                <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">
+                    <i class="fas fa-qrcode" style="color: var(--secondary);"></i> 
+                    Scan & Pay via UPI
+                </h2>
+                <p style="color: #64748b; margin-bottom: 2rem;">Scan this QR code with any UPI app to donate directly to our bank account</p>
+                
+                <div class="qr-grid">
+                    <div class="qr-container">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <i class="fas fa-shield-alt" style="color: var(--success); font-size: 1.5rem;"></i>
+                            <span style="font-weight: 600; color: var(--success);">SECURE UPI PAYMENT</span>
+                        </div>
+                        
+                        <!-- QR Code Container -->
+                        <div id="qrcode"></div>
+                        
+                        <!-- UPI ID Display -->
+                        <div class="upi-id">
+                            <i class="fas fa-phone"></i>
+                            <span id="upiDisplay">safetybridge@okhdfcbank</span>
+                            <button onclick="copyUPI()" style="background: none; border: none; color: var(--secondary); cursor: pointer;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <p style="margin-top: 1.5rem; color: #64748b;">
+                            <i class="fas fa-info-circle"></i> 
+                            <span id="paymentAmountDisplay">Amount: ₹1,000</span>
+                        </p>
+                    </div>
+                    
+                    <div class="qr-instructions">
+                        <h3 style="font-weight: 700; margin-bottom: 1.5rem;">How to Pay:</h3>
+                        
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center;">
+                            <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">1</div>
+                            <span>Scan QR code with any UPI app</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center;">
+                            <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">2</div>
+                            <span>Enter amount and complete payment</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center;">
+                            <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">3</div>
+                            <span>Money goes directly to our bank account</span>
+                        </div>
+                        
+                        <!-- Amount Presets -->
+                        <div style="margin-top: 2rem;">
+                            <label style="font-weight: 600; display: block; margin-bottom: 1rem;">Select Amount:</label>
+                            <div class="amount-presets" id="amountPresets">
+                                <button class="amount-btn" onclick="updateQRPaymentAmount(500)">₹500</button>
+                                <button class="amount-btn active" onclick="updateQRPaymentAmount(1000)">₹1,000</button>
+                                <button class="amount-btn" onclick="updateQRPaymentAmount(2500)">₹2,500</button>
+                                <button class="amount-btn" onclick="updateQRPaymentAmount(5000)">₹5,000</button>
+                                <button class="amount-btn" onclick="updateQRPaymentAmount(10000)">₹10,000</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Apps -->
+                        <div class="payment-apps">
+                            <div class="payment-app">
+                                <i class="fab fa-google-pay"></i>
+                                <span>Google Pay</span>
+                            </div>
+                            <div class="payment-app">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>PhonePe</span>
+                            </div>
+                            <div class="payment-app">
+                                <i class="fab fa-paytm"></i>
+                                <span>Paytm</span>
+                            </div>
+                            <div class="payment-app">
+                                <i class="fas fa-university"></i>
+                                <span>BHIM</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #64748b;">
+                            <i class="fas fa-lock"></i> 256-bit SSL Secure • No payment gateway charges
+                        </p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">120</div>
-                    <div class="stat-text">Communities Reached</div>
+            </div>
+
+            <!-- Impact Stats -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 4rem;">
+                <div style="text-align: center; padding: 2rem; background: white; border-radius: 20px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">5,200+</div>
+                    <div style="color: #64748b;">Families Helped</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-text">Emergency Response</div>
+                <div style="text-align: center; padding: 2rem; background: white; border-radius: 20px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">124</div>
+                    <div style="color: #64748b;">Villages Reached</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">98%</div>
-                    <div class="stat-text">Funds to Programs</div>
+                <div style="text-align: center; padding: 2rem; background: white; border-radius: 20px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">15</div>
+                    <div style="color: #64748b;">Medical Camps</div>
+                </div>
+                <div style="text-align: center; padding: 2rem; background: white; border-radius: 20px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: var(--secondary);">8,500+</div>
+                    <div style="color: #64748b;">Food Kits</div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <section class="testimonials">
-        <div class="testimonial-container">
-            <h3 class="testimonial-title">Stories of Hope</h3>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <p class="testimonial-text">After losing everything in the flood, the emergency shelter provided by your organization gave my family a safe place to stay while we rebuilt our lives.</p>
-                    <div class="testimonial-author">- Maria G., Disaster Survivor</div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="testimonial-text">The food packages arrived just when we needed them most. Thank you for remembering our community when others had forgotten.</p>
-                    <div class="testimonial-author">- James T., Community Leader</div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="testimonial-text">As a volunteer, I've seen firsthand how every dollar donated transforms into real help for people in their darkest hours.</p>
-                    <div class="testimonial-author">- Sarah K., Volunteer</div>
-                </div>
-            </div>
+</main>
+
+<!-- ================= FOOTER (from base.html) ================= -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Safety Bridge</h4>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">Disaster Preparedness & Response Platform</p>
+            <p style="color: rgba(255,255,255,0.6);">FCRA: 123456789<br>80G Tax Exemption</p>
         </div>
-    </section>
-    
-    <!-- Donation Confirmation Modal -->
-    <div class="modal" id="donation-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Thank You For Your Donation!</h2>
-                <button class="close-modal">&times;</button>
+        
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/volunteer">Volunteer</a></li>
+                <li><a href="/alerts">Emergency Alerts</a></li>
+                <li><a href="/contacts">Emergency Contacts</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Payment Methods</h4>
+            <div class="payment-methods">
+                <i class="fab fa-google-pay" title="Google Pay"></i>
+                <i class="fas fa-mobile-alt" title="PhonePe"></i>
+                <i class="fab fa-paytm" title="Paytm"></i>
+                <i class="fas fa-university" title="BHIM UPI"></i>
+                <i class="fab fa-cc-visa" title="Visa"></i>
+                <i class="fab fa-cc-mastercard" title="Mastercard"></i>
             </div>
-            <div class="modal-body">
-                <div class="badge">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <p id="donation-message">Your generous donation of <strong>$<span id="donation-amount">0</span></strong> will help provide <span id="donation-impact">immediate relief</span> to disaster victims.</p>
-                <p>You've earned the <strong>First Responder</strong> badge for your quick action to help those in need.</p>
-                <button class="modal-btn" id="share-btn">Share Your Contribution</button>
-            </div>
+            <p style="color: rgba(255,255,255,0.6); margin-top: 1.5rem; font-size: 0.9rem;">
+                <i class="fas fa-shield-alt"></i> 100% Secure • No payment gateway fees
+            </p>
         </div>
     </div>
     
-    <footer>
-        <p>Disaster Relief Network is a 501(c)(3) nonprofit organization. All donations are tax-deductible.</p>
-        <p>Disaster Relief Network. All rights reserved.</p>
-        <div class="payment-methods">
-            <i class="fab fa-cc-visa"></i>
-            <i class="fab fa-cc-mastercard"></i>
-            <i class="fab fa-cc-amex"></i>
-            <i class="fab fa-cc-discover"></i>
-            <i class="fab fa-paypal"></i>
+    <div class="footer-bottom">
+        <p>© 2026 Safety Bridge — Direct UPI Donations • Money goes directly to our bank account</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5);">
+            UPI ID: safetybridge@okhdfcbank | All donations are tax-exempt under Section 80G
+        </p>
+    </div>
+</footer>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+    <div class="modal-content">
+        <div class="success-badge">
+            <i class="fas fa-check"></i>
         </div>
-    </footer>
+        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem;">Thank You!</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #64748b;">Your payment request has been initiated. Complete it on your UPI app.</p>
+        <p style="background: #f1f5f9; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+            <strong>Amount:</strong> <span id="modalAmount">₹1,000</span><br>
+            <strong>UPI ID:</strong> safetybridge@okhdfcbank
+        </p>
+        <button onclick="closeModal()" style="background: var(--secondary-gradient); color: white; border: none; padding: 1rem 2rem; border-radius: 100px; font-weight: 700; cursor: pointer; width: 100%;">
+            Done, I've Paid
+        </button>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // ================================================
+    // DIRECT UPI QR CODE PAYMENT - NO PAYMENT GATEWAY
+    // ================================================
     
-    <script>
-        // Track selected amounts for each card
-        const selectedAmounts = {
-            shelter: 1000,
-            food: 60,
-            medical: 300
-        };
+    // ===== YOUR UPI DETAILS - EDIT THESE =====
+    // Format: yourname@okhdfcbank or yourname@okaxis or yourname@icici
+    const YOUR_UPI_ID = "sdharisana@okicici";  // <--- CHANGE THIS TO YOUR UPI ID
+    const YOUR_NAME = "S Dharisana";   // <--- YOUR NAME/ORG NAME
+    
+    let currentQR = null;
+    let currentAmount = 1000;
+    let currentCampaign = 'general';
+    
+    // ===== GENERATE UPI QR CODE =====
+    function generateUPIQR(amount, name = YOUR_NAME, note = 'Donation') {
+        // Clear previous QR
+        document.getElementById('qrcode').innerHTML = '';
         
-        // Initialize amount displays
-        document.getElementById('shelter-amount-display').textContent = `Selected: $${selectedAmounts.shelter}`;
-        document.getElementById('shelter-amount-display').style.display = 'block';
+        // Create UPI URL - This works with ALL UPI apps (Google Pay, PhonePe, Paytm, BHIM)
+        const upiUrl = `upi://pay?pa=${YOUR_UPI_ID}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
         
-        document.getElementById('food-amount-display').textContent = `Selected: $${selectedAmounts.food}`;
-        document.getElementById('food-amount-display').style.display = 'block';
-        
-        document.getElementById('medical-amount-display').textContent = `Selected: $${selectedAmounts.medical}`;
-        document.getElementById('medical-amount-display').style.display = 'block';
-        
-        // Amount option selection
-        document.querySelectorAll('.amount-option').forEach(option => {
-            option.addEventListener('click', function() {
-                // Get the card type (shelter, food, or medical)
-                const cardType = this.closest('.donation-card').querySelector('h2').textContent.toLowerCase().replace(' ', '-');
-                
-                // Remove selected class from siblings
-                this.parentNode.querySelectorAll('.amount-option').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                
-                // Add to clicked element
-                this.classList.add('selected');
-                
-                // Update selected amount
-                const amount = this.getAttribute('data-amount');
-                selectedAmounts[cardType] = amount;
-                
-                // Update display
-                const displayElement = document.getElementById(`${cardType}-amount-display`);
-                displayElement.textContent = `Selected: $${amount}`;
-                displayElement.style.display = 'block';
-                
-                // Clear custom amount field
-                document.getElementById(`${cardType}-custom-amount`).value = '';
-            });
+        // Generate QR code
+        currentQR = new QRCode(document.getElementById("qrcode"), {
+            text: upiUrl,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
         
-        // Custom amount handling
-        document.querySelectorAll('.custom-amount').forEach(input => {
-            input.addEventListener('input', function() {
-                const cardType = this.closest('.donation-card').querySelector('h2').textContent.toLowerCase().replace(' ', '-');
-                const amount = this.value.trim();
-                
-                if (amount) {
-                    // Remove selected class from all amount options
-                    this.closest('.card-body').querySelectorAll('.amount-option').forEach(el => {
-                        el.classList.remove('selected');
-                    });
-                    
-                    // Update selected amount
-                    selectedAmounts[cardType] = amount;
-                    
-                    // Update display
-                    const displayElement = document.getElementById(`${cardType}-amount-display`);
-                    displayElement.textContent = `Selected: $${amount}`;
-                    displayElement.style.display = 'block';
-                }
-            });
-        });
+        // Update display
+        document.getElementById('paymentAmountDisplay').innerHTML = `<i class="fas fa-indian-rupee-sign"></i> Amount: ₹${amount.toLocaleString('en-IN')}`;
+        document.getElementById('upiDisplay').innerHTML = `<span>${YOUR_UPI_ID}</span>`;
+    }
+    
+    // ===== SHOW QR PAYMENT SECTION =====
+    function showQRPayment(campaign, amount) {
+        currentCampaign = campaign;
+        currentAmount = amount;
         
-        // Donation button click handlers
-        document.getElementById('shelter-donate-btn').addEventListener('click', () => handleDonation('shelter'));
-        document.getElementById('food-donate-btn').addEventListener('click', () => handleDonation('food'));
-        document.getElementById('medical-donate-btn').addEventListener('click', () => handleDonation('medical'));
+        // Show QR section
+        document.getElementById('qrPaymentSection').style.display = 'block';
         
-        // Handle donation submission
-        function handleDonation(type) {
-            const amount = selectedAmounts[type];
-            
-            if (!amount || amount <= 0) {
-                alert('Please select or enter a valid donation amount.');
-                return;
+        // Generate QR with selected amount
+        generateUPIQR(amount, YOUR_NAME, `Donation for ${campaign} relief`);
+        
+        // Update active amount button
+        document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.amount-btn[onclick*="${amount}"]`)?.classList.add('active');
+        
+        // Scroll to QR
+        document.getElementById('qrPaymentSection').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // ===== HIDE QR PAYMENT SECTION =====
+    function hideQRPayment() {
+        document.getElementById('qrPaymentSection').style.display = 'none';
+    }
+    
+    // ===== UPDATE QR WITH NEW AMOUNT =====
+    function updateQRPaymentAmount(amount) {
+        currentAmount = amount;
+        generateUPIQR(amount, YOUR_NAME, `Donation for ${currentCampaign} relief`);
+        
+        // Update active button
+        document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.amount-btn[onclick*="${amount}"]`)?.classList.add('active');
+        
+        // Show success modal with instructions
+        document.getElementById('modalAmount').innerHTML = `₹${amount.toLocaleString('en-IN')}`;
+        document.getElementById('successModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // ===== COPY UPI ID =====
+    function copyUPI() {
+        navigator.clipboard.writeText(YOUR_UPI_ID);
+        alert('UPI ID copied to clipboard: ' + YOUR_UPI_ID);
+    }
+    
+    // ===== CLOSE MODAL =====
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // ===== SOS BUTTON =====
+    function activateSOS() {
+        alert("🚨 EMERGENCY SOS ACTIVATED!\n\nHelp request has been initiated. Emergency services notified.");
+    }
+    
+    // ===== INITIALIZE =====
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generate initial QR (hidden until needed)
+        generateUPIQR(1000, YOUR_NAME, 'Donation');
+        
+        // SOS button listeners
+        document.getElementById('sosButton')?.addEventListener('click', activateSOS);
+        document.getElementById('sosButtonMobile')?.addEventListener('click', activateSOS);
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('successModal');
+            if (event.target == modal) {
+                closeModal();
             }
-            
-            // Set the donation details in the modal
-            document.getElementById('donation-amount').textContent = amount;
-            
-            // Set impact message based on type and amount
-            let impactMessage = '';
-            if (type === 'shelter') {
-                impactMessage = `temporary housing for ${Math.floor(amount/50)} families`;
-            } else if (type === 'food') {
-                impactMessage = `food packages for ${Math.floor(amount/15)} people for a week`;
-            } else {
-                impactMessage = `medical care for ${Math.floor(amount/75)} patients`;
-            }
-            
-            document.getElementById('donation-impact').textContent = impactMessage;
-            
-            // Show the modal
-            document.getElementById('donation-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            // In a real app, you would submit the donation to your server here
-            console.log(`Donation submitted: $${amount} for ${type}`);
         }
-        
-        // Close modal
-        document.querySelector('.close-modal').addEventListener('click', () => {
-            document.getElementById('donation-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
-        
-        // Share button
-        document.getElementById('share-btn').addEventListener('click', () => {
-            alert('In a real app, this would open social sharing options.');
-        });
-        
-        // Animate progress meter on scroll
-        window.addEventListener('scroll', function() {
-            const meter = document.querySelector('.meter-progress');
-            const position = meter.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight / 1.3;
-            
-            if(position < screenPosition) {
-                meter.style.width = '65%';
-            }
-        });
-    </script>
+    });
+</script>
+
 </body>
 </html>

@@ -274,8 +274,41 @@ def missing():
     return render_template("missing.html", persons=persons)
 
 
-@app.route("/register", methods=["POST", "GET"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
+
+    if request.method == "POST":
+        email = request.form["email"].strip().lower()
+        phone = request.form["phone"]
+        location = request.form["location"]
+
+        db = get_db()
+
+        # ✅ check duplicate first
+        existing = db.execute(
+            "SELECT id FROM users WHERE email=?",
+            (email,)
+        ).fetchone()
+
+        if existing:
+            return render_template(
+                "register.html",
+                error="⚠️ Email already registered. Please login instead."
+            )
+
+        db.execute(
+            "INSERT INTO users(email,phone,location) VALUES(?,?,?)",
+            (email, phone, location)
+        )
+        db.commit()
+
+        return render_template(
+            "register.html",
+            message="✅ Registered successfully! You will now receive alerts."
+        )
+
+    return render_template("register.html")
+
     if request.method == "POST":
         db = get_db()
         db.execute(
