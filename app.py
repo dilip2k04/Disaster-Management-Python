@@ -1,3 +1,5 @@
+from email.mime import text
+from turtle import title
 from flask import Flask, request, render_template, redirect, url_for, session, flash, g,jsonify
 import sqlite3
 import os
@@ -126,6 +128,9 @@ TWILIO_CLIENT = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_TOKEN"))
 
 
 def send_sms(phone, text):
+    if not os.getenv("TWILIO_SID"):
+        return
+
     if not phone:
         return
     try:
@@ -139,6 +144,34 @@ def send_sms(phone, text):
 
 
 def send_email_bulk(recipients, subject, text):
+
+    if not recipients:
+        return
+
+    host = os.getenv("EMAIL_HOST")
+    port = os.getenv("EMAIL_PORT")
+    user = os.getenv("EMAIL_USER")
+    pwd = os.getenv("EMAIL_PASS")
+
+    # ✅ skip if config missing
+    if not all([host, port, user, pwd]):
+        print("Email config missing — skipping email")
+        return
+
+    try:
+        with smtplib.SMTP_SSL(host, int(port)) as server:
+            server.login(user, pwd)
+
+            for email in recipients:
+                msg = MIMEText(text)
+                msg["Subject"] = subject
+                msg["From"] = user
+                msg["To"] = email
+                server.send_message(msg)
+
+    except Exception as e:
+        print("Email error:", e)
+
     try:
         with smtplib.SMTP_SSL(os.getenv("EMAIL_HOST"), int(os.getenv("EMAIL_PORT"))) as server:
             server.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
@@ -167,18 +200,61 @@ def broadcast_alert(title, message, location=None):
             (location,)
         ).fetchall()
     else:
+        users = db.execute(
+            "SELECT phone,email FROM users"
+        ).fetchall()
+
+    phones = [u["phone"] for u in users if u["phone"]]
+    emails = [u["email"] for u in users if u["email"]]
+
+    recipient_count = max(len(phones), len(emails))
+
+    # ✅ if nobody → don't send
+    if recipient_count == 0:
+        return 0
+
+    # SMS
+    if phones:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            for phone in phones:
+                executor.submit(send_sms, phone, text)
+
+    # Email
+    if emails:
+        send_email_bulk(emails, title, text)
+
+    return recipient_count
+
+    text = f"🚨 ALERT: {title}\n\n{message}"
+
+    db = get_db()
+
+    if location:
+        users = db.execute(
+            "SELECT phone,email FROM users WHERE location=?",
+            (location,)
+        ).fetchall()
+    else:
         users = db.execute("SELECT phone,email FROM users").fetchall()
 
-    phones = [u["phone"] for u in users]
-    emails = [u["email"] for u in users]
+    phones = [u["phone"] for u in users if u["phone"]]
+    emails = [u["email"] for u in users if u["email"]]
 
-    # parallel SMS
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        for phone in phones:
-            executor.submit(send_sms, phone, text)
+    # ✅ nothing to send → exit early
+    if not phones and not emails:
+        print("No users registered — skipping broadcast")
+        return
 
-    # bulk email
-    send_email_bulk(emails, title, text)
+    # SMS
+    if phones:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            for phone in phones:
+                executor.submit(send_sms, phone, text)
+
+    # Email
+    if emails:
+        send_email_bulk(emails, title, text)
+
 
 
 # =====================================================
@@ -512,6 +588,30 @@ def admin_dashboard():
 
 @app.route("/admin/add_alert", methods=["POST"])
 def add_alert():
+
+    title = request.form["title"]
+    message = request.form["message"]
+    location = request.form.get("location")
+
+    db = get_db()
+
+    # ✅ ALWAYS store alert
+    db.execute(
+        "INSERT INTO alerts(title,message) VALUES(?,?)",
+        (title, message)
+    )
+    db.commit()
+
+    recipients = broadcast_alert(title, message, location)
+
+    # ✅ Smart messages
+    if recipients > 0:
+        flash(f"✅ Alert stored and sent to {recipients} users", "success")
+    else:
+        flash("⚠️ Alert stored, but NOT sent (no registered users)", "warning")
+
+    return redirect(url_for("admin_dashboard"))
+
 
     title = request.form["title"]
     message = request.form["message"]

@@ -564,6 +564,34 @@
     background: rgba(239, 68, 68, 0.5);
   }
 
+  .flash-msg {
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.4s ease;
+}
+
+.flash-msg.success {
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.35);
+  color: #86efac;
+}
+
+.flash-msg.warning {
+  background: rgba(245,158,11,0.15);
+  border: 1px solid rgba(245,158,11,0.35);
+  color: #fde68a;
+}
+
+.flash-msg.error {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.35);
+  color: #fecaca;
+}
+
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 768px) {
     .dashboard-container {
@@ -606,6 +634,19 @@
 
   <!-- Dashboard Content -->
   <div class="dashboard-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 20px;">
+          {% for category, message in messages %}
+            <div class="flash-msg {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
 
     <!-- Command Header -->
     <div class="command-header">
@@ -938,6 +979,45 @@
       card.style.animation = `fadeInUp 0.8s ease ${0.2 + index * 0.1}s backwards`;
     });
   });
+
+
+  async function refreshAlerts() {
+  try {
+    const res = await fetch("/api/disasters");
+    const alerts = await res.json();
+
+    const container = document.querySelector(".history-card, .command-card:last-of-type");
+    if (!alerts.length) return;
+
+    const list = document.querySelector(".alert-item")?.parentElement;
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    alerts.slice(0, 10).forEach(a => {
+      const div = document.createElement("div");
+      div.className = "alert-item";
+      div.innerHTML = `
+        <div class="alert-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="alert-content">
+          <div class="alert-title">${a.disaster_type}</div>
+          <div class="alert-message">${a.message}</div>
+        </div>
+        <div class="alert-time">${a.datetime}</div>
+      `;
+      list.appendChild(div);
+    });
+
+  } catch (e) {
+    console.log("Alert refresh failed");
+  }
+}
+
+setInterval(refreshAlerts, 10000); // every 10s
+
+
 </script>
 
 {% endblock %}
