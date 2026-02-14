@@ -1,5 +1,5 @@
 from email.mime import text
-from flask import Flask, request, render_template, redirect, url_for, session, flash, g,jsonify
+from flask import Flask, request, render_template, redirect, url_for, session, flash, g, jsonify
 import sqlite3
 import os
 import smtplib
@@ -123,11 +123,30 @@ init_db()
 # SERVICES (CLEAN ARCHITECTURE)
 # =====================================================
 
-TWILIO_CLIENT = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_TOKEN"))
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
+TWILIO_PHONE = os.getenv("TWILIO_PHONE")
+
+TWILIO_CLIENT = None
+if TWILIO_SID and TWILIO_TOKEN:
+    try:
+        TWILIO_CLIENT = Client(TWILIO_SID, TWILIO_TOKEN)
+    except Exception as e:
+        print("Twilio init error:", e)
 
 
 def send_sms(phone, text):
-    if not os.getenv("TWILIO_SID"):
+    if not phone or not TWILIO_CLIENT or not TWILIO_PHONE:
+        return
+
+    try:
+        TWILIO_CLIENT.messages.create(
+            body=text,
+            from_=TWILIO_PHONE,
+            to=phone.strip()
+        )
+    except Exception as e:
+        print("SMS error:", e)
         return
 
     if not phone:
@@ -143,6 +162,32 @@ def send_sms(phone, text):
 
 
 def send_email_bulk(recipients, subject, text):
+    host = os.getenv("EMAIL_HOST")
+    port = os.getenv("EMAIL_PORT")
+    user = os.getenv("EMAIL_USER")
+    pwd = os.getenv("EMAIL_PASS")
+
+    if not all([host, port, user, pwd]):
+        print("Email config missing — skipping email")
+        return
+
+    try:
+        with smtplib.SMTP_SSL(host, int(port)) as server:
+            server.login(user, pwd)
+
+            for email in recipients:
+                if not email:
+                    continue
+
+                msg = MIMEText(text)
+                msg["Subject"] = subject
+                msg["From"] = user
+                msg["To"] = email
+
+                server.send_message(msg)
+
+    except Exception as e:
+        print("Email error:", e)
 
     if not recipients:
         return
@@ -190,7 +235,36 @@ def send_email_bulk(recipients, subject, text):
 
 def broadcast_alert(title, message, location=None):
     text = f"🚨 ALERT: {title}\n\n{message}"
+    db = get_db()
 
+    if location:
+        users = db.execute(
+            "SELECT phone,email FROM users WHERE location=?",
+            (location,)
+        ).fetchall()
+    else:
+        users = db.execute(
+            "SELECT phone,email FROM users"
+        ).fetchall()
+
+    phones = [u["phone"] for u in users if u["phone"]]
+    emails = [u["email"] for u in users if u["email"]]
+
+    if not phones and not emails:
+        print("No users registered — skipping broadcast")
+        return 0
+
+    if phones:
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            for phone in phones:
+                executor.submit(send_sms, phone, text)
+
+    if emails:
+        send_email_bulk(emails, title, text)
+
+    return max(len(phones), len(emails))
+
+    text = f"🚨 ALERT: {title}\n\n{message}"
     db = get_db()
 
     if location:
@@ -255,7 +329,6 @@ def broadcast_alert(title, message, location=None):
         send_email_bulk(emails, title, text)
 
 
-
 # =====================================================
 # ROUTES
 # =====================================================
@@ -317,6 +390,7 @@ def alerts():
     ).fetchall()
     return render_template("alerts.html", alerts=alerts)
 
+
 @app.route("/api/disasters")
 def api_disasters():
     db = get_db()
@@ -351,7 +425,6 @@ def missing():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
         email = request.form["email"].strip().lower()
         phone = request.form["phone"]
@@ -402,7 +475,6 @@ def register():
 
 @app.route("/volunteer/enroll", methods=["GET", "POST"])
 def volunteer_enroll():
-
     if request.method == "POST":
         db = get_db()
 
@@ -443,9 +515,7 @@ def volunteer_enroll():
 
     return render_template("volunteer_enroll.html")
 
-
     if request.method == "POST":
-
         profile_url = None
         file = request.files.get("profile_pic")
 
@@ -472,7 +542,6 @@ def volunteer_enroll():
 
     return render_template("volunteer_enroll.html")
 
-
     if request.method == "POST":
         db = get_db()
 
@@ -492,9 +561,9 @@ def volunteer_enroll():
 
     return render_template("volunteer_enroll.html")
 
+
 @app.route("/report-missing", methods=["POST"])
 def report_missing():
-
     photo_url = None
 
     # upload image to cloudinary
@@ -553,7 +622,6 @@ def volunteers():
 
 @app.route("/admin/login", methods=["POST", "GET"])
 def admin_login():
-
     if request.method == "POST":
         admin = get_db().execute(
             "SELECT password FROM admins WHERE username=?",
@@ -571,7 +639,6 @@ def admin_login():
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
-
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
@@ -587,6 +654,42 @@ def admin_dashboard():
 
 @app.route("/admin/add_alert", methods=["POST"])
 def add_alert():
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    title = request.form.get("title")
+    message = request.form.get("message")
+    location = request.form.get("location")
+
+    if not title or not message:
+        flash("Title and message required", "error")
+        return redirect(url_for("admin_dashboard"))
+
+    db = get_db()
+
+    try:
+        db.execute(
+            "INSERT INTO alerts(title,message) VALUES(?,?)",
+            (title, message)
+        )
+        db.commit()
+    except Exception as e:
+        print("DB error:", e)
+        flash("Database error", "error")
+        return redirect(url_for("admin_dashboard"))
+
+    try:
+        recipients = broadcast_alert(title, message, location)
+    except Exception as e:
+        print("Broadcast error:", e)
+        recipients = 0
+
+    if recipients > 0:
+        flash(f"Alert stored and sent to {recipients} users", "success")
+    else:
+        flash("Alert stored, but no users received it", "warning")
+
+    return redirect(url_for("admin_dashboard"))
 
     title = request.form["title"]
     message = request.form["message"]
@@ -611,7 +714,6 @@ def add_alert():
 
     return redirect(url_for("admin_dashboard"))
 
-
     title = request.form["title"]
     message = request.form["message"]
     location = request.form.get("location")
@@ -628,13 +730,13 @@ def add_alert():
     flash("Alert sent successfully")
     return redirect(url_for("admin_dashboard"))
 
+
 # =====================================================
 # DELETE USER (ADMIN)
 # =====================================================
 
 @app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
 def admin_delete_user(user_id):
-
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
@@ -646,13 +748,13 @@ def admin_delete_user(user_id):
     flash("User deleted successfully")
     return redirect(url_for("admin_dashboard"))
 
+
 # =====================================================
 # DELETE VOLUNTEER (ADMIN)
 # =====================================================
 
 @app.route("/admin/delete_volunteer/<int:vol_id>", methods=["POST"])
 def admin_delete_volunteer(vol_id):
-
     # security check
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
@@ -668,7 +770,6 @@ def admin_delete_volunteer(vol_id):
     flash("Volunteer deleted successfully", "success")
 
     return redirect(url_for("admin_dashboard"))
-
 
 
 @app.route("/admin/logout")
