@@ -8,8 +8,6 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from twilio.rest import Client
 from concurrent.futures import ThreadPoolExecutor
-import socket
-import time
 
 import cloudinary
 import cloudinary.uploader
@@ -149,28 +147,32 @@ def send_sms(phone, text):
         )
     except Exception as e:
         print("SMS error:", e)
+        return
+
+    if not phone:
+        return
+    try:
+        TWILIO_CLIENT.messages.create(
+            body=text,
+            from_=os.getenv("TWILIO_PHONE"),
+            to=phone.strip()
+        )
+    except Exception as e:
+        print("SMS error:", e)
 
 
 def send_email_bulk(recipients, subject, text):
-    if not recipients:
-        return
-
     host = os.getenv("EMAIL_HOST")
     port = os.getenv("EMAIL_PORT")
     user = os.getenv("EMAIL_USER")
     pwd = os.getenv("EMAIL_PASS")
 
-    # Skip if config missing
     if not all([host, port, user, pwd]):
         print("Email config missing — skipping email")
         return
 
     try:
-        # Set a timeout for the connection
-        timeout = 10  # 10 seconds timeout
-        
-        # Create connection with timeout
-        with smtplib.SMTP_SSL(host, int(port), timeout=timeout) as server:
+        with smtplib.SMTP_SSL(host, int(port)) as server:
             server.login(user, pwd)
 
             for email in recipients:
@@ -183,16 +185,56 @@ def send_email_bulk(recipients, subject, text):
                 msg["To"] = email
 
                 server.send_message(msg)
-                print(f"Email sent to {email}")
 
-    except socket.timeout:
-        print("Email error: Connection timeout")
     except Exception as e:
-        print("Email error:", str(e))
+        print("Email error:", e)
+
+    if not recipients:
+        return
+
+    host = os.getenv("EMAIL_HOST")
+    port = os.getenv("EMAIL_PORT")
+    user = os.getenv("EMAIL_USER")
+    pwd = os.getenv("EMAIL_PASS")
+
+    # ✅ skip if config missing
+    if not all([host, port, user, pwd]):
+        print("Email config missing — skipping email")
+        return
+
+    try:
+        with smtplib.SMTP_SSL(host, int(port)) as server:
+            server.login(user, pwd)
+
+            for email in recipients:
+                msg = MIMEText(text)
+                msg["Subject"] = subject
+                msg["From"] = user
+                msg["To"] = email
+                server.send_message(msg)
+
+    except Exception as e:
+        print("Email error:", e)
+
+    try:
+        with smtplib.SMTP_SSL(os.getenv("EMAIL_HOST"), int(os.getenv("EMAIL_PORT"))) as server:
+            server.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
+
+            for email in recipients:
+                if not email:
+                    continue
+                msg = MIMEText(text)
+                msg["Subject"] = subject
+                msg["From"] = os.getenv("EMAIL_USER")
+                msg["To"] = email
+                server.send_message(msg)
+
+    except Exception as e:
+        print("Email error:", e)
 
 
 def broadcast_alert(title, message, location=None):
-    alert_text = f"🚨 ALERT: {title}\n\n{message}"
+    text = f"🚨 ALERT: {title}\n\n{message}"
     db = get_db()
 
     if location:
@@ -212,18 +254,79 @@ def broadcast_alert(title, message, location=None):
         print("No users registered — skipping broadcast")
         return 0
 
-    # Send SMS
     if phones:
         with ThreadPoolExecutor(max_workers=5) as executor:
             for phone in phones:
-                executor.submit(send_sms, phone, alert_text)
+                executor.submit(send_sms, phone, text)
 
-    # Send Email (in a separate thread to avoid timeout)
     if emails:
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(send_email_bulk, emails, title, alert_text)
+        send_email_bulk(emails, title, text)
 
     return max(len(phones), len(emails))
+
+    text = f"🚨 ALERT: {title}\n\n{message}"
+    db = get_db()
+
+    if location:
+        users = db.execute(
+            "SELECT phone,email FROM users WHERE location=?",
+            (location,)
+        ).fetchall()
+    else:
+        users = db.execute(
+            "SELECT phone,email FROM users"
+        ).fetchall()
+
+    phones = [u["phone"] for u in users if u["phone"]]
+    emails = [u["email"] for u in users if u["email"]]
+
+    recipient_count = max(len(phones), len(emails))
+
+    # ✅ if nobody → don't send
+    if recipient_count == 0:
+        return 0
+
+    # SMS
+    if phones:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            for phone in phones:
+                executor.submit(send_sms, phone, text)
+
+    # Email
+    if emails:
+        send_email_bulk(emails, title, text)
+
+    return recipient_count
+
+    text = f"🚨 ALERT: {title}\n\n{message}"
+
+    db = get_db()
+
+    if location:
+        users = db.execute(
+            "SELECT phone,email FROM users WHERE location=?",
+            (location,)
+        ).fetchall()
+    else:
+        users = db.execute("SELECT phone,email FROM users").fetchall()
+
+    phones = [u["phone"] for u in users if u["phone"]]
+    emails = [u["email"] for u in users if u["email"]]
+
+    # ✅ nothing to send → exit early
+    if not phones and not emails:
+        print("No users registered — skipping broadcast")
+        return
+
+    # SMS
+    if phones:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            for phone in phones:
+                executor.submit(send_sms, phone, text)
+
+    # Email
+    if emails:
+        send_email_bulk(emails, title, text)
 
 
 # =====================================================
@@ -303,8 +406,8 @@ def api_disasters():
     for a in alerts:
         result.append({
             "id": a["id"],
-            "disaster_type": a["title"],
-            "location": "General Area",
+            "disaster_type": a["title"],   # maps to your JS
+            "location": "General Area",    # you don't store location yet
             "datetime": a["created_at"],
             "message": a["message"]
         })
@@ -329,7 +432,7 @@ def register():
 
         db = get_db()
 
-        # Check duplicate first
+        # ✅ check duplicate first
         existing = db.execute(
             "SELECT id FROM users WHERE email=?",
             (email,)
@@ -354,6 +457,17 @@ def register():
 
     return render_template("register.html")
 
+    if request.method == "POST":
+        db = get_db()
+        db.execute(
+            "INSERT INTO users(email,phone,location) VALUES(?,?,?)",
+            (request.form["email"], request.form["phone"], request.form["location"])
+        )
+        db.commit()
+        flash("Registered successfully")
+
+    return render_template("register.html")
+
 
 # =====================================================
 # VOLUNTEER ENROLL
@@ -366,7 +480,7 @@ def volunteer_enroll():
 
         email = request.form["email"]
 
-        # Check duplicate first
+        # ✅ check duplicate first
         existing = db.execute(
             "SELECT id FROM volunteers WHERE email=?",
             (email,)
@@ -401,12 +515,58 @@ def volunteer_enroll():
 
     return render_template("volunteer_enroll.html")
 
+    if request.method == "POST":
+        profile_url = None
+        file = request.files.get("profile_pic")
+
+        # upload image
+        if file and file.filename:
+            upload = cloudinary.uploader.upload(file)
+            profile_url = upload["secure_url"]
+
+        with get_db() as conn:
+            conn.execute("""
+                INSERT INTO volunteers(name,age,email,phone,profile_pic_url)
+                VALUES (?,?,?,?,?)
+            """, (
+                request.form["name"],
+                request.form["age"],
+                request.form["email"],
+                request.form["phone"],
+                profile_url
+            ))
+            conn.commit()
+
+        flash("Volunteer registered successfully", "success")
+        return redirect(url_for("volunteers"))
+
+    return render_template("volunteer_enroll.html")
+
+    if request.method == "POST":
+        db = get_db()
+
+        db.execute(
+            "INSERT INTO volunteers(name,age,email,phone) VALUES(?,?,?,?)",
+            (
+                request.form["name"],
+                request.form["age"],
+                request.form["email"],
+                request.form["phone"]
+            )
+        )
+        db.commit()
+
+        flash("Volunteer registered successfully")
+        return redirect(url_for("volunteers"))
+
+    return render_template("volunteer_enroll.html")
+
 
 @app.route("/report-missing", methods=["POST"])
 def report_missing():
     photo_url = None
 
-    # Upload image to cloudinary
+    # upload image to cloudinary
     file = request.files.get("photo")
 
     if file and file.filename:
@@ -519,19 +679,55 @@ def add_alert():
         return redirect(url_for("admin_dashboard"))
 
     try:
-        # Run broadcast in a separate thread to avoid timeout
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            future = executor.submit(broadcast_alert, title, message, location)
-            recipients = future.result(timeout=30)  # 30 second timeout
+        recipients = broadcast_alert(title, message, location)
     except Exception as e:
         print("Broadcast error:", e)
         recipients = 0
 
     if recipients > 0:
+        flash(f"Alert stored and sent to {recipients} users", "success")
+    else:
+        flash("Alert stored, but no users received it", "warning")
+
+    return redirect(url_for("admin_dashboard"))
+
+    title = request.form["title"]
+    message = request.form["message"]
+    location = request.form.get("location")
+
+    db = get_db()
+
+    # ✅ ALWAYS store alert
+    db.execute(
+        "INSERT INTO alerts(title,message) VALUES(?,?)",
+        (title, message)
+    )
+    db.commit()
+
+    recipients = broadcast_alert(title, message, location)
+
+    # ✅ Smart messages
+    if recipients > 0:
         flash(f"✅ Alert stored and sent to {recipients} users", "success")
     else:
-        flash("⚠️ Alert stored, but no users received it", "warning")
+        flash("⚠️ Alert stored, but NOT sent (no registered users)", "warning")
 
+    return redirect(url_for("admin_dashboard"))
+
+    title = request.form["title"]
+    message = request.form["message"]
+    location = request.form.get("location")
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO alerts(title,message) VALUES(?,?)",
+        (title, message)
+    )
+    db.commit()
+
+    broadcast_alert(title, message, location)
+
+    flash("Alert sent successfully")
     return redirect(url_for("admin_dashboard"))
 
 
@@ -559,6 +755,7 @@ def admin_delete_user(user_id):
 
 @app.route("/admin/delete_volunteer/<int:vol_id>", methods=["POST"])
 def admin_delete_volunteer(vol_id):
+    # security check
     if not session.get("admin_logged_in"):
         return redirect(url_for("admin_login"))
 
