@@ -18,7 +18,6 @@
     position: relative;
   }
 
-  /* Left Side - Visual/Aesthetic */
   .creative-visual {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     position: relative;
@@ -43,12 +42,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
   }
 
   .visual-content {
@@ -114,10 +109,9 @@
     color: white;
   }
 
-  /* Right Side - Form */
   .creative-form {
     background: white;
-    padding: 60px;
+    padding: 60px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -147,7 +141,6 @@
     font-size: 16px;
   }
 
-  /* Floating Input Design */
   .floating-form-group {
     position: relative;
     margin-bottom: 30px;
@@ -208,7 +201,31 @@
     transform: translateY(-50%) scale(1.2);
   }
 
-  /* Creative Button */
+  /* Phone with fixed +91 prefix */
+  .phone-wrapper {
+    position: relative;
+  }
+
+  .phone-prefix {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-weight: 600;
+    font-size: 16px;
+    z-index: 2;
+    pointer-events: none;
+    background: #e5e7eb;
+    padding: 16px 12px;
+    border-radius: 12px 0 0 12px;
+    border-right: 1px solid #d1d5db;
+  }
+
+  .phone-input {
+    padding-left: 80px !important;
+  }
+
   .creative-btn {
     width: 100%;
     padding: 20px;
@@ -235,6 +252,13 @@
     transform: translateY(-1px);
   }
 
+  .creative-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
   .btn-content {
     position: relative;
     z-index: 2;
@@ -250,12 +274,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
     transform: rotate(30deg);
     transition: transform 0.6s;
   }
@@ -264,7 +283,6 @@
     transform: rotate(30deg) translateX(100%);
   }
 
-  /* Alert Messages */
   .creative-alert {
     padding: 20px;
     border-radius: 12px;
@@ -291,18 +309,28 @@
     font-size: 24px;
   }
 
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .error-message {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
   }
 
-  /* Stats Counter */
+  .input-error .floating-input,
+  .input-error .phone-input {
+    border-color: #ef4444 !important;
+    background: #fef2f2;
+  }
+
+  .input-error .error-message {
+    display: block;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .stats-counter {
     display: flex;
     justify-content: space-around;
@@ -334,48 +362,18 @@
     margin-top: 5px;
   }
 
-  /* Responsive Design */
   @media (max-width: 1024px) {
-    .creative-container {
-      grid-template-columns: 1fr;
-    }
-    
-    .creative-visual {
-      padding: 40px 20px;
-      text-align: center;
-      align-items: center;
-    }
-    
-    .visual-content {
-      text-align: center;
-    }
-    
-    .feature-item {
-      text-align: left;
-    }
+    .creative-container { grid-template-columns: 1fr; }
+    .creative-visual { padding: 40px 20px; text-align: center; align-items: center; }
   }
 
   @media (max-width: 640px) {
-    .creative-visual,
-    .creative-form {
-      padding: 30px 20px;
-    }
-    
-    .visual-title {
-      font-size: 36px;
-    }
-    
-    .form-title {
-      font-size: 28px;
-    }
-    
-    .stats-counter {
-      flex-direction: column;
-      gap: 20px;
-    }
+    .creative-visual, .creative-form { padding: 30px 20px; }
+    .visual-title { font-size: 36px; }
+    .form-title { font-size: 28px; }
+    .stats-counter { flex-direction: column; gap: 20px; }
   }
 
-  /* Floating Particles Animation */
   .particles {
     position: absolute;
     width: 100%;
@@ -394,20 +392,10 @@
   }
 
   @keyframes float {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-1000px) rotate(720deg);
-      opacity: 0;
-    }
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
   }
 </style>
 
@@ -422,37 +410,31 @@
         Stay Ahead of the Curve<br>with Smart Alerts
       </h1>
       <p class="visual-subtitle">
-        Join thousands of professionals who receive timely notifications about critical updates, market changes, and opportunities in their area.
+        Join thousands of people who receive timely emergency notifications, disaster updates, and safety alerts in their area.
       </p>
       
       <div class="features-list">
         <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fas fa-bolt"></i>
-          </div>
+          <div class="feature-icon"><i class="fas fa-bolt"></i></div>
           <div>
             <strong>Real-time Notifications</strong>
-            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Get alerts instantly when they matter most</p>
+            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Instant alerts when it matters most</p>
           </div>
         </div>
         
         <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fas fa-map-marked-alt"></i>
-          </div>
+          <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
           <div>
             <strong>Location-Based</strong>
-            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Relevant alerts tailored to your area</p>
+            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Alerts relevant to your city/area</p>
           </div>
         </div>
         
         <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
           <div>
             <strong>Secure & Private</strong>
-            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Your data is encrypted and protected</p>
+            <p style="margin: 5px 0 0; font-size: 14px; color: #94a3b8;">Your data is fully encrypted</p>
           </div>
         </div>
       </div>
@@ -464,7 +446,7 @@
     <div class="form-container">
       <div class="form-header">
         <h2 class="form-title">Register Now</h2>
-        <p class="form-subtitle">Complete the form below to start receiving alerts</p>
+        <p class="form-subtitle">Get instant emergency & safety alerts</p>
       </div>
 
       {% if error %}
@@ -481,26 +463,58 @@
       </div>
       {% endif %}
 
-      <form method="POST" id="registerForm">
+      <form method="POST" id="registerForm" novalidate enctype="application/x-www-form-urlencoded">
         <div class="floating-form-group">
-          <input type="email" class="floating-input" id="email" name="email" 
-                 placeholder="" required>
+          <input 
+            type="email" 
+            class="floating-input" 
+            id="email" 
+            name="email" 
+            placeholder=" " 
+            required 
+            autocomplete="email"
+            value="{{ request.form.email or '' }}"
+          >
           <label class="floating-label">Email Address</label>
           <i class="fas fa-envelope input-icon"></i>
+          <div class="error-message" id="emailError">Email is required</div>
         </div>
 
-        <div class="floating-form-group">
-          <input type="tel" class="floating-input" id="phone" name="phone" 
-                 placeholder="" required>
-          <label class="floating-label">Phone Number</label>
+        <div class="floating-form-group phone-wrapper">
+          <span class="phone-prefix">+91</span>
+          <input 
+              type="tel" 
+              class="floating-input phone-input" 
+              id="phone" 
+              name="phone" 
+              placeholder=" " 
+              required 
+              pattern="[0-9]{10}" 
+              maxlength="10"
+              inputmode="numeric"
+              title="Please enter a valid 10-digit phone number (without +91)"
+              autocomplete="tel-national"
+              value="{{ request.form.phone or '' }}"
+          >
+          <label class="floating-label">Phone Number (10 digits)</label>
           <i class="fas fa-phone input-icon"></i>
+          <div class="error-message" id="phoneError">Enter exactly 10 digits</div>
         </div>
 
         <div class="floating-form-group">
-          <input type="text" class="floating-input" id="location" name="location" 
-                 placeholder="" required>
-          <label class="floating-label">Your Location</label>
+          <input 
+            type="text" 
+            class="floating-input" 
+            id="location" 
+            name="location" 
+            placeholder=" " 
+            required 
+            autocomplete="address-level2"
+            value="{{ request.form.location or '' }}"
+          >
+          <label class="floating-label">Your Location (City / Area)</label>
           <i class="fas fa-map-marker-alt input-icon"></i>
+          <div class="error-message" id="locationError">Location is required</div>
         </div>
 
         <button type="submit" class="creative-btn" id="submitBtn">
@@ -531,96 +545,140 @@
 </div>
 
 <script>
-  // Create floating particles
-  function createParticles() {
-    const container = document.getElementById('particles');
-    const particleCount = 30;
+// Create floating particles
+function createParticles() {
+  const container = document.getElementById('particles');
+  const particleCount = 30;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
     
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      
-      // Random properties
-      const size = Math.random() * 10 + 2;
-      const posX = Math.random() * 100;
-      const duration = Math.random() * 20 + 10;
-      const delay = Math.random() * 20;
-      
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.left = `${posX}%`;
-      particle.style.animationDuration = `${duration}s`;
-      particle.style.animationDelay = `${delay}s`;
-      
-      container.appendChild(particle);
+    const size = Math.random() * 10 + 2;
+    const posX = Math.random() * 100;
+    const duration = Math.random() * 20 + 10;
+    const delay = Math.random() * 20;
+    
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${posX}%`;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${delay}s`;
+    
+    container.appendChild(particle);
+  }
+}
+
+// Animated counter
+function animateCounter(id, target, suffix = '') {
+  const element = document.getElementById(id);
+  let current = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+  const increment = Math.ceil((target - current) / 50);
+  
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
     }
+    element.textContent = suffix ? `${current.toLocaleString()}${suffix}` : current;
+  }, 30);
+}
+
+// Real-time form validation
+function validateForm() {
+  let isValid = true;
+
+  // Email
+  const emailInput = document.getElementById('email');
+  const emailError = document.getElementById('emailError');
+  if (!emailInput.value.trim()) {
+    emailError.textContent = "Email is required";
+    emailInput.parentElement.classList.add('input-error');
+    isValid = false;
+  } else if (!emailInput.value.includes('@') || !emailInput.value.includes('.')) {
+    emailError.textContent = "Please enter a valid email";
+    emailInput.parentElement.classList.add('input-error');
+    isValid = false;
+  } else {
+    emailError.textContent = "";
+    emailInput.parentElement.classList.remove('input-error');
   }
 
-  // Animated counter
-  function animateCounter(id, target, suffix = '') {
-    const element = document.getElementById(id);
-    const current = parseInt(element.textContent.replace(/[^0-9]/g, ''));
-    const increment = Math.ceil(target / 50);
-    let currentValue = 0;
-    
-    const timer = setInterval(() => {
-      currentValue += increment;
-      if (currentValue >= target) {
-        currentValue = target;
-        clearInterval(timer);
-      }
-      element.textContent = suffix ? `${currentValue.toLocaleString()}+` : `${currentValue}%`;
-    }, 30);
+  // Phone
+ // Phone validation - handle +91 prefix correctly
+  const phoneInput = document.getElementById('phone');
+  const phoneError = document.getElementById('phoneError');
+  const phoneVal = phoneInput.value.trim();
+
+  if (!phoneVal) {
+      phoneError.textContent = "Phone number is required";
+      phoneInput.parentElement.classList.add('input-error');
+      isValid = false;
+  } else if (!/^\d{10}$/.test(phoneVal)) {
+      phoneError.textContent = "Enter exactly 10 digits (without +91)";
+      phoneInput.parentElement.classList.add('input-error');
+      isValid = false;
+  } else {
+      phoneError.textContent = "";
+      phoneInput.parentElement.classList.remove('input-error');
   }
 
-  // Form submission with loading animation
-  document.getElementById('registerForm').addEventListener('submit', function(e) {
-    const submitBtn = document.getElementById('submitBtn');
-    const originalContent = submitBtn.innerHTML;
-    
-    submitBtn.innerHTML = `
-      <div class="btn-content">
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <span>Processing...</span>
-      </div>
-    `;
-    submitBtn.style.opacity = '0.8';
-    submitBtn.style.cursor = 'not-allowed';
-    
-    // Reset button after 5 seconds if still processing
-    setTimeout(() => {
-      submitBtn.innerHTML = originalContent;
-      submitBtn.style.opacity = '1';
-      submitBtn.style.cursor = 'pointer';
-    }, 5000);
-  });
+  // Location
+  const locationInput = document.getElementById('location');
+  const locationError = document.getElementById('locationError');
+  if (!locationInput.value.trim()) {
+    locationError.textContent = "Location is required";
+    locationInput.parentElement.classList.add('input-error');
+    isValid = false;
+  } else {
+    locationError.textContent = "";
+    locationInput.parentElement.classList.remove('input-error');
+  }
 
-  // Input validation feedback
-  const inputs = document.querySelectorAll('.floating-input');
-  inputs.forEach(input => {
-    input.addEventListener('input', function() {
-      if (this.value.trim() !== '') {
-        this.parentElement.classList.add('has-value');
-      } else {
-        this.parentElement.classList.remove('has-value');
-      }
-    });
-  });
+  return isValid;
+}
 
-  // Initialize on page load
-  document.addEventListener('DOMContentLoaded', function() {
-    createParticles();
-    
-    // Start animated counters
-    setTimeout(() => animateCounter('userCount', 25000), 500);
-    setTimeout(() => animateCounter('alertCount', 1200000), 800);
-    setTimeout(() => animateCounter('responseCount', 98), 1100);
-    
-    // Add hover effect to feature items
-    const features = document.querySelectorAll('.feature-item');
-    features.forEach((feature, index) => {
-      feature.style.transitionDelay = `${index * 100}ms`;
-    });
+// Prevent submit if invalid
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  if (!validateForm()) {
+    e.preventDefault();
+    return false;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  const originalContent = submitBtn.innerHTML;
+  
+  submitBtn.innerHTML = `
+    <div class="btn-content">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <span>Processing...</span>
+    </div>
+  `;
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.8';
+  submitBtn.style.cursor = 'not-allowed';
+});
+
+// Real-time validation on input
+document.querySelectorAll('.floating-input, .phone-input').forEach(input => {
+  input.addEventListener('input', validateForm);
+  input.addEventListener('blur', validateForm);
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  createParticles();
+  
+  setTimeout(() => animateCounter('userCount', 25000, '+'), 500);
+  setTimeout(() => animateCounter('alertCount', 1200000, '+'), 800);
+  setTimeout(() => animateCounter('responseCount', 98, '%'), 1100);
+  
+  const features = document.querySelectorAll('.feature-item');
+  features.forEach((feature, index) => {
+    feature.style.transitionDelay = `${index * 100}ms`;
   });
+});
 </script>
+
 {% endblock %}
